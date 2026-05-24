@@ -1,5 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
+import donorImage from "@/app/assets/donor-role-selection.png";
+import ngoimage from "@/app/assets/ngo-role-selection.png";
 
 const HeartIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="#2D6A2D">
@@ -45,10 +47,10 @@ export default function RegisterPage() {
         {/* Donor Card */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col flex-1">
 
-          <div className="relative w-full h-48">
+          <div className="relative w-full h-48 border border-gray-200 shadow-lg">
                 <Image
-                src="/logoo.png"
-                alt="Donor food donation"
+                src={donorImage}
+                alt="Donor donation"
                 fill
                 className="object-cover"
                 priority
@@ -80,9 +82,9 @@ export default function RegisterPage() {
         {/* NGO Card */}
         <div className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col flex-1">
 
-          <div className="relative w-full h-48">
+          <div className="relative w-full h-48 border border-gray-200 shadow-lg">
                 <Image
-                src="/logoo.png"
+                src={ngoimage}
                 alt="Donor food donation"
                 fill
                 className="object-cover"
