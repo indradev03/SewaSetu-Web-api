@@ -4,11 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { Menu, X } from "lucide-react";
 
 const Navbar = () => {
   const pathname = usePathname();
 
   const [showNavbar, setShowNavbar] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const lastScrollY = useRef(0);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -17,43 +19,29 @@ const Navbar = () => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // always show at top
       if (currentScrollY < 50) {
         setShowNavbar(true);
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
-        lastScrollY.current = currentScrollY;
         return;
       }
 
-      // scrolling up → show immediately
       if (currentScrollY < lastScrollY.current) {
         setShowNavbar(true);
-
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
       }
 
-      // scrolling down → hide after delay
       if (currentScrollY > lastScrollY.current) {
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
 
         timeoutRef.current = setTimeout(() => {
           setShowNavbar(false);
-        }, 500); // ⬅️ smooth delay
+        }, 500);
       }
 
       lastScrollY.current = currentScrollY;
     };
 
     window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const navLinks = [
@@ -64,106 +52,124 @@ const Navbar = () => {
   ];
 
   return (
-<header
-  className={`fixed top-4 left-1/2 -translate-x-1/2 w-[92%] z-50
-  bg-white backdrop-blur-md
-  border border-gray-200 shadow-lg
-  rounded-4xl px-8 py-4
-  transition-all duration-500 ease-in-out
-  ${
-    showNavbar
-      ? "opacity-100 translate-y-0"
-      : "opacity-0 -translate-y-6 pointer-events-none"
-  }`}
->
-      <div className="max-w-7xl mx-auto flex justify-between items-center">
-        
-      <Link href="/" className="flex items-center gap-2">
-        <Image
-          src="/logoo.png"
-          alt="SewaSetu Logo"
-          width={300}
-          height={400}
-        />
-      </Link>
+    <header
+      className={`fixed top-3 left-1/2 -translate-x-1/2 z-50
+      w-[92%] md:w-[70%]
+      bg-white/90 backdrop-blur-md
+      border border-gray-200 shadow-lg
+      rounded-3xl px-4 md:px-8 py-3
+      transition-all duration-500 ease-in-out
+      ${
+        showNavbar
+          ? "opacity-100 translate-y-0"
+          : "opacity-0 -translate-y-6 pointer-events-none"
+      }`}
+    >
+      <div className="flex items-center justify-between">
 
-        <nav className="hidden md:flex items-center gap-8 text-sm">
-          <Link
-            href="/"
-            className={`pb-1 transition-colors duration-200 hover:text-blue-500 ${
-              pathname === "/"
-                ? "text-blue-500 font-bold border-b-2 border-blue-text-blue-500"
-                : "text-black"
-            }`}
-          >
-            Home
-          </Link>
+        {/* Logo */}
+        <Link href="/" className="flex items-center">
+          <Image
+            src="/logo.png"
+            alt="SewaSetu Logo"
+            width={120}
+            height={40}
+            className="h-auto w-auto"
+          />
+        </Link>
 
-          <Link
-            href="/how-it-works"
-            className={`pb-1 transition-colors duration-200 hover:text-blue-500 ${
-              pathname === "/how-it-works"
-                ? "text-blue-500 font-bold border-b-2 border-blue-text-blue-500"
-                : "text-black"
-            }`}
-          >
-            How It Works
-          </Link>
-
-          <Link
-            href="/impact"
-            className={`pb-1 transition-colors duration-200 hover:text-blue-500 ${
-              pathname === "/impact"
-                ? "text-blue-500 font-bold border-b-2 border-blue-text-blue-500"
-                : "text-black"
-            }`}
-          >
-            Impact
-          </Link>
-
-          <Link
-            href="/about"
-            className={`pb-1 transition-colors duration-200 hover:text-blue-500 ${
-              pathname === "/about"
-                ? "text-blue-500 font-bold border-b-2 border-blue-text-blue-500"
-                : "text-black"
-            }`}
-          >
-            About
-          </Link>
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex items-center gap-6 text-sm">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              href={link.path}
+              className={`transition-colors duration-200 hover:text-blue-500 ${
+                pathname === link.path
+                  ? "text-blue-500 font-bold border-b-2 border-blue-500"
+                  : "text-black"
+              }`}
+            >
+              {link.name}
+            </Link>
+          ))}
         </nav>
 
-      <div className="flex items-center">
-        <Link
-          href="/login"
-          className={`px-5 py-2 rounded-full font-semibold transition-all duration-200
-          border border-white/20 backdrop-blur-md
-          
-          ${
-            pathname === "/login"
-              ? "bg-orange-500 text-white shadow-lg"
-              : "bg-white/10 text-black hover:text-blue-500"
-          }`}
-        >
-          Sign In
-        </Link>
+        {/* Buttons (desktop) */}
+        <div className="hidden md:flex items-center gap-3">
+          <Link
+            href="/login"
+            className={`px-4 py-2 rounded-full font-medium transition
+            ${
+              pathname === "/login"
+                ? "bg-orange-500 text-white"
+                : "text-black hover:text-blue-500"
+            }`}
+          >
+            Sign In
+          </Link>
 
-        <Link
-          href="/register"
-          className={`px-5 py-2 rounded-full font-semibold transition-all duration-200
-          border border-white/20 backdrop-blur-md
-          
-          ${
-            pathname === "/register"
-              ? "bg-orange-500 text-white shadow-lg"
-              : "bg-white/10 text-black hover:text-blue-500"
-          }`}
-        >
-          Signup
-        </Link>
+          <Link
+            href="/register/role_selection"
+            className={`px-4 py-2 rounded-full font-medium transition
+            ${
+              pathname === "/register/role_selection"
+                ? "bg-orange-500 text-white"
+                : "text-black hover:text-blue-500"
+            }`}
+          >
+            Signup
+          </Link>
+        </div>
+
+        {/* Mobile Menu Button */}
+          <button
+            className="md:hidden text-black"
+            onClick={() => setMobileOpen(!mobileOpen)}
+          >
+            {mobileOpen ? (
+              <X className="text-black" />
+            ) : (
+              <Menu className="text-black" />
+            )}
+          </button>
       </div>
 
-      </div>
+      {/* Mobile Menu */}
+      {mobileOpen && (
+        <div className="md:hidden mt-4 flex flex-col gap-3 border-t pt-3">
+          {navLinks.map((link) => (
+            <Link
+              key={link.path}
+              href={link.path}
+              onClick={() => setMobileOpen(false)}
+              className={`text-sm ${
+                pathname === link.path
+                  ? "text-blue-500 font-bold"
+                  : "text-black"
+              }`}
+            >
+              {link.name}
+            </Link>
+          ))}
+
+          <div className="flex gap-3 pt-2">
+            <Link
+              href="/login"
+              className="px-4 py-2  text-black text-sm"
+            >
+              Signin
+            </Link>
+
+            <Link
+              href="/register/role_selection"
+              className="px-4 py-2 rounded-full bg-orange-500 text-white text-sm"
+            >
+              Signup
+            </Link>
+          </div>
+        </div>
+      )}
     </header>
   );
 };

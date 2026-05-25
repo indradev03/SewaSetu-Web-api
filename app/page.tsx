@@ -1,9 +1,7 @@
-import Link from "next/link";
-
 const HomePage = () => {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-      <h1 className="text-4xl font-bold mb-6 text-amber-300">
+    <div className="min-h-screen flex items-center justify-center">
+      <h1 className="text-4xl font-bold text-amber-300">
         Welcome to SewaSetu
       </h1>
     </div>

@@ -29,7 +29,7 @@ const NGOIcon = () => (
 
 export default function RoleSelection() {
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-16 bg-[#f0f4ed]">
+    <div className="min-h-screen flex flex-col items-center justify-center px-6 py-16">
 
       {/* Heading */}
       <div className="text-center mb-10 max-w-lg">
@@ -70,7 +70,7 @@ export default function RoleSelection() {
             </p>
 
             <Link
-              href="/register/donor"
+              href="/register/role_selection/donor"
               className="w-full py-3 rounded-xl bg-green-700 text-white font-semibold text-sm text-center hover:bg-green-800 transition mt-2"
             >
               Start Giving
@@ -105,7 +105,7 @@ export default function RoleSelection() {
             </p>
 
             <Link
-              href="/register/ngo"
+              href="/register/role_selection/ngo"
               className="w-full py-3 rounded-xl bg-orange-500 text-white font-semibold text-sm text-center hover:bg-orange-600 transition mt-2"
             >
               Register NGO
