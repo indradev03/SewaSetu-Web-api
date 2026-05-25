@@ -1,7 +1,19 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import {
+  Building2,
+  Hash,
+  Calendar,
+  User,
+  Mail,
+  Lock,
+  Eye,
+  EyeOff,
+  FileUp,
+  FileText,
+  LogIn,
+} from "lucide-react";
 
 export default function NGOSignup() {
   const [form, setForm] = useState({
@@ -14,173 +26,196 @@ export default function NGOSignup() {
     mission: "",
   });
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [files, setFiles] = useState<File[]>([]);
+
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setFiles([...files, ...Array.from(e.target.files)]);
+    }
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("NGO data:", form);
+    console.log(form, files);
   };
 
   return (
-    <div className="min-h-screen bg-[#f5f8f3] px-4 pt-24 pb-10 flex justify-center">
-      <div className="w-full max-w-3xl">
+    <div className="min-h-screen w-full bg-[#f5f8f3] px-6 pt-28 pb-10 flex justify-center">
 
-        {/* Header */}
-        <h1 className="text-3xl font-bold text-center text-gray-900">
-          Partner with <span className="text-green-700">SewaSetu</span>
-        </h1>
-        <p className="text-center text-gray-600 mt-2 mb-6">
-          Join a network of trusted organizations dedicated to making impact.
-        </p>
+      <div className="w-full max-w-6xl">
 
-        {/* Verification Box */}
-        <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl mb-6">
-          <h3 className="font-semibold text-blue-700">
-            Verification Process
-          </h3>
-          <p className="text-sm text-blue-600 mt-1">
-            Our team reviews NGO documents within 3–5 business days to ensure transparency.
-          </p>
+        {/* HEADER */}
+        <div className="bg-white rounded-2xl shadow-sm p-6 mb-6 flex justify-between items-center">
+
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">
+              NGO Registration <span className="text-green-700">SewaSetu</span>
+            </h1>
+            <p className="text-sm text-gray-500">
+              Complete your profile for verification
+            </p>
+          </div>
+
+          <a
+            href="/login"
+            className="flex items-center gap-2 text-sm text-green-700 hover:underline"
+          >
+            <LogIn size={16} />
+            Already have an account? Login
+          </a>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
-          {/* Organization Details */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm space-y-4">
-            <h2 className="font-semibold text-gray-800">
+          {/* ORGANIZATION */}
+          <div className="bg-white p-6 rounded-2xl shadow-sm">
+            <h2 className="font-semibold mb-4 text-gray-800">
               Organization Details
             </h2>
 
-            <input
-              name="orgName"
-              placeholder="Full Organization Name"
-              onChange={handleChange}
-              className="w-full p-3 border rounded-xl text-sm focus:ring-2 focus:ring-green-500 outline-none"
-            />
+            <div className="grid grid-cols-3 gap-4">
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <input
-                name="regNumber"
-                placeholder="Registration Number (80G/12A)"
-                onChange={handleChange}
-                className="w-full p-3 border rounded-xl text-sm focus:ring-2 focus:ring-green-500 outline-none"
-              />
+              <Input icon={<Building2 size={18} />} name="orgName" placeholder="Organization Name" onChange={handleChange} />
 
-              <select
-                name="yearEstablished"
-                onChange={handleChange}
-                className="w-full p-3 border rounded-xl text-sm focus:ring-2 focus:ring-green-500 outline-none"
-              >
-                <option value="">Select Year</option>
-                {Array.from({ length: 30 }).map((_, i) => {
-                  const year = 2026 - i;
-                  return (
-                    <option key={year} value={year}>
-                      {year}
-                    </option>
-                  );
-                })}
-              </select>
+              <Input icon={<Hash size={18} />} name="regNumber" placeholder="Registration Number" onChange={handleChange} />
+
+              <div className="flex items-center gap-2 border rounded-xl px-3 bg-white">
+                <Calendar size={18} className="text-gray-500" />
+                <select
+                  name="yearEstablished"
+                  onChange={handleChange}
+                  className="w-full py-3 outline-none text-sm"
+                >
+                  <option value="">Year Established</option>
+                  {Array.from({ length: 30 }).map((_, i) => {
+                    const year = 2026 - i;
+                    return (
+                      <option key={year} value={year}>
+                        {year}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+
             </div>
           </div>
 
-          {/* Documentation */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm space-y-4">
-            <h2 className="font-semibold text-gray-800">
-              Required Documentation
-            </h2>
-            <p className="text-xs text-gray-500">
-              Upload PDF or JPEG files (max 5MB)
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="border-2 border-dashed rounded-xl p-6 text-center hover:border-green-500 cursor-pointer">
-                <p className="text-sm font-medium">
-                  Registration Certificate
-                </p>
-                <p className="text-xs text-gray-400 mt-1">
-                  Click to browse or drag & drop
-                </p>
-              </div>
-
-              <div className="border-2 border-dashed rounded-xl p-6 text-center hover:border-green-500 cursor-pointer">
-                <p className="text-sm font-medium">PAN Certificate</p>
-                <p className="text-xs text-gray-400 mt-1">
-                  Click to browse or drag & drop
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Contact Section */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm space-y-4">
-            <h2 className="font-semibold text-gray-800">
+          {/* CONTACT */}
+          <div className="bg-white p-6 rounded-2xl shadow-sm">
+            <h2 className="font-semibold mb-4 text-gray-800">
               Contact & Account
             </h2>
 
-            <input
-              name="representative"
-              placeholder="Representative Full Name"
-              onChange={handleChange}
-              className="w-full p-3 border rounded-xl text-sm focus:ring-2 focus:ring-green-500 outline-none"
-            />
+            <div className="grid grid-cols-3 gap-4">
 
-            <input
-              name="email"
-              type="email"
-              placeholder="Official Email Address"
-              onChange={handleChange}
-              className="w-full p-3 border rounded-xl text-sm focus:ring-2 focus:ring-green-500 outline-none"
-            />
+              <Input icon={<User size={18} />} name="representative" placeholder="Representative Name" onChange={handleChange} />
 
-            <input
-              name="password"
-              type="password"
-              placeholder="Password"
-              onChange={handleChange}
-              className="w-full p-3 border rounded-xl text-sm focus:ring-2 focus:ring-green-500 outline-none"
-            />
+              <Input icon={<Mail size={18} />} name="email" placeholder="Email Address" onChange={handleChange} />
+
+              {/* PASSWORD */}
+              <div className="flex items-center gap-2 border rounded-xl px-3">
+                <Lock size={18} className="text-gray-500" />
+                <input
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Password"
+                  onChange={handleChange}
+                  className="w-full py-3 outline-none text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+
+            </div>
           </div>
 
-          {/* Mission */}
-          <div className="bg-white p-6 rounded-2xl shadow-sm space-y-4">
-            <h2 className="font-semibold text-gray-800">
+          {/* DOCUMENT UPLOAD */}
+          <div className="bg-white p-6 rounded-2xl shadow-sm">
+            <h2 className="font-semibold mb-4 text-gray-800">
+              Documents Upload
+            </h2>
+
+            <input
+              type="file"
+              multiple
+              accept="image/*,application/pdf"
+              onChange={handleFileChange}
+              className="hidden"
+              id="fileUpload"
+            />
+
+            <label
+              htmlFor="fileUpload"
+              className="border-2 border-dashed rounded-xl p-6 flex flex-col items-center justify-center cursor-pointer hover:border-green-600"
+            >
+              <FileUp size={24} className="text-gray-500" />
+              <p className="text-sm mt-2">Upload Registration / PAN Documents</p>
+              <p className="text-xs text-gray-400">Images or PDF allowed</p>
+            </label>
+
+            {/* PREVIEW */}
+            {files.length > 0 && (
+              <div className="grid grid-cols-4 gap-3 mt-4">
+                {files.map((file, i) => (
+                  <div
+                    key={i}
+                    className="p-2 border rounded-lg text-xs flex items-center gap-2"
+                  >
+                    <FileText size={14} />
+                    <span className="truncate">{file.name}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* MISSION LAST */}
+          <div className="bg-white p-6 rounded-2xl shadow-sm">
+            <h2 className="font-semibold mb-4 text-gray-800">
               Mission & Impact
             </h2>
 
             <textarea
               name="mission"
               rows={4}
-              placeholder="Describe your organization's goals, projects, and communities you serve..."
+              placeholder="Describe your mission and impact..."
               onChange={handleChange}
-              className="w-full p-3 border rounded-xl text-sm focus:ring-2 focus:ring-green-500 outline-none"
+              className="w-full border rounded-xl p-3 text-sm outline-none focus:ring-2 focus:ring-green-500"
             />
-
-            <p className="text-xs text-gray-400">
-              This will be visible on your public profile once approved.
-            </p>
           </div>
 
-          {/* Submit */}
-          <button
-            type="submit"
-            className="w-full bg-green-700 text-white py-3 rounded-xl font-semibold hover:bg-green-800 transition"
-          >
+          {/* SUBMIT */}
+          <button className="w-full bg-green-700 text-white py-3 rounded-xl font-semibold hover:bg-green-800 transition">
             Submit for Review
           </button>
 
-          {/* Footer */}
           <p className="text-xs text-center text-gray-500">
-            By joining, you agree to SewaSetu’s Terms & Privacy Policy.
+            By signing up you agree to SewaSetu terms & verification policy
           </p>
         </form>
       </div>
+    </div>
+  );
+}
+
+/* REUSABLE INPUT */
+function Input({ icon, ...props }: any) {
+  return (
+    <div className="flex items-center gap-2 border rounded-xl px-3 bg-white">
+      <span className="text-gray-500">{icon}</span>
+      <input {...props} className="w-full py-3 outline-none text-sm" />
     </div>
   );
 }
