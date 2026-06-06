@@ -106,7 +106,7 @@ const Navbar = () => {
                 : "text-black hover:text-blue-500"
             }`}
           >
-            Sign In
+            SignIn
           </Link>
 
           <Link
@@ -118,7 +118,7 @@ const Navbar = () => {
                 : "text-black hover:text-blue-500"
             }`}
           >
-            Signup
+            SignUp
           </Link>
         </div>
 
