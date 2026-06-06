@@ -1,4 +1,4 @@
-const HomePage = () => {
+const LandingPage = () => {
   return (
     <div className="min-h-screen flex items-center justify-center">
       <h1 className="text-4xl font-bold text-amber-300">
@@ -8,4 +8,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default LandingPage;

@@ -70,7 +70,7 @@ export default function RoleSelection() {
             </p>
 
             <Link
-              href="/register/role_selection/donor"
+              href="/register/donor"
               className="w-full py-3 rounded-xl bg-green-700 text-white font-semibold text-sm text-center hover:bg-green-800 transition mt-2"
             >
               Start Giving
@@ -105,7 +105,7 @@ export default function RoleSelection() {
             </p>
 
             <Link
-              href="/register/role_selection/ngo"
+              href="/register/ngo"
               className="w-full py-3 rounded-xl bg-orange-500 text-white font-semibold text-sm text-center hover:bg-orange-600 transition mt-2"
             >
               Register NGO
