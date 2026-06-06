@@ -113,7 +113,7 @@ const Navbar = () => {
             href="/register/role_selection"
             className={`px-4 py-2 rounded-full font-medium transition
             ${
-              pathname === "/register/role_selection"
+              pathname.startsWith("/register")
                 ? "bg-orange-500 text-white"
                 : "text-black hover:text-blue-500"
             }`}
@@ -123,16 +123,16 @@ const Navbar = () => {
         </div>
 
         {/* Mobile Menu Button */}
-          <button
-            className="md:hidden text-black"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? (
-              <X className="text-black" />
-            ) : (
-              <Menu className="text-black" />
-            )}
-          </button>
+        <button
+          className="md:hidden text-black"
+          onClick={() => setMobileOpen(!mobileOpen)}
+        >
+          {mobileOpen ? (
+            <X className="text-black" />
+          ) : (
+            <Menu className="text-black" />
+          )}
+        </button>
       </div>
 
       {/* Mobile Menu */}
@@ -156,14 +156,23 @@ const Navbar = () => {
           <div className="flex gap-3 pt-2">
             <Link
               href="/login"
-              className="px-4 py-2  text-black text-sm"
+              className={`px-4 py-2 text-sm ${
+                pathname === "/login"
+                  ? "bg-orange-500 text-white rounded-full"
+                  : "text-black"
+              }`}
             >
               Signin
             </Link>
 
             <Link
               href="/register/role_selection"
-              className="px-4 py-2 rounded-full bg-orange-500 text-white text-sm"
+              className={`px-4 py-2 rounded-full text-sm
+              ${
+                pathname.startsWith("/register")
+                  ? "bg-orange-500 text-white"
+                  : "bg-orange-500 text-white"
+              }`}
             >
               Signup
             </Link>
