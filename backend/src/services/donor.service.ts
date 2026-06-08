@@ -44,7 +44,7 @@ export class DonorService {
     return safeDonor;
   }
 
-  // ── LOGIN ───
+  // ── LOGIN 
   async loginDonor(data: LoginDonorType) {
     const donor =
       await DonorRepository.findByEmail(data.email);
@@ -87,7 +87,7 @@ export class DonorService {
     };
   }
 
-  // ── GET PROFILE ─────────────────────────────────────────
+  // ── GET PROFILE 
   async getProfile(id: string) {
     const donor = await DonorRepository.findById(id);
 
@@ -98,7 +98,7 @@ export class DonorService {
     return donor;
   }
 
-  // ── UPDATE PROFILE ──────────────────────────────────────
+  // ── UPDATE PROFILE 
   async updateProfile(id: string, data: UpdateDonorType) {
     const donor = await DonorRepository.updateById(
       id,
@@ -112,7 +112,7 @@ export class DonorService {
     return donor;
   }
 
-  // ── DELETE ACCOUNT ──────────────────────────────────────
+  // ── DELETE ACCOUNT 
   async deleteAccount(id: string) {
     const donor = await DonorRepository.deleteById(id);
 
