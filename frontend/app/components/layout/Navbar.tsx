@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
+import ButtonLink from "../ui/ButtonLink";
+import TextLink from "../ui/textLink";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -81,17 +83,13 @@ const Navbar = () => {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6 text-sm">
           {navLinks.map((link) => (
-            <Link
+            <TextLink
               key={link.path}
               href={link.path}
-              className={`transition-colors duration-200 hover:text-blue-500 ${
-                pathname === link.path
-                  ? "text-blue-500 font-bold border-b-2 border-blue-500"
-                  : "text-black"
-              }`}
+        variant="hover-green"
             >
               {link.name}
-            </Link>
+            </TextLink>
           ))}
         </nav>
 
@@ -139,43 +137,29 @@ const Navbar = () => {
       {mobileOpen && (
         <div className="md:hidden mt-4 flex flex-col gap-3 border-t pt-3">
           {navLinks.map((link) => (
-            <Link
+            <TextLink
               key={link.path}
               href={link.path}
               onClick={() => setMobileOpen(false)}
-              className={`text-sm ${
-                pathname === link.path
-                  ? "text-blue-500 font-bold"
-                  : "text-black"
-              }`}
-            >
+            > 
               {link.name}
-            </Link>
+            </TextLink>
           ))}
 
           <div className="flex gap-3 pt-2">
-            <Link
+            <ButtonLink
               href="/login"
-              className={`px-4 py-2 text-sm ${
-                pathname === "/login"
-                  ? "bg-orange-500 text-white rounded-full"
-                  : "text-black"
-              }`}
-            >
+              variant = "orange"
+                          >
               Signin
-            </Link>
+            </ButtonLink>
 
-            <Link
+            <ButtonLink
               href="/register/role_selection"
-              className={`px-4 py-2 rounded-full text-sm
-              ${
-                pathname.startsWith("/register")
-                  ? "bg-orange-500 text-white"
-                  : "bg-orange-500 text-white"
-              }`}
-            >
+                  variant = "orange"
+                              >
               Signup
-            </Link>
+            </ButtonLink>
           </div>
         </div>
       )}

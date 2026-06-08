@@ -1,100 +1,114 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import {
-  Building2,
-  Hash,
-  Calendar,
-  User,
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  FileUp,
+  Building2, Hash, Calendar, User, Mail, Lock, Eye, EyeOff, FileUp, MapPin,
 } from "lucide-react";
+import Button from "@/app/components/ui/button";
 
-export default function NGOSignup() {
+export default function NGORegister() {
+  const router = useRouter();
+
   const [form, setForm] = useState({
-    orgName: "",
-    regNumber: "",
+    username: "",
+    organizationName: "",
+    registrationNumber: "",
     yearEstablished: "",
-    representative: "",
+    contactPerson: "",
     email: "",
     password: "",
-    mission: "",
+    confirmPassword: "",
+    impactDescription: "",
+    address: "",
   });
 
+  const [files, setFiles] = useState<{
+    registrationDocPath?: File;
+    panCardPath?: File;
+  }>({});
+
+  const [error, setError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleFile =
+    (field: "registrationDocPath" | "panCardPath") =>
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (e.target.files?.[0]) {
+        setFiles({ ...files, [field]: e.target.files[0] });
+      }
+    };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log(form);
+    setError("");
+
+    // validation only
+    if (form.password !== form.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    // optional: log data for now
+    console.log("NGO FORM DATA:", form, files);
+
+    // placeholder navigation
+    router.push("/login");
   };
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-b from-[#f4f8f3] via-white to-[#f7faf5] px-6 pt-28 pb-16 flex justify-center">
       <div className="w-full max-w-6xl space-y-8">
 
-        {/* HEADER */}
         <div className="text-center space-y-2">
           <h1 className="text-4xl font-extrabold text-gray-900 tracking-tight">
-            NGO Registration{" "}
-            <span className="text-green-700">SewaSetu</span>
+            NGO Registration <span className="text-green-700">SewaSetu</span>
           </h1>
-
           <p className="text-sm text-gray-500 max-w-xl mx-auto">
             Build trust with verified registration. Complete your organization profile for approval.
           </p>
         </div>
 
-        {/* INFO BANNER */}
-        <div className="bg-blue-50 border border-blue-100 p-5 rounded-2xl shadow-sm">
-          <h3 className="font-semibold text-blue-700">🔐 Verification Process</h3>
-          <p className="text-sm text-blue-600 mt-1">
-            Our team verifies documents within 3–5 business days to ensure transparency and donor trust.
-          </p>
-        </div>
+        {error && (
+          <div className="p-4 rounded-2xl bg-red-50 border border-red-200 text-sm text-red-600">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-6">
 
           {/* ORGANIZATION */}
           <Section title="Organization Details">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+              <FieldInput icon={<Building2 size={18} />} name="organizationName" placeholder="Organization Name" onChange={handleChange} required />
+              <FieldInput icon={<User size={18} />} name="username" placeholder="Username" onChange={handleChange} required />
+              <FieldInput icon={<Hash size={18} />} name="registrationNumber" placeholder="Registration Number" onChange={handleChange} required />
 
-              <Input
-                icon={<Building2 size={18} />}
-                name="orgName"
-                placeholder="Organization Name"
-                onChange={handleChange}
-              />
+              <FieldInput icon={<MapPin size={18} />} name="address" placeholder="Organization Address (optional)" onChange={handleChange} />
 
-              <Input
-                icon={<Hash size={18} />}
-                name="regNumber"
-                placeholder="Registration Number"
-                onChange={handleChange}
-              />
-
-              <div className="flex items-center gap-2 border rounded-xl px-3 bg-white shadow-sm focus-within:ring-2 focus-within:ring-green-500 transition">
+              <div className="flex items-center gap-2 border rounded-xl px-3 bg-white shadow-sm">
                 <Calendar size={18} className="text-gray-500" />
-
                 <select
                   name="yearEstablished"
                   onChange={handleChange}
-                  className="w-full py-3 outline-none text-sm bg-transparent"
+                  required
+                  className="w-full py-3 outline-none text-sm bg-transparent text-gray-700"
                 >
                   <option value="">Year Established</option>
                   {Array.from({ length: 40 }).map((_, i) => {
                     const year = 2026 - i;
-                    return <option key={year}>{year}</option>;
+                    return (
+                      <option key={year} value={String(year)}>
+                        {year}
+                      </option>
+                    );
                   })}
                 </select>
               </div>
@@ -105,91 +119,70 @@ export default function NGOSignup() {
           <Section title="Contact & Account">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
 
-              <Input
-                icon={<User size={18} />}
-                name="representative"
-                placeholder="Representative Name"
-                onChange={handleChange}
-              />
+              <FieldInput icon={<User size={18} />} name="contactPerson" placeholder="Contact Person Name" onChange={handleChange} required />
 
-              <Input
-                icon={<Mail size={18} />}
-                name="email"
-                placeholder="Official Email Address"
-                onChange={handleChange}
-              />
+              <FieldInput icon={<Mail size={18} />} name="email" type="email" placeholder="Official Email Address" onChange={handleChange} required />
 
-              <div className="flex items-center gap-2 border rounded-xl px-3 bg-white shadow-sm focus-within:ring-2 focus-within:ring-green-500 transition">
+              {/* Password */}
+              <div className="flex items-center gap-2 border rounded-xl px-3 bg-white shadow-sm">
                 <Lock size={18} className="text-gray-500" />
-
                 <input
                   name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Password"
+                  value={form.password}
                   onChange={handleChange}
+                  required
                   className="w-full py-3 outline-none text-sm bg-transparent"
                 />
-
-                <button
-                  type="button"
-                  className="text-gray-500 hover:text-gray-700"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
+                <button type="button" onClick={() => setShowPassword(!showPassword)}>
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+
+              {/* Confirm Password */}
+              <div className="flex items-center gap-2 border rounded-xl px-3 bg-white shadow-sm">
+                <Lock size={18} className="text-gray-500" />
+                <input
+                  name="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm Password"
+                  value={form.confirmPassword}
+                  onChange={handleChange}
+                  required
+                  className="w-full py-3 outline-none text-sm bg-transparent"
+                />
+                <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                  {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
             </div>
           </Section>
 
           {/* DOCUMENTS */}
-          <Section title="Required Documents">
+          <Section title="Documents (Optional)">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <UploadBox label="Registration Certificate" />
-              <UploadBox label="PAN Certificate" />
+              <UploadBox label="Registration Certificate" file={files.registrationDocPath} onChange={handleFile("registrationDocPath")} />
+              <UploadBox label="PAN Certificate" file={files.panCardPath} onChange={handleFile("panCardPath")} />
             </div>
           </Section>
 
           {/* MISSION */}
           <Section title="Mission & Impact">
             <textarea
-              name="mission"
+              name="impactDescription"
               rows={5}
               placeholder="Describe your mission, projects, and impact..."
               onChange={handleChange}
-              className="w-full border rounded-xl p-4 text-sm outline-none focus:ring-2 focus:ring-green-500 bg-white shadow-sm resize-none"
+              required
+              className="w-full border rounded-xl p-4 text-sm outline-none focus:ring-2 focus:ring-green-500 bg-white shadow-sm resize-none text-gray-700"
             />
           </Section>
 
-          {/* ACTIONS */}
           <div className="flex flex-col items-center space-y-4 pt-2">
-
-          {/* SUBMIT */}
-          <button className="w-full bg-gradient-to-r from-green-700 to-green-600 text-white py-3.5 rounded-xl font-semibold shadow-md hover:shadow-lg hover:scale-[1.01] transition">
-            Submit for Review
-          </button>
-
-            {/* LOGIN */}
-            <p className="text-sm text-gray-600">
-              Already have an account?{" "}
-              <a
-                href="/login"
-                className="text-green-700 font-semibold hover:underline"
-              >
-                Login
-              </a>
-            </p>
-
-            {/* FOOTER NOTE */}
-          <p className="text-xs text-center text-gray-500 leading-relaxed max-w-md mx-auto">
-            By continuing, you agree to SewaSetu’s{" "}
-            <a href="/terms" className="text-green-700 font-medium hover:underline">
-              Terms of Service
-            </a>{" "}
-            and{" "}
-            <a href="/privacy" className="text-green-700 font-medium hover:underline">
-              Privacy Policy
-            </a>
-          </p>
+            <Button type="submit" variant="green">
+              Submit for Review
+            </Button>
           </div>
         </form>
       </div>
@@ -197,39 +190,54 @@ export default function NGOSignup() {
   );
 }
 
-/* SECTION */
-function Section({ title, children }: any) {
+/* ---------- Helpers ---------- */
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-5 hover:shadow-md transition">
+    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 space-y-5">
       <h2 className="font-semibold text-gray-800 text-lg">{title}</h2>
       {children}
     </div>
   );
 }
 
-/* INPUT */
-function Input({ icon, ...props }: any) {
+type FieldInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  icon: React.ReactNode;
+};
+
+function FieldInput({ icon, ...props }: FieldInputProps) {
   return (
-    <div className="flex items-center gap-2 border rounded-xl px-3 bg-white shadow-sm focus-within:ring-2 focus-within:ring-green-500 transition">
+    <div className="flex items-center gap-2 border rounded-xl px-3 bg-white shadow-sm">
       <span className="text-gray-500">{icon}</span>
       <input
         {...props}
-        className="w-full py-3 outline-none text-sm bg-transparent"
+        className="w-full py-3 outline-none text-sm bg-transparent text-gray-700"
       />
     </div>
   );
 }
 
-/* UPLOAD */
-function UploadBox({ label }: any) {
+function UploadBox({
+  label,
+  file,
+  onChange,
+}: {
+  label: string;
+  file?: File;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
   return (
-    <label className="border-2 border-dashed border-gray-200 rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer bg-white hover:border-green-500 hover:bg-green-50 transition group">
-      <FileUp size={22} className="text-gray-400 group-hover:text-green-600 transition" />
+    <label className="border-2 border-dashed border-gray-200 rounded-xl p-8 flex flex-col items-center justify-center text-center cursor-pointer bg-white">
+      <FileUp size={22} className="text-gray-400" />
       <p className="text-sm mt-2 font-medium text-gray-700">{label}</p>
-      <p className="text-xs text-gray-400 mt-1">
-        Drag & drop or click to upload
-      </p>
-      <input type="file" hidden />
+
+      {file ? (
+        <p className="text-xs text-green-600 mt-1">{file.name}</p>
+      ) : (
+        <p className="text-xs text-gray-400 mt-1">Click to upload</p>
+      )}
+
+      <input type="file" hidden onChange={onChange} />
     </label>
   );
 }

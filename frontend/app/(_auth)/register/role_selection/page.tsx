@@ -1,7 +1,7 @@
-import Link from "next/link";
 import Image from "next/image";
 import donorImage from "@/app/assets/donor-role-selection.png";
 import ngoimage from "@/app/assets/ngo-role-selection.png";
+import ButtonLink from "@/app/components/ui/ButtonLink";
 
 const HeartIcon = () => (
   <svg width="28" height="28" viewBox="0 0 24 24" fill="#2D6A2D">
@@ -69,12 +69,10 @@ export default function RoleSelection() {
               Share food, clothes, and essentials with those in need.
             </p>
 
-            <Link
-              href="/register/donor"
-              className="w-full py-3 rounded-xl bg-green-700 text-white font-semibold text-sm text-center hover:bg-green-800 transition mt-2"
-            >
+            <ButtonLink
+              href="/register/donor" variant="green">
               Start Giving
-            </Link>
+            </ButtonLink>
 
           </div>
         </div>
@@ -104,12 +102,9 @@ export default function RoleSelection() {
               Verified organizations distributing essential items.
             </p>
 
-            <Link
-              href="/register/ngo"
-              className="w-full py-3 rounded-xl bg-orange-500 text-white font-semibold text-sm text-center hover:bg-orange-600 transition mt-2"
-            >
-              Register NGO
-            </Link>
+              <ButtonLink href="/register/ngo" variant="orange">
+                Register NGO
+              </ButtonLink>
 
           </div>
         </div>

@@ -3,6 +3,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useState } from "react";
+import Button from "@/app/components/ui/button";
+import TextLink from "@/app/components/ui/textLink";
 
 const EyeIcon = ({ open }: { open: boolean }) =>
   open ? (
@@ -132,13 +134,9 @@ const LoginForm = () => {
           </div>
 
           {/* Button */}
-          <button
-            type="submit"
-            className="w-full py-3 rounded-full bg-green-700 text-white font-semibold
-            hover:bg-green-800 transition"
-          >
-            Login
-          </button>
+          <Button type="submit">
+            Create Account
+          </Button>
 
         </form>
       </div>
@@ -146,9 +144,9 @@ const LoginForm = () => {
       {/* Footer link */}
       <p className="text-sm mt-6 text-gray-600">
         Don&apos;t have an account?{" "}
-        <Link href="/register/role_selection" className="text-blue-600 font-semibold">
+        <TextLink  href="/register/role_selection" variant="solid-green" >
           Sign up for free
-        </Link>
+        </TextLink >
       </p>
 
     </div>
