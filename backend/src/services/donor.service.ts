@@ -12,25 +12,18 @@ import { HttpException } from "../exceptions/http-exception";
 import { SECRET_KEY, JWT_EXPIRES_IN } from "../config/constant";
 
 export class DonorService {
-  // ── REGISTER 
+  // ── REGISTER
   async registerDonor(data: RegisterDonorType) {
-    const existing =
-      await DonorRepository.findByEmailOrUsername(
-        data.email,
-        data.username
-      );
+    const existing = await DonorRepository.findByEmailOrUsername(
+      data.email,
+      data.username,
+    );
 
     if (existing) {
-      throw new HttpException(
-        400,
-        "Email or username already exists"
-      );
+      throw new HttpException(400, "Email or username already exists");
     }
 
-    const hashedPassword = await bcrypt.hash(
-      data.password,
-      10
-    );
+    const hashedPassword = await bcrypt.hash(data.password, 10);
 
     const donor = await DonorRepository.create({
       ...data,
@@ -38,34 +31,23 @@ export class DonorService {
       role: "donor",
     } as any);
 
-    const { password, ...safeDonor } =
-      donor.toObject();
+    const { password, ...safeDonor } = donor.toObject();
 
     return safeDonor;
   }
 
-  // ── LOGIN 
+  // ── LOGIN
   async loginDonor(data: LoginDonorType) {
-    const donor =
-      await DonorRepository.findByEmail(data.email);
+    const donor = await DonorRepository.findByEmail(data.email);
 
     if (!donor) {
-      throw new HttpException(
-        400,
-        "Invalid email or password"
-      );
+      throw new HttpException(400, "Invalid email or password");
     }
 
-    const isValid = await bcrypt.compare(
-      data.password,
-      donor.password
-    );
+    const isValid = await bcrypt.compare(data.password, donor.password);
 
     if (!isValid) {
-      throw new HttpException(
-        400,
-        "Invalid email or password"
-      );
+      throw new HttpException(400, "Invalid email or password");
     }
 
     const token = jwt.sign(
@@ -75,11 +57,10 @@ export class DonorService {
         role: donor.role,
       },
       SECRET_KEY,
-      { expiresIn: JWT_EXPIRES_IN } as jwt.SignOptions
+      { expiresIn: JWT_EXPIRES_IN } as jwt.SignOptions,
     );
 
-    const { password, ...safeDonor } =
-      donor.toObject();
+    const { password, ...safeDonor } = donor.toObject();
 
     return {
       donor: safeDonor,
@@ -87,7 +68,7 @@ export class DonorService {
     };
   }
 
-  // ── GET PROFILE 
+  // ── GET PROFILE
   async getProfile(id: string) {
     const donor = await DonorRepository.findById(id);
 
@@ -98,12 +79,9 @@ export class DonorService {
     return donor;
   }
 
-  // ── UPDATE PROFILE 
+  // ── UPDATE PROFILE
   async updateProfile(id: string, data: UpdateDonorType) {
-    const donor = await DonorRepository.updateById(
-      id,
-      data
-    );
+    const donor = await DonorRepository.updateById(id, data);
 
     if (!donor) {
       throw new HttpException(404, "Donor not found");
@@ -112,7 +90,7 @@ export class DonorService {
     return donor;
   }
 
-  // ── DELETE ACCOUNT 
+  // ── DELETE ACCOUNT
   async deleteAccount(id: string) {
     const donor = await DonorRepository.deleteById(id);
 
