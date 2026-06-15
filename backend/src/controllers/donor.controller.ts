@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import { deleteFile } from "../utils/file";
 
 import {
   RegisterDonorDTO,
@@ -13,7 +14,6 @@ import { ApiResponseHelper } from "../utils/api-response";
 const donorService = new DonorService();
 
 export class DonorController {
-
   // REGISTER DONOR
 
   async registerDonor(req: Request, res: Response) {
@@ -34,17 +34,16 @@ export class DonorController {
         res,
         donor,
         201,
-        "Donor registered successfully"
+        "Donor registered successfully",
       );
     } catch (error: any) {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to register donor",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
-
 
   // LOGIN DONOR
 
@@ -60,24 +59,22 @@ export class DonorController {
         throw new HttpException(400, message);
       }
 
-      const { donor, token } =
-        await donorService.loginDonor(parsed.data);
+      const { donor, token } = await donorService.loginDonor(parsed.data);
 
       return ApiResponseHelper.success(
         res,
         { donor, token },
         200,
-        "Login successful"
+        "Login successful",
       );
     } catch (error: any) {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to login",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
-
 
   // GET PROFILE
 
@@ -89,17 +86,16 @@ export class DonorController {
         res,
         donor,
         200,
-        "Profile fetched successfully"
+        "Profile fetched successfully",
       );
     } catch (error: any) {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to fetch profile",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
-
 
   // UPDATE PROFILE
 
@@ -108,33 +104,43 @@ export class DonorController {
       const parsed = UpdateDonorDTO.safeParse(req.body);
 
       if (!parsed.success) {
-        const message = parsed.error.issues
-          .map((e: any) => `${e.path.join(".")} - ${e.message}`)
-          .join(", ");
-
-        throw new HttpException(400, message);
+        throw new HttpException(400, "Invalid data");
       }
 
-      const donor = await donorService.updateProfile(
-        req.user!.id,
-        parsed.data
-      );
+      // 1. get existing user
+      const existingUser = await donorService.getProfile(req.user!.id);
+
+      let profileImage;
+
+      // 2. if new file uploaded
+      if (req.file) {
+        // 🔥 DELETE OLD FILE FIRST
+        if (existingUser?.profileImage) {
+          deleteFile(existingUser.profileImage);
+        }
+
+        // 3. set new file path
+        profileImage = `${req.protocol}://${req.get(
+          "host",
+        )}/uploads/profile/donor/${req.file.filename}`;
+      }
+
+      // 4. update DB
+      const updated = await donorService.updateProfile(req.user!.id, {
+        ...parsed.data,
+        ...(profileImage && { profileImage }),
+      });
 
       return ApiResponseHelper.success(
         res,
-        donor,
+        updated,
         200,
-        "Profile updated successfully"
+        "Profile updated successfully",
       );
     } catch (error: any) {
-      return ApiResponseHelper.error(
-        res,
-        error.message || "Failed to update profile",
-        error.status || 500
-      );
+      return ApiResponseHelper.error(res, error.message, error.status || 500);
     }
   }
-
 
   // DELETE ACCOUNT
 
@@ -146,13 +152,13 @@ export class DonorController {
         res,
         donor,
         200,
-        "Account deleted successfully"
+        "Account deleted successfully",
       );
     } catch (error: any) {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to delete account",
-        error.status || 500
+        error.status || 500,
       );
     }
   }

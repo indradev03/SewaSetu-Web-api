@@ -10,11 +10,11 @@ import {
 import { NGOService } from "../services/ngo.service";
 import { HttpException } from "../exceptions/http-exception";
 import { ApiResponseHelper } from "../utils/api-response";
+import { deleteFile } from "../utils/file";
 
 const ngoService = new NGOService();
 
 export class NGOController {
-
   // REGISTER NGO
 
   async registerNGO(req: Request, res: Response) {
@@ -35,17 +35,16 @@ export class NGOController {
         res,
         ngo,
         201,
-        "NGO registered successfully"
+        "NGO registered successfully",
       );
     } catch (error: any) {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to register NGO",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
-
 
   // LOGIN NGO
 
@@ -61,24 +60,22 @@ export class NGOController {
         throw new HttpException(400, message);
       }
 
-      const { ngo, token } =
-        await ngoService.loginNGO(parsed.data);
+      const { ngo, token } = await ngoService.loginNGO(parsed.data);
 
       return ApiResponseHelper.success(
         res,
         { ngo, token },
         200,
-        "Login successful"
+        "Login successful",
       );
     } catch (error: any) {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to login NGO",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
-
 
   // GET PROFILE
 
@@ -90,17 +87,16 @@ export class NGOController {
         res,
         ngo,
         200,
-        "Profile fetched successfully"
+        "Profile fetched successfully",
       );
     } catch (error: any) {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to fetch profile",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
-
 
   // UPDATE PROFILE
 
@@ -116,26 +112,44 @@ export class NGOController {
         throw new HttpException(400, message);
       }
 
-      const ngo = await ngoService.updateProfile(
-        req.user!.id,
-        parsed.data
-      );
+      // 1. get existing NGO
+      const existingNGO = await ngoService.getProfile(req.user!.id);
+
+      let profileImage;
+
+      // 2. handle new image upload
+      if (req.file) {
+        // 🔥 delete old image first
+        if (existingNGO?.profileImage) {
+          deleteFile(existingNGO.profileImage);
+        }
+
+        // 3. set new image path
+        profileImage = `${req.protocol}://${req.get(
+          "host",
+        )}/uploads/profile/ngo/${req.file.filename}`;
+      }
+
+      // 4. update DB
+      const ngo = await ngoService.updateProfile(req.user!.id, {
+        ...parsed.data,
+        ...(profileImage && { profileImage }),
+      });
 
       return ApiResponseHelper.success(
         res,
         ngo,
         200,
-        "Profile updated successfully"
+        "Profile updated successfully",
       );
     } catch (error: any) {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to update profile",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
-
 
   // GET VERIFIED NGOs
 
@@ -147,17 +161,16 @@ export class NGOController {
         res,
         ngos,
         200,
-        "Verified NGOs fetched successfully"
+        "Verified NGOs fetched successfully",
       );
     } catch (error: any) {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to fetch NGOs",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
-
 
   // ADMIN VERIFY NGO
 
@@ -173,26 +186,22 @@ export class NGOController {
         throw new HttpException(400, message);
       }
 
-      const ngo = await ngoService.verifyNGO(
-        req.params.id,
-        parsed.data
-      );
+      const ngo = await ngoService.verifyNGO(req.params.id, parsed.data);
 
       return ApiResponseHelper.success(
         res,
         ngo,
         200,
-        "NGO verification updated"
+        "NGO verification updated",
       );
     } catch (error: any) {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to verify NGO",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
-
 
   // DELETE NGO
 
@@ -204,13 +213,13 @@ export class NGOController {
         res,
         ngo,
         200,
-        "NGO deleted successfully"
+        "NGO deleted successfully",
       );
     } catch (error: any) {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to delete NGO",
-        error.status || 500
+        error.status || 500,
       );
     }
   }
