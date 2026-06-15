@@ -8,6 +8,7 @@ export interface IDonor extends Document {
   phoneNumber: string;
   gender?: "male" | "female" | "other";
   address?: string;
+  profileImage?: string;
   role: "donor" | "admin";
 }
 
@@ -20,9 +21,12 @@ const DonorSchema = new Schema<IDonor>(
     phoneNumber: { type: String, required: true },
     gender: { type: String, enum: ["male", "female", "other"] },
     address: { type: String },
+
+    profileImage: { type: String, default: "" },
+
     role: { type: String, enum: ["donor", "admin"], default: "donor" },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export default mongoose.model<IDonor>("Donor", DonorSchema);
