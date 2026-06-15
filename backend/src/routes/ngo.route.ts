@@ -4,6 +4,7 @@ import {
   authorizedMiddleware,
   authorizeRoles,
 } from "../middleware/auth.middleware";
+import { uploadNgoProfile } from "../middleware/upload.middleware";
 
 const router = Router();
 const ngoController = new NGOController();
@@ -13,26 +14,17 @@ const ngoController = new NGOController();
  */
 
 // Register NGO
-router.post(
-  "/register",
-  ngoController.registerNGO.bind(ngoController)
-);
+router.post("/register", ngoController.registerNGO.bind(ngoController));
 
 // Login NGO
-router.post(
-  "/login",
-  ngoController.loginNGO.bind(ngoController)
-);
+router.post("/login", ngoController.loginNGO.bind(ngoController));
 
 /**
  * PUBLIC / GENERAL
  */
 
 // Get all verified NGOs (public listing)
-router.get(
-  "/verified",
-  ngoController.getVerifiedNGOs.bind(ngoController)
-);
+router.get("/verified", ngoController.getVerifiedNGOs.bind(ngoController));
 
 /**
  * PROTECTED ROUTES (NGO ONLY)
@@ -43,7 +35,7 @@ router.get(
   "/profile",
   authorizedMiddleware,
   authorizeRoles("ngo"),
-  ngoController.getProfile.bind(ngoController)
+  ngoController.getProfile.bind(ngoController),
 );
 
 // Update NGO profile
@@ -51,7 +43,8 @@ router.put(
   "/profile",
   authorizedMiddleware,
   authorizeRoles("ngo"),
-  ngoController.updateProfile.bind(ngoController)
+  uploadNgoProfile.single("image"), // uplaod profile
+  ngoController.updateProfile.bind(ngoController),
 );
 
 /**
@@ -63,7 +56,7 @@ router.patch(
   "/verify/:id",
   authorizedMiddleware,
   authorizeRoles("admin"),
-  ngoController.verifyNGO.bind(ngoController)
+  ngoController.verifyNGO.bind(ngoController),
 );
 
 // Delete NGO (admin only)
@@ -71,7 +64,7 @@ router.delete(
   "/:id",
   authorizedMiddleware,
   authorizeRoles("admin"),
-  ngoController.deleteNGO.bind(ngoController)
+  ngoController.deleteNGO.bind(ngoController),
 );
 
 export default router;

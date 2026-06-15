@@ -6,6 +6,7 @@ import morgan from "morgan";
 
 import donorRoutes from "./routes/donor.route";
 import ngoRoutes from "./routes/ngo.route";
+import path from "path";
 
 const app = express();
 
@@ -21,10 +22,12 @@ app.use(
   cors({
     origin: process.env.FRONTEND_URL || "http://localhost:3000",
     credentials: true,
-  })
+  }),
 );
 app.use(helmet());
 app.use(morgan("dev"));
+
+app.use("/uploads", express.static(path.join(__dirname, "../uploads")));
 
 /**
  * ─────────────────────────────
