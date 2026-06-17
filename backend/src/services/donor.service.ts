@@ -90,6 +90,17 @@ export class DonorService {
     return donor;
   }
 
+  // ── REMOVE PROFILE IMAGE
+  async removeProfileImage(id: string) {
+    const donor = await DonorRepository.findById(id);
+
+    if (!donor) {
+      throw new HttpException(404, "Donor not found");
+    }
+
+    return await DonorRepository.updateById(id, { profileImage: "" } as any);
+  }
+
   // ── DELETE ACCOUNT
   async deleteAccount(id: string) {
     const donor = await DonorRepository.deleteById(id);

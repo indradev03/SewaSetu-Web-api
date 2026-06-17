@@ -120,9 +120,10 @@ export class DonorController {
         }
 
         // 3. set new file path
-        profileImage = `${req.protocol}://${req.get(
-          "host",
-        )}/uploads/profile/donor/${req.file.filename}`;
+        // profileImage = `${req.protocol}://${req.get(
+        //   "host",
+        // )}/uploads/profile/donor/${req.file.filename}`;
+        profileImage = req.file.filename;
       }
 
       // 4. update DB
@@ -139,6 +140,36 @@ export class DonorController {
       );
     } catch (error: any) {
       return ApiResponseHelper.error(res, error.message, error.status || 500);
+    }
+  }
+
+  // REMOVE PROFILE IMAGE
+
+  async removeProfileImage(req: Request, res: Response) {
+    try {
+      // 1. get existing user to grab the old filename
+      const existingUser = await donorService.getProfile(req.user!.id);
+
+      // 2. delete the physical file if it exists
+      if (existingUser?.profileImage) {
+        deleteFile(existingUser.profileImage);
+      }
+
+      // 3. clear profileImage in DB
+      const updated = await donorService.removeProfileImage(req.user!.id);
+
+      return ApiResponseHelper.success(
+        res,
+        updated,
+        200,
+        "Profile image removed successfully",
+      );
+    } catch (error: any) {
+      return ApiResponseHelper.error(
+        res,
+        error.message || "Failed to remove profile image",
+        error.status || 500,
+      );
     }
   }
 

@@ -40,6 +40,14 @@ router.put(
   donorController.updateProfile.bind(donorController),
 );
 
+// Remove profile image
+router.delete(
+  "/profile/image",
+  authorizedMiddleware,
+  authorizeRoles("donor"),
+  donorController.removeProfileImage.bind(donorController),
+);
+
 // Delete account
 router.delete(
   "/profile",
