@@ -10,11 +10,7 @@ export const deleteFile = (fileName?: string) => {
   if (!fileName) return;
 
   try {
-    const fullPath = path.join(
-      process.cwd(),
-      "uploads/profile/donor",
-      fileName,
-    );
+    const fullPath = path.join(process.cwd(), "uploads/profile", fileName);
 
     if (fs.existsSync(fullPath)) {
       fs.unlinkSync(fullPath);

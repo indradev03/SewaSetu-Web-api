@@ -11,7 +11,7 @@ export const RegisterDonorDTO = z.object({
   address: z.string().optional(),
 });
 
-// ── Login 
+// ── Login
 export const LoginDonorDTO = z.object({
   email: z.string().email("Invalid email"),
   password: z.string().min(1, "Password is required"),
@@ -25,7 +25,7 @@ export const UpdateDonorDTO = z.object({
   address: z.string().optional(),
 });
 
-// ── Types 
+// ── Types
 export type RegisterDonorType = z.infer<typeof RegisterDonorDTO>;
 export type LoginDonorType = z.infer<typeof LoginDonorDTO>;
 export type UpdateDonorType = z.infer<typeof UpdateDonorDTO>;
