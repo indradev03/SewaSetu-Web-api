@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-linear-to-br from-green-50 via-white to-emerald-50 bg-fixed">
+      <body className="min-h-screen bg-fixed">
         <PublicNavbar />
         <main>{children}</main>
       </body>
