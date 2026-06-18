@@ -2,7 +2,7 @@ import { z } from "zod";
 import { donorRegisterApi, donorLoginApi } from "../api/auth";
 import { setCookie } from "../cookies";
 
-//  Zod Schemas 
+//  Zod Schemas
 
 export const donorRegisterSchema = z
   .object({
@@ -14,9 +14,9 @@ export const donorRegisterSchema = z
     phoneNumber: z.string().min(7, "Phone number is required"),
     gender: z.enum(["male", "female", "other"]).optional(),
     address: z.string().optional(),
-      terms: z.boolean().refine((val) => val === true, {
-        message: "You must accept the terms and conditions",
-      }),
+    terms: z.boolean().refine((val) => val === true, {
+      message: "You must accept the terms and conditions",
+    }),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -28,22 +28,22 @@ export const donorLoginSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
-//  Types 
+//  Types
 
 export type DonorRegisterInput = z.infer<typeof donorRegisterSchema>;
 export type DonorLoginInput = z.infer<typeof donorLoginSchema>;
 
-//  Action result type 
+//  Action result type
 
 type ActionResult<T = void> =
   | { success: true; data: T }
   | { success: false; errors: Record<string, string> };
 
-//  registerDonorAction 
+//  registerDonorAction
 // Component → Action → API
 
 export const registerDonorAction = async (
-  formData: DonorRegisterInput
+  formData: DonorRegisterInput,
 ): Promise<ActionResult> => {
   // 1. Validate with Zod
   const parsed = donorRegisterSchema.safeParse(formData);
@@ -71,10 +71,9 @@ export const registerDonorAction = async (
   }
 };
 
-//  loginDonorAction 
-
+//  loginDonorAction
 export const loginDonorAction = async (
-  formData: DonorLoginInput
+  formData: DonorLoginInput,
 ): Promise<ActionResult<{ role: string }>> => {
   // 1. Validate
   const parsed = donorLoginSchema.safeParse(formData);
@@ -106,3 +105,50 @@ export const loginDonorAction = async (
     return { success: false, errors: { root: message } };
   }
 };
+
+import { Donor, getDonorProfileApi } from "../api/donor.api";
+
+export const getDonorProfileAction = async (): Promise<
+  ActionResult<{ donor: Donor }>
+> => {
+  try {
+    const res = await getDonorProfileApi();
+    return { success: true, data: { donor: res.data } };
+  } catch (err: any) {
+    return {
+      success: false,
+      errors: { root: "Failed to fetch profile" },
+    };
+  }
+};
+
+import { updateDonorProfileApi } from "../api/donor.api";
+
+export const updateDonorProfileAction = async (
+  formData: FormData,
+): Promise<ActionResult<{ donor: Donor }>> => {
+  try {
+    const res = await updateDonorProfileApi(formData);
+    return { success: true, data: { donor: res.data } };
+  } catch (err: any) {
+    return {
+      success: false,
+      errors: { root: "Profile update failed" },
+    };
+  }
+};
+
+import { removeDonorProfileImageApi } from "../api/donor.api";
+
+export const removeDonorProfileImageAction =
+  async (): Promise<ActionResult> => {
+    try {
+      await removeDonorProfileImageApi();
+      return { success: true, data: undefined };
+    } catch (err: any) {
+      return {
+        success: false,
+        errors: { root: "Failed to remove image" },
+      };
+    }
+  };

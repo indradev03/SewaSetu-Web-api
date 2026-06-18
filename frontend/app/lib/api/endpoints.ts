@@ -1,13 +1,18 @@
 export const API = {
   DONOR: {
-    REGISTER: "/api/v1/donor/register",
-    LOGIN: "/api/v1/donor/login",
-    PROFILE: "/api/v1/donor/profile",
+    REGISTER: "/donor/register",
+    LOGIN: "/donor/login",
+
+    PROFILE: "/donor/profile",
+    UPDATE_PROFILE: "/donor/profile", // ✅ ADD THIS
+    DELETE_PROFILE: "/donor/profile",
+    REMOVE_PROFILE_IMAGE: "/donor/profile/image",
   },
 
   NGO: {
-    REGISTER: "/api/v1/ngo/register",
-    LOGIN: "/api/v1/ngo/login",
-    PROFILE: "/api/v1/ngo/profile",
+    REGISTER: "/ngo/register",
+    LOGIN: "/ngo/login",
+
+    PROFILE: "/ngo/profile",
   },
 };

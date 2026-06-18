@@ -1,7 +1,7 @@
 import axiosInstance from "./axios-instance";
 import { API } from "./endpoints";
 
-// ── Types 
+// ── Types
 
 export type RegisterDonorPayload = {
   username: string;
@@ -35,7 +35,7 @@ export type AuthResponse<T> = {
   data: T;
 };
 
-// ── Donor API 
+// ── Donor API
 
 export const donorRegisterApi = async (payload: RegisterDonorPayload) => {
   const res = await axiosInstance.post<
@@ -46,7 +46,10 @@ export const donorRegisterApi = async (payload: RegisterDonorPayload) => {
 
 export const donorLoginApi = async (payload: LoginPayload) => {
   const res = await axiosInstance.post<
-    AuthResponse<{ donor: { _id: string; email: string; role: string }; token: string }>
+    AuthResponse<{
+      donor: { _id: string; email: string; role: string };
+      token: string;
+    }>
   >(API.DONOR.LOGIN, payload);
   return res.data;
 };
@@ -62,7 +65,10 @@ export const ngoRegisterApi = async (payload: RegisterNGOPayload) => {
 
 export const ngoLoginApi = async (payload: LoginPayload) => {
   const res = await axiosInstance.post<
-    AuthResponse<{ ngo: { _id: string; email: string; role: string }; token: string }>
+    AuthResponse<{
+      ngo: { _id: string; email: string; role: string };
+      token: string;
+    }>
   >(API.NGO.LOGIN, payload);
   return res.data;
 };
