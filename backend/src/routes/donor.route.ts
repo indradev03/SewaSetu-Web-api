@@ -48,6 +48,13 @@ router.delete(
   donorController.removeProfileImage.bind(donorController),
 );
 
+router.put(
+  "/profile/change-password",
+  authorizedMiddleware,
+  authorizeRoles("donor"),
+  donorController.changePassword.bind(donorController),
+);
+
 // Delete account
 router.delete(
   "/profile",

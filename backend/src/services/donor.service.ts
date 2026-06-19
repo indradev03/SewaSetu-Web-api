@@ -6,6 +6,7 @@ import {
   RegisterDonorType,
   LoginDonorType,
   UpdateDonorType,
+  ChangePasswordType,
 } from "../dtos/donor.dto";
 
 import { HttpException } from "../exceptions/http-exception";
@@ -110,5 +111,39 @@ export class DonorService {
     }
 
     return donor;
+  }
+
+  // Change Password
+  async changePassword(id: string, data: ChangePasswordType) {
+    const donor = await DonorRepository.findByIdWithPassword(id);
+
+    if (!donor) {
+      throw new HttpException(404, "Donor not found");
+    }
+
+    const isMatch = await bcrypt.compare(data.currentPassword, donor.password);
+
+    if (!isMatch) {
+      throw new HttpException(400, "Current password is incorrect");
+    }
+
+    const samePassword = await bcrypt.compare(data.newPassword, donor.password);
+
+    if (samePassword) {
+      throw new HttpException(
+        400,
+        "New password must be different from current password",
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+
+    donor.password = hashedPassword;
+
+    await donor.save();
+
+    return {
+      message: "Password changed successfully",
+    };
   }
 }

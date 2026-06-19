@@ -5,6 +5,7 @@ import {
   RegisterDonorDTO,
   LoginDonorDTO,
   UpdateDonorDTO,
+  ChangePasswordDTO,
 } from "../dtos/donor.dto";
 
 import { DonorService } from "../services/donor.service";
@@ -189,6 +190,39 @@ export class DonorController {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to delete account",
+        error.status || 500,
+      );
+    }
+  }
+
+  // Change password
+  async changePassword(req: Request, res: Response) {
+    try {
+      const parsed = ChangePasswordDTO.safeParse(req.body);
+
+      if (!parsed.success) {
+        const message = parsed.error.issues
+          .map((e: any) => e.message)
+          .join(", ");
+
+        throw new HttpException(400, message);
+      }
+
+      const result = await donorService.changePassword(
+        req.user!.id,
+        parsed.data,
+      );
+
+      return ApiResponseHelper.success(
+        res,
+        result,
+        200,
+        "Password changed successfully",
+      );
+    } catch (error: any) {
+      return ApiResponseHelper.error(
+        res,
+        error.message || "Failed to change password",
         error.status || 500,
       );
     }

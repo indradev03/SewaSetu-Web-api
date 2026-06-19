@@ -54,4 +54,8 @@ export const DonorRepository = {
     const doc = await Donor.exists({ username });
     return !!doc;
   },
+
+  async findByIdWithPassword(id: string): Promise<IDonor | null> {
+    return await Donor.findById(id);
+  },
 };
