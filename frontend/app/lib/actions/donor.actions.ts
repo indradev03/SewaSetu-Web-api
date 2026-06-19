@@ -1,37 +1,22 @@
-import { z } from "zod";
 import { donorRegisterApi, donorLoginApi } from "../api/auth";
 import { setCookie } from "../cookies";
-
-//  Zod Schemas
-
-export const donorRegisterSchema = z
-  .object({
-    username: z.string().min(1, "Username is required"),
-    fullName: z.string().min(1, "Full name is required"),
-    email: z.string().email("Invalid email address"),
-    password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string().min(1, "Please confirm your password"),
-    phoneNumber: z.string().min(7, "Phone number is required"),
-    gender: z.enum(["male", "female", "other"]).optional(),
-    address: z.string().optional(),
-    terms: z.boolean().refine((val) => val === true, {
-      message: "You must accept the terms and conditions",
-    }),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
-
-export const donorLoginSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  password: z.string().min(1, "Password is required"),
-});
-
-//  Types
-
-export type DonorRegisterInput = z.infer<typeof donorRegisterSchema>;
-export type DonorLoginInput = z.infer<typeof donorLoginSchema>;
+import {
+  changePasswordApi,
+  Donor,
+  getDonorProfileApi,
+  removeDonorProfileImageApi,
+  updateDonorProfileApi,
+} from "../api/donor.api";
+import {
+  DonorLoginInput,
+  donorLoginSchema,
+  DonorRegisterInput,
+  donorRegisterSchema,
+} from "../schemas/donor-auth.schema";
+import {
+  ChangePasswordInput,
+  changePasswordSchema,
+} from "../schemas/donor-profile.schema";
 
 //  Action result type
 
@@ -106,8 +91,7 @@ export const loginDonorAction = async (
   }
 };
 
-import { Donor, getDonorProfileApi } from "../api/donor.api";
-
+// get profile action
 export const getDonorProfileAction = async (): Promise<
   ActionResult<{ donor: Donor }>
 > => {
@@ -122,8 +106,7 @@ export const getDonorProfileAction = async (): Promise<
   }
 };
 
-import { updateDonorProfileApi } from "../api/donor.api";
-
+// update profile
 export const updateDonorProfileAction = async (
   formData: FormData,
 ): Promise<ActionResult<{ donor: Donor }>> => {
@@ -138,8 +121,7 @@ export const updateDonorProfileAction = async (
   }
 };
 
-import { removeDonorProfileImageApi } from "../api/donor.api";
-
+// remove profile action
 export const removeDonorProfileImageAction =
   async (): Promise<ActionResult> => {
     try {
@@ -152,3 +134,40 @@ export const removeDonorProfileImageAction =
       };
     }
   };
+
+// Change Password Action
+export const changePasswordAction = async (
+  formData: ChangePasswordInput,
+): Promise<ActionResult> => {
+  const parsed = changePasswordSchema.safeParse(formData);
+
+  if (!parsed.success) {
+    const errors: Record<string, string> = {};
+
+    parsed.error.issues.forEach((issue) => {
+      const key = issue.path[0] as string;
+      errors[key] = issue.message;
+    });
+
+    return {
+      success: false,
+      errors,
+    };
+  }
+
+  try {
+    await changePasswordApi(parsed.data);
+
+    return {
+      success: true,
+      data: undefined,
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      errors: {
+        root: err?.response?.data?.message || "Failed to change password",
+      },
+    };
+  }
+};

@@ -56,3 +56,15 @@ export const deleteDonorAccountApi = async () => {
   const res = await axiosInstance.delete(API.DONOR.DELETE_PROFILE);
   return res.data;
 };
+
+export type ChangePasswordPayload = {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+};
+
+export async function changePasswordApi(payload: ChangePasswordPayload) {
+  const res = await axiosInstance.put(API.DONOR.CHANGE_PASSWORD, payload);
+
+  return res.data;
+}
