@@ -195,7 +195,7 @@ export default function ProfilePage() {
 
               {/* AVATAR CONTAINER */}
               <div className="relative group mb-6">
-                <div className="w-40 h-40 rounded-full overflow-hidden ring-4 ring-emerald-500 shadow-outer bg-grey-100">
+                <div className="w-40 h-40 rounded-full overflow-hidden ring-4  ring-emerald-500 shadow-inner bg-gray-100">
                   <img
                     src={image}
                     className="w-full h-full object-cover"
@@ -244,7 +244,7 @@ export default function ProfilePage() {
                   onClick={() => setIsEditing(!isEditing)}
                   disabled={isSaving}
                   variant={isEditing ? "secondary" : "green"}
-                  className="!rounded-[1.5rem]"
+                  className="rounded-3xl!"
                 >
                   {isEditing ? "Cancel Editing" : "Edit Profile"}
                 </Button>
@@ -256,7 +256,7 @@ export default function ProfilePage() {
                   onClick={() => setShowPasswordModal(true)}
                   disabled={isSaving}
                   variant="orange"
-                  className="!rounded-[1.5rem] flex items-center justify-center gap-2"
+                  className="rounded-3xl! flex items-center justify-center gap-2"
                 >
                   <Lock size={16} />
                   Change Password
@@ -277,10 +277,10 @@ export default function ProfilePage() {
 
           {/* RIGHT CONTENT CARD */}
           <div className="md:col-span-2">
-            <div className="bg-white border border-gray-100 rounded-[2.5rem] p-8 md:p-10 shadow-[0_8px_32px_0_rgba(0,0,0,0.03)] min-h-[460px] flex flex-col justify-between">
+            <div className="bg-white border border-gray-100 rounded-[2.5rem] p-8 md:p-10 shadow-[0_8px_32px_0_rgba(0,0,0,0.03)] min-h-115] flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
-                  <h3 className="text-xl font-semibold text-gray-900 font-serif">
+                  <h3 className="text-xl font-semibold text-emerald-600 font-serif">
                     Personal Information
                   </h3>
                 </div>
@@ -334,6 +334,7 @@ export default function ProfilePage() {
                             </span>
                             {phoneNumber && (
                               <button
+                                type="button"
                                 onClick={() => {
                                   navigator.clipboard.writeText(phoneNumber);
                                   toast.info("Copied phone number!");
@@ -410,6 +411,7 @@ export default function ProfilePage() {
                         </div>
                         {user?.email && (
                           <button
+                            type="button"
                             onClick={() => {
                               navigator.clipboard.writeText(user.email);
                               toast.info("Copied email address!");
@@ -423,95 +425,135 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 ) : (
-                  /* EDIT MODE FORM */
+                  /* ELEVATED EDIT MODE FORM */
                   <form
                     onSubmit={handleUpdate}
                     id="profileForm"
-                    className="grid sm:grid-cols-2 gap-5"
+                    className="grid sm:grid-cols-2 gap-6"
                   >
-                    <div className="opacity-60">
+                    {/* USERNAME (LOCKED) */}
+                    <div className="relative group">
                       <label className="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2 block">
                         Username (Locked)
                       </label>
-                      <input
-                        type="text"
-                        disabled
-                        className="w-full bg-gray-100 border border-gray-200 text-gray-500 px-4 py-3 rounded-2xl text-sm cursor-not-allowed"
-                        value={username}
-                      />
+                      <div className="relative flex items-center">
+                        <div className="absolute left-4 text-gray-400 flex items-center justify-center">
+                          <Lock size={16} />
+                        </div>
+                        <input
+                          type="text"
+                          disabled
+                          className="w-full bg-gray-50 border border-gray-200 text-gray-400/80 pl-11 pr-4 py-3.5 rounded-2xl text-sm font-mono cursor-not-allowed select-none transition"
+                          value={username ? `@${username}` : ""}
+                        />
+                      </div>
                     </div>
+
+                    {/* FULL NAME */}
                     <div>
                       <label className="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2 block">
                         Full Name
                       </label>
-                      <input
-                        type="text"
-                        className="w-full bg-gray-50 border border-gray-200/60 text-gray-700 px-4 py-3 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-200 focus:bg-white focus:outline-none transition"
-                        value={fullName}
-                        onChange={(e) => setFullName(e.target.value)}
-                      />
+                      <div className="relative flex items-center">
+                        <div className="absolute left-4 text-gray-400 flex items-center justify-center">
+                          <User size={16} />
+                        </div>
+                        <input
+                          type="text"
+                          className="w-full bg-white border border-gray-200 text-gray-800 pl-11 pr-4 py-3.5 rounded-2xl text-sm font-medium shadow-sm focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition duration-200"
+                          value={fullName}
+                          onChange={(e) => setFullName(e.target.value)}
+                          placeholder="Enter your full name"
+                        />
+                      </div>
                     </div>
+
+                    {/* PHONE NUMBER */}
                     <div>
                       <label className="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2 block">
                         Phone Number
                       </label>
-                      <input
-                        type="text"
-                        className="w-full bg-gray-50 border border-gray-200/60 text-gray-700 px-4 py-3 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-200 focus:bg-white focus:outline-none transition"
-                        value={phoneNumber}
-                        onChange={(e) => setPhoneNumber(e.target.value)}
-                      />
+                      <div className="relative flex items-center">
+                        <div className="absolute left-4 text-gray-400 flex items-center justify-center">
+                          <Phone size={16} />
+                        </div>
+                        <input
+                          type="text"
+                          className="w-full bg-white border border-gray-200 text-gray-800 pl-11 pr-4 py-3.5 rounded-2xl text-sm font-medium shadow-sm focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition duration-200"
+                          value={phoneNumber}
+                          onChange={(e) => setPhoneNumber(e.target.value)}
+                          placeholder="Enter your phone number"
+                        />
+                      </div>
                     </div>
+
+                    {/* ADDRESS */}
                     <div>
                       <label className="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2 block">
                         Address
                       </label>
-                      <input
-                        type="text"
-                        className="w-full bg-gray-50 border border-gray-200/60 text-gray-700 px-4 py-3 rounded-2xl text-sm focus:ring-2 focus:ring-emerald-200 focus:bg-white focus:outline-none transition"
-                        value={address}
-                        onChange={(e) => setAddress(e.target.value)}
-                      />
+                      <div className="relative flex items-center">
+                        <div className="absolute left-4 text-gray-400 flex items-center justify-center">
+                          <MapPin size={16} />
+                        </div>
+                        <input
+                          type="text"
+                          className="w-full bg-white border border-gray-200 text-gray-800 pl-11 pr-4 py-3.5 rounded-2xl text-sm font-medium shadow-sm focus:border-emerald-500 focus:ring-4 focus:ring-emerald-500/10 focus:outline-none transition duration-200"
+                          value={address}
+                          onChange={(e) => setAddress(e.target.value)}
+                          placeholder="City, Country"
+                        />
+                      </div>
                     </div>
-                    <div className="opacity-60 sm:col-span-2">
+
+                    {/* EMAIL ADDRESS (LOCKED) */}
+                    <div className="sm:col-span-2">
                       <label className="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2 block">
                         Email Address (Locked)
                       </label>
-                      <input
-                        type="text"
-                        disabled
-                        className="w-full bg-gray-100 border border-gray-200 text-gray-500 px-4 py-3 rounded-2xl text-sm cursor-not-allowed"
-                        value={user?.email || ""}
-                      />
+                      <div className="relative flex items-center">
+                        <div className="absolute left-4 text-gray-400 flex items-center justify-center">
+                          <Lock size={16} />
+                        </div>
+                        <input
+                          type="text"
+                          disabled
+                          className="w-full bg-gray-50 border border-gray-200 text-gray-400/80 pl-11 pr-4 py-3.5 rounded-2xl text-sm font-medium cursor-not-allowed select-none transition"
+                          value={user?.email || ""}
+                        />
+                      </div>
                     </div>
 
-                    {/* RADIO GENDER INPUTS */}
+                    {/* RADIO GENDER INPUTS (WITH ENHANCED CONTAINERS) */}
                     <div className="sm:col-span-2 flex flex-col mt-2">
                       <label className="text-xs text-gray-400 font-semibold tracking-wide mb-3 uppercase">
                         Gender
                       </label>
                       <div className="grid grid-cols-3 gap-4">
-                        {(["male", "female", "other"] as const).map((g) => (
-                          <label
-                            key={g}
-                            className={`flex items-center justify-center gap-3 py-3 px-4 rounded-2xl text-sm font-medium cursor-pointer transition border uppercase tracking-wider
-                              ${
-                                gender === g
-                                  ? "bg-emerald-500/10 border-emerald-500 text-emerald-800"
-                                  : "bg-gray-50 border-gray-200/60 text-gray-600 hover:bg-gray-100"
-                              }`}
-                          >
-                            <input
-                              type="radio"
-                              name="gender"
-                              value={g}
-                              checked={gender === g}
-                              onChange={() => setGender(g)}
-                              className="w-4 h-4 text-emerald-600 border-gray-300 focus:ring-emerald-500 focus:ring-offset-0"
-                            />
-                            {g}
-                          </label>
-                        ))}
+                        {(["male", "female", "other"] as const).map((g) => {
+                          const isSelected = gender === g;
+                          return (
+                            <label
+                              key={g}
+                              className={`flex items-center gap-3 py-3.5 px-4 rounded-2xl text-xs font-semibold cursor-pointer transition-all border uppercase tracking-wider select-none shadow-sm
+                                ${
+                                  isSelected
+                                    ? "bg-emerald-500/10 border-emerald-500 text-emerald-800 ring-1 ring-emerald-500"
+                                    : "bg-white border-gray-200 text-gray-600 hover:bg-gray-50"
+                                }`}
+                            >
+                              <input
+                                type="radio"
+                                name="gender"
+                                value={g}
+                                checked={isSelected}
+                                onChange={() => setGender(g)}
+                                className="w-4 h-4 text-emerald-600 border-gray-300 focus:ring-emerald-500 focus:ring-offset-0 cursor-pointer"
+                              />
+                              {g}
+                            </label>
+                          );
+                        })}
                       </div>
                     </div>
                   </form>
@@ -535,7 +577,7 @@ export default function ProfilePage() {
                       form="profileForm"
                       disabled={isSaving}
                       variant="green"
-                      className="!px-8 !py-3.5 !rounded-full text-sm tracking-wide shadow-md shadow-emerald-600/10"
+                      className="px-8! py-3.5! rounded-full! text-sm tracking-wide shadow-md shadow-emerald-600/10"
                     >
                       {isSaving ? "Saving..." : "Save Changes"}
                     </Button>
@@ -550,7 +592,7 @@ export default function ProfilePage() {
       {/* CHANGE PASSWORD MODAL */}
       {showPasswordModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
-          <div className="bg-white w-full max-w-md rounded-[2rem] shadow-[0_8px_32px_0_rgba(0,0,0,0.12)] p-8 relative">
+          <div className="bg-white w-full max-w-md rounded-4xl shadow-[0_8px_32px_0_rgba(0,0,0,0.12)] p-8 relative">
             {/* CLOSE BUTTON */}
             <button
               onClick={closePasswordModal}
@@ -610,7 +652,7 @@ export default function ProfilePage() {
                   onClick={closePasswordModal}
                   disabled={isChangingPassword}
                   variant="secondary"
-                  className="!rounded-[1.5rem]"
+                  className="rounded-3xl!"
                 >
                   Cancel
                 </Button>
@@ -618,7 +660,7 @@ export default function ProfilePage() {
                   type="submit"
                   disabled={isChangingPassword}
                   variant="orange"
-                  className="!rounded-[1.5rem]"
+                  className="rounded-3xl!"
                 >
                   {isChangingPassword ? "Updating..." : "Update Password"}
                 </Button>
@@ -673,7 +715,7 @@ function PasswordField({
           onClick={() => setShow(!show)}
           className="absolute right-4 text-gray-400 hover:text-gray-600 transition"
         >
-          {show ? <Eye size={18} /> : <EyeOff size={18} />}
+          {show ? <EyeOff size={18} /> : <Eye size={18} />}
         </button>
       </div>
       {error && (
