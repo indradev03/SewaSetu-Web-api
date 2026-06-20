@@ -20,7 +20,7 @@ const allowedTypes = [
 export const createUpload = (mainFolder: string, subFolder: string) => {
   const storage = multer.diskStorage({
     destination: (req: Request, file, cb) => {
-      const folder = `uploads/${mainFolder}/${subFolder}`;
+      const folder = `uploads/${mainFolder}/`;
       createFolder(folder);
       cb(null, folder);
     },

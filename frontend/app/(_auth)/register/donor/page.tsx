@@ -4,10 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { User, Mail, Lock, MapPin, Phone, Eye, EyeOff } from "lucide-react";
-import {
-  registerDonorAction,
-  type DonorRegisterInput,
-} from "@/app/lib/actions/donor.actions";
+import { registerDonorAction } from "@/app/lib/actions/donor.actions";
+import { DonorRegisterInput } from "@/app/lib/schemas/donor-auth.schema";
 
 type FormState = Omit<DonorRegisterInput, "terms"> & { terms: boolean };
 
@@ -69,7 +67,9 @@ export default function DonorRegister() {
     <div className="min-h-screen flex items-center justify-center px-4 py-10 pt-28">
       <div className="w-full max-w-md">
         <div className="bg-white/80 backdrop-blur-md shadow-xl border border-gray-100 p-8 rounded-3xl">
-          <h1 className="text-3xl font-bold text-gray-900 text-center">Create Account</h1>
+          <h1 className="text-3xl font-bold text-gray-900 text-center">
+            Create Account
+          </h1>
           <p className="text-sm text-gray-500 text-center mt-2 mb-6">
             Join us as a Donor and start making impact
           </p>
@@ -82,41 +82,75 @@ export default function DonorRegister() {
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
-
             {/* Username */}
             <div>
               <div className="relative">
                 <User className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
-                <input name="username" placeholder="Username" onChange={handleChange} required className={inputClass("username")} />
+                <input
+                  name="username"
+                  placeholder="Username"
+                  onChange={handleChange}
+                  required
+                  className={inputClass("username")}
+                />
               </div>
-              {errors.username && <p className="text-xs text-red-500 mt-1">{errors.username}</p>}
+              {errors.username && (
+                <p className="text-xs text-red-500 mt-1">{errors.username}</p>
+              )}
             </div>
 
             {/* Full Name */}
             <div>
               <div className="relative">
                 <User className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
-                <input name="fullName" placeholder="Full Name" onChange={handleChange} required className={inputClass("fullName")} />
+                <input
+                  name="fullName"
+                  placeholder="Full Name"
+                  onChange={handleChange}
+                  required
+                  className={inputClass("fullName")}
+                />
               </div>
-              {errors.fullName && <p className="text-xs text-red-500 mt-1">{errors.fullName}</p>}
+              {errors.fullName && (
+                <p className="text-xs text-red-500 mt-1">{errors.fullName}</p>
+              )}
             </div>
 
             {/* Email */}
             <div>
               <div className="relative">
                 <Mail className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
-                <input name="email" type="email" placeholder="Email Address" onChange={handleChange} required className={inputClass("email")} />
+                <input
+                  name="email"
+                  type="email"
+                  placeholder="Email Address"
+                  onChange={handleChange}
+                  required
+                  className={inputClass("email")}
+                />
               </div>
-              {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
+              {errors.email && (
+                <p className="text-xs text-red-500 mt-1">{errors.email}</p>
+              )}
             </div>
 
             {/* Phone */}
             <div>
               <div className="relative">
                 <Phone className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
-                <input name="phoneNumber" placeholder="Phone Number" onChange={handleChange} required className={inputClass("phoneNumber")} />
+                <input
+                  name="phoneNumber"
+                  placeholder="Phone Number"
+                  onChange={handleChange}
+                  required
+                  className={inputClass("phoneNumber")}
+                />
               </div>
-              {errors.phoneNumber && <p className="text-xs text-red-500 mt-1">{errors.phoneNumber}</p>}
+              {errors.phoneNumber && (
+                <p className="text-xs text-red-500 mt-1">
+                  {errors.phoneNumber}
+                </p>
+              )}
             </div>
 
             {/* Password */}
@@ -134,11 +168,21 @@ export default function DonorRegister() {
                       errors.password ? "border-red-400" : "border-gray-200"
                     }`}
                 />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-3.5 text-gray-400">
-                  {showPassword ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3.5 text-gray-400"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
                 </button>
               </div>
-              {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
+              {errors.password && (
+                <p className="text-xs text-red-500 mt-1">{errors.password}</p>
+              )}
             </div>
 
             {/* Confirm Password */}
@@ -154,7 +198,11 @@ export default function DonorRegister() {
                   className={inputClass("confirmPassword")}
                 />
               </div>
-              {errors.confirmPassword && <p className="text-xs text-red-500 mt-1">{errors.confirmPassword}</p>}
+              {errors.confirmPassword && (
+                <p className="text-xs text-red-500 mt-1">
+                  {errors.confirmPassword}
+                </p>
+              )}
             </div>
 
             {/* Gender */}
@@ -164,9 +212,20 @@ export default function DonorRegister() {
               </p>
               <div className="flex gap-4">
                 {(["male", "female", "other"] as const).map((g) => (
-                  <label key={g} className="flex items-center gap-2 cursor-pointer">
-                    <input type="radio" name="gender" value={g} onChange={handleChange} className="accent-emerald-600 w-4 h-4" />
-                    <span className="text-sm capitalize text-gray-700">{g}</span>
+                  <label
+                    key={g}
+                    className="flex items-center gap-2 cursor-pointer"
+                  >
+                    <input
+                      type="radio"
+                      name="gender"
+                      value={g}
+                      onChange={handleChange}
+                      className="accent-emerald-600 w-4 h-4"
+                    />
+                    <span className="text-sm capitalize text-gray-700">
+                      {g}
+                    </span>
                   </label>
                 ))}
               </div>
@@ -175,21 +234,37 @@ export default function DonorRegister() {
             {/* Address */}
             <div className="relative">
               <MapPin className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
-              <input name="address" placeholder="Address (optional)" onChange={handleChange} className={inputClass("address")} />
+              <input
+                name="address"
+                placeholder="Address (optional)"
+                onChange={handleChange}
+                className={inputClass("address")}
+              />
             </div>
 
             {/* Terms */}
             <div>
               <label className="flex items-start gap-2 text-xs text-gray-600">
-                <input type="checkbox" name="terms" onChange={handleChange} className="mt-1 accent-emerald-600" />
+                <input
+                  type="checkbox"
+                  name="terms"
+                  onChange={handleChange}
+                  className="mt-1 accent-emerald-600"
+                />
                 <span>
                   I agree to the{" "}
-                  <span className="text-emerald-700 font-medium">Terms of Service</span>
-                  {" "}and{" "}
-                  <span className="text-emerald-700 font-medium">Privacy Policy</span>
+                  <span className="text-emerald-700 font-medium">
+                    Terms of Service
+                  </span>{" "}
+                  and{" "}
+                  <span className="text-emerald-700 font-medium">
+                    Privacy Policy
+                  </span>
                 </span>
               </label>
-              {errors.terms && <p className="text-xs text-red-500 mt-1">{errors.terms}</p>}
+              {errors.terms && (
+                <p className="text-xs text-red-500 mt-1">{errors.terms}</p>
+              )}
             </div>
 
             {/* Submit */}
@@ -205,7 +280,10 @@ export default function DonorRegister() {
 
           <p className="text-sm text-center mt-5 text-gray-600">
             Already have an account?{" "}
-            <Link href="/login" className="text-emerald-700 font-semibold hover:underline">
+            <Link
+              href="/login"
+              className="text-emerald-700 font-semibold hover:underline"
+            >
               Login
             </Link>
           </p>

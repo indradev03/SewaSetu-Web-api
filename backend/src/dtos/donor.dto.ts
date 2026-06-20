@@ -11,7 +11,7 @@ export const RegisterDonorDTO = z.object({
   address: z.string().optional(),
 });
 
-// ── Login 
+// ── Login
 export const LoginDonorDTO = z.object({
   email: z.string().email("Invalid email"),
   password: z.string().min(1, "Password is required"),
@@ -25,7 +25,19 @@ export const UpdateDonorDTO = z.object({
   address: z.string().optional(),
 });
 
-// ── Types 
+export const ChangePasswordDTO = z
+  .object({
+    currentPassword: z.string().min(6),
+    newPassword: z.string().min(6),
+    confirmPassword: z.string().min(6),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+// ── Types
 export type RegisterDonorType = z.infer<typeof RegisterDonorDTO>;
 export type LoginDonorType = z.infer<typeof LoginDonorDTO>;
 export type UpdateDonorType = z.infer<typeof UpdateDonorDTO>;
+export type ChangePasswordType = z.infer<typeof ChangePasswordDTO>;

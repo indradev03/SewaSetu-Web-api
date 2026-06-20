@@ -12,14 +12,33 @@ import { loginNGOAction } from "@/app/lib/actions/ngo.actions";
 const EyeIcon = ({ open }: { open: boolean }) =>
   open ? (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" stroke="currentColor" strokeWidth="2" />
+      <path
+        d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
       <circle cx="12" cy="12" r="3" stroke="currentColor" strokeWidth="2" />
     </svg>
   ) : (
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
-      <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8" stroke="currentColor" strokeWidth="2" />
-      <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8" stroke="currentColor" strokeWidth="2" />
-      <line x1="1" y1="1" x2="23" y2="23" stroke="currentColor" strokeWidth="2" />
+      <path
+        d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <path
+        d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
+      <line
+        x1="1"
+        y1="1"
+        x2="23"
+        y2="23"
+        stroke="currentColor"
+        strokeWidth="2"
+      />
     </svg>
   );
 
@@ -40,7 +59,7 @@ const LoginForm = () => {
     const donorResult = await loginDonorAction({ email, password });
 
     if (donorResult.success) {
-      router.push("dashboard/donor");
+      router.push("donor");
       return;
     }
 
@@ -49,7 +68,7 @@ const LoginForm = () => {
     setLoading(false);
 
     if (ngoResult.success) {
-      router.push("dashboard/ngo");
+      router.push("ngo");
       return;
     }
 
@@ -59,7 +78,6 @@ const LoginForm = () => {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-6">
-
       {/* Logo */}
       <div className="flex flex-col items-center mb-8">
         <div className="flex items-center gap-3 mb-2">
@@ -88,10 +106,11 @@ const LoginForm = () => {
         )}
 
         <div className="space-y-5">
-
           {/* Email */}
           <div>
-            <label className="text-sm font-medium text-gray-700">Email Address</label>
+            <label className="text-sm font-medium text-gray-700">
+              Email Address
+            </label>
             <input
               type="email"
               value={email}
@@ -102,14 +121,21 @@ const LoginForm = () => {
                   errors.email ? "border-red-400" : "border-gray-200"
                 }`}
             />
-            {errors.email && <p className="text-xs text-red-500 mt-1">{errors.email}</p>}
+            {errors.email && (
+              <p className="text-xs text-red-500 mt-1">{errors.email}</p>
+            )}
           </div>
 
           {/* Password */}
           <div>
             <div className="flex justify-between items-center">
-              <label className="text-sm font-medium text-gray-700">Password</label>
-              <Link href="/forgot-password" className="text-sm text-green-600 font-medium">
+              <label className="text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <Link
+                href="/forgot-password"
+                className="text-sm text-green-600 font-medium"
+              >
                 Forgot Password?
               </Link>
             </div>
@@ -133,7 +159,9 @@ const LoginForm = () => {
                 <EyeIcon open={showPassword} />
               </button>
             </div>
-            {errors.password && <p className="text-xs text-red-500 mt-1">{errors.password}</p>}
+            {errors.password && (
+              <p className="text-xs text-red-500 mt-1">{errors.password}</p>
+            )}
           </div>
 
           {/* Submit */}

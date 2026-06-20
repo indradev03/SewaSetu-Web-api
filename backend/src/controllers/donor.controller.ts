@@ -5,6 +5,7 @@ import {
   RegisterDonorDTO,
   LoginDonorDTO,
   UpdateDonorDTO,
+  ChangePasswordDTO,
 } from "../dtos/donor.dto";
 
 import { DonorService } from "../services/donor.service";
@@ -120,9 +121,10 @@ export class DonorController {
         }
 
         // 3. set new file path
-        profileImage = `${req.protocol}://${req.get(
-          "host",
-        )}/uploads/profile/donor/${req.file.filename}`;
+        // profileImage = `${req.protocol}://${req.get(
+        //   "host",
+        // )}/uploads/profile/donor/${req.file.filename}`;
+        profileImage = req.file.filename;
       }
 
       // 4. update DB
@@ -142,6 +144,36 @@ export class DonorController {
     }
   }
 
+  // REMOVE PROFILE IMAGE
+
+  async removeProfileImage(req: Request, res: Response) {
+    try {
+      // 1. get existing user to grab the old filename
+      const existingUser = await donorService.getProfile(req.user!.id);
+
+      // 2. delete the physical file if it exists
+      if (existingUser?.profileImage) {
+        deleteFile(existingUser.profileImage);
+      }
+
+      // 3. clear profileImage in DB
+      const updated = await donorService.removeProfileImage(req.user!.id);
+
+      return ApiResponseHelper.success(
+        res,
+        updated,
+        200,
+        "Profile image removed successfully",
+      );
+    } catch (error: any) {
+      return ApiResponseHelper.error(
+        res,
+        error.message || "Failed to remove profile image",
+        error.status || 500,
+      );
+    }
+  }
+
   // DELETE ACCOUNT
 
   async deleteAccount(req: Request, res: Response) {
@@ -158,6 +190,39 @@ export class DonorController {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to delete account",
+        error.status || 500,
+      );
+    }
+  }
+
+  // Change password
+  async changePassword(req: Request, res: Response) {
+    try {
+      const parsed = ChangePasswordDTO.safeParse(req.body);
+
+      if (!parsed.success) {
+        const message = parsed.error.issues
+          .map((e: any) => e.message)
+          .join(", ");
+
+        throw new HttpException(400, message);
+      }
+
+      const result = await donorService.changePassword(
+        req.user!.id,
+        parsed.data,
+      );
+
+      return ApiResponseHelper.success(
+        res,
+        result,
+        200,
+        "Password changed successfully",
+      );
+    } catch (error: any) {
+      return ApiResponseHelper.error(
+        res,
+        error.message || "Failed to change password",
         error.status || 500,
       );
     }

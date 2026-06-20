@@ -1,6 +1,6 @@
 import "./globals.css";
 import type { Metadata } from "next";
-import Navbar from "./components/layout/Navbar";
+import PublicNavbar from "./components/layout/PublicNavbar";
 
 export const metadata: Metadata = {
   title: "SewaSetu",
@@ -14,14 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gradient-to-br from-green-50 via-white to-emerald-50 bg-fixed">
-        
-        <Navbar />
-
-        <main className="flex-1">
-          {children}
-        </main>
-
+      <body className="min-h-screen bg-fixed">
+        <PublicNavbar />
+        <main>{children}</main>
       </body>
     </html>
   );
