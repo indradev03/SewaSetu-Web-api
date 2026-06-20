@@ -104,11 +104,14 @@ const DonorSidebar = () => {
         {/* HEADER */}
         <div className="pt-8 px-7 pb-5">
           <div className="flex justify-between items-center mb-6">
-            <Link
-              href="/donor"
-              className="font-bold text-xl text-emerald-600 font-serif"
-            >
-              SewaSetu
+            <Link href="/donor" className="flex items-center">
+              <Image
+                src="/logo.png"
+                alt="SewaSetu Logo"
+                width={120}
+                height={40}
+                priority
+              />
             </Link>
 
             <button onClick={() => setOpen(false)} className="md:hidden">
@@ -118,7 +121,7 @@ const DonorSidebar = () => {
 
           {/* CURVED USER CARD */}
           <div className="flex items-center gap-3 bg-slate-50/80 p-3 rounded-2xl border border-slate-100/50">
-            <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0 ring-2 ring-emerald-500/10">
+            <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 ring-2 ring-emerald-500/10">
               <Image
                 src={image}
                 alt="profile"
