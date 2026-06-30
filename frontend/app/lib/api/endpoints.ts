@@ -17,7 +17,6 @@ export const API = {
     PROFILE: "/ngo/profile",
     VERIFIED: "/ngo/verified",
 
-    // Admin-only — lives under /ngo because that's where the backend mounted it
     VERIFY: (id: string) => `/ngo/verify/${id}`,
   },
 
@@ -34,5 +33,12 @@ export const API = {
     NGOS: "/admin/ngos",
     NGO_BY_ID: (id: string) => `/admin/ngos/${id}`,
     DELETE_NGO: (id: string) => `/admin/ngos/${id}`,
+
+    // Rewards
+    REWARDS: "/admin/rewards",
+    ACTIVE_REWARDS: "/admin/rewards/active",
+    REWARD_BY_ID: (id: string) => `/admin/rewards/${id}`,
+    DELETE_REWARD: (id: string) => `/admin/rewards/${id}`,
+    TOGGLE_REWARD_STATUS: (id: string) => `/admin/rewards/${id}/toggle-status`,
   },
 };

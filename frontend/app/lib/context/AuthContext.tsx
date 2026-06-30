@@ -11,7 +11,7 @@ import {
 import { useRouter } from "next/navigation";
 import { getCookie, clearAuthCookies } from "@/app/lib/cookies";
 
-export type Role = "donor" | "ngo" | string;
+export type Role = "donor" | "ngo" | "admin" | string;
 
 interface AuthUser {
   role: Role | null;
