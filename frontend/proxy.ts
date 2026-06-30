@@ -7,6 +7,7 @@ const publicRoutes = ["/login", "/register"];
 const roleRoutes: Record<string, string> = {
   donor: "/donor",
   ngo: "/ngo",
+  admin: "/admin",
 };
 
 export async function proxy(request: NextRequest) {
@@ -26,7 +27,7 @@ export async function proxy(request: NextRequest) {
     return NextResponse.redirect(new URL("/login", request.url));
   }
 
-  // Logged in -> keep donors out of /ngo and ngos out of /donor
+  // Logged in -> keep donors out of /ngo, ngos out of /donor, etc.
   if (token && role) {
     const ownRoute = roleRoutes[role];
     const isOnSomeoneElsesDashboard = Object.values(roleRoutes).some(
@@ -53,5 +54,6 @@ export const config = {
     "/register/:path*",
     "/donor/:path*",
     "/ngo/:path*",
+    "/admin/:path*",
   ],
 };

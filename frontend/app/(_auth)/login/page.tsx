@@ -29,12 +29,21 @@ export default function LoginForm() {
     setLoading(true);
 
     try {
+      // Donor login covers both "donor" and "admin" accounts — they live in
+      // the same Donor collection on the backend, distinguished only by role.
       const donorResult = await loginDonorAction({ email, password });
 
       if (donorResult.success) {
         checkAuth();
-        toast.success("Welcome back, Donor!");
-        router.push("donor");
+        setLoading(false);
+
+        if (donorResult.data.role === "admin") {
+          toast.success("Welcome back, Admin!");
+          router.push("/admin");
+        } else {
+          toast.success("Welcome back, Donor!");
+          router.push("/donor");
+        }
         return;
       }
 
