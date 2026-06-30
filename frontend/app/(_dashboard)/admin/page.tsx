@@ -61,7 +61,7 @@ export default function AdminDashboardHome() {
       <ToastContainer position="top-right" autoClose={3000} />
 
       {/* Hero Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 to-emerald-900 rounded-[2rem] p-6 sm:p-8 text-white shadow-xl shadow-emerald-950/5 relative overflow-hidden">
+      <div className="bg-linear-to-r from-emerald-950 to-emerald-900 rounded-4xl p-6 sm:p-8 text-white shadow-xl shadow-emerald-950/5 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.12),transparent_45%)]" />
 
         <div className="relative z-10 space-y-1.5">
@@ -87,7 +87,7 @@ export default function AdminDashboardHome() {
               className="bg-white rounded-2xl border border-slate-100 p-6 shadow-sm shadow-slate-100/50 hover:shadow-md hover:border-slate-200/60 transition-all duration-300 flex items-center gap-4"
             >
               <div
-                className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 border-2 ${item.color}`}
+                className={`w-12 h-12 rounded-2xl flex items-center justify-center shrink-0 border-2 ${item.color}`}
               >
                 <IconComponent className="w-5 h-5" />
               </div>

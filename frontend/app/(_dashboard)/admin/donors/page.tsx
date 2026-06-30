@@ -104,7 +104,7 @@ export default function AdminDonorsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-[2rem] border border-slate-100 shadow-sm shadow-slate-100/40 overflow-hidden">
+      <div className="bg-white rounded-4xl border border-slate-100 shadow-sm shadow-slate-100/40 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>

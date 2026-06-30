@@ -93,7 +93,7 @@ export default function AdminNGODetailPage() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[400px]">
+      <div className="flex items-center justify-center min-h-100">
         <Loader2 className="w-10 h-10 animate-spin text-emerald-600" />
       </div>
     );
