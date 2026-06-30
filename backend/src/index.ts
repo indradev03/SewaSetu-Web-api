@@ -6,6 +6,7 @@ import morgan from "morgan";
 
 import donorRoutes from "./routes/donor.route";
 import ngoRoutes from "./routes/ngo.route";
+import adminRoutes from "./routes/admin/admin.route";
 import path from "path";
 
 const app = express();
@@ -48,6 +49,9 @@ app.use("/api/v1/donor", donorRoutes);
 
 // NGO routes
 app.use("/api/v1/ngo", ngoRoutes);
+
+// Admin
+app.use("/api/v1/admin", adminRoutes);
 
 /**
  * ─────────────────────────────
