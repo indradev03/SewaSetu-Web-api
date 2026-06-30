@@ -7,7 +7,9 @@ export default function PublicNavbar() {
   const pathname = usePathname();
 
   const hideNavbar =
-    pathname.startsWith("/donor") || pathname.startsWith("/ngo");
+    pathname.startsWith("/donor") ||
+    pathname.startsWith("/ngo") ||
+    pathname.startsWith("/admin");
 
   if (hideNavbar) return null;
 

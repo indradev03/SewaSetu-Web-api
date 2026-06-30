@@ -8,7 +8,9 @@ export default function PublicFooter() {
 
   // Hide the footer on dashboard panels
   const hideFooter =
-    pathname.startsWith("/donor") || pathname.startsWith("/ngo");
+    pathname.startsWith("/donor") ||
+    pathname.startsWith("/ngo") ||
+    pathname.startsWith("/admin");
 
   if (hideFooter) return null;
 
