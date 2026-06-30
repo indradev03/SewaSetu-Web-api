@@ -67,3 +67,6 @@ export const uploadDonorProfile = createUpload("profile", "donor");
 
 // 🏢 NGO profile image
 export const uploadNgoProfile = createUpload("profile", "ngo");
+
+// 🎁 Reward image
+export const uploadRewardImage = createUpload("rewards", "images");
