@@ -14,7 +14,7 @@ export default function AdminLayout({
       </div>
 
       {/* MAIN CONTENT AREA */}
-      <main className="flex-1 md:ml-75 min-h-screen px-4 md:px-6">
+      <main className="flex-1 md:ml-80 min-h-screen px-4 md:px-6">
         {children}
       </main>
     </div>

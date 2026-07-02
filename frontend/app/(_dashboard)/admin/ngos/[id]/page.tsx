@@ -18,6 +18,7 @@ import {
   Hash,
   User as UserIcon,
   Loader2,
+  Building2,
 } from "lucide-react";
 
 import { getNGOByIdApi, NGO } from "@/app/lib/api/admin.api";
@@ -88,18 +89,17 @@ export default function AdminNGODetailPage() {
   const image = ngo?.profileImage
     ? ngo.profileImage.startsWith("http")
       ? `${ngo.profileImage}?t=${Date.now()}`
-      : `${getImageUrl("ngo", ngo.profileImage)}?t=${Date.now()}`
+      : `${getImageUrl("profile", ngo.profileImage)}?t=${Date.now()}`
     : null;
 
-  if (loading) {
+  if (loading)
     return (
-      <div className="flex items-center justify-center min-h-100">
-        <Loader2 className="w-10 h-10 animate-spin text-emerald-600" />
+      <div className="flex items-center justify-center min-h-[50vh]">
+        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
       </div>
     );
-  }
 
-  if (notFound || !ngo) {
+  if (notFound || !ngo)
     return (
       <div className="text-center py-20">
         <h2 className="text-xl font-bold text-slate-800">NGO not found</h2>
@@ -111,134 +111,140 @@ export default function AdminNGODetailPage() {
         </button>
       </div>
     );
-  }
 
   return (
-    <div className="w-full max-w-5xl mx-10 py-20 px-2">
+    <div className="p-6 max-w-8xl mx-auto">
       <ToastContainer position="top-right" autoClose={3000} />
 
-      <button
-        onClick={() => router.push("/admin/ngos")}
-        className="group inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-emerald-600 mb-8 transition-colors"
-      >
-        <ArrowLeft className="w-4 h-4" /> Back to Ngos
-      </button>
-
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* LEFT: Branding/Status */}
-        <div className="lg:w-80 bg-white rounded-3xl border border-slate-200/60 shadow-lg p-8 flex flex-col items-center text-center">
-          <div className="relative w-32 h-32 rounded-3xl overflow-hidden mb-6 border-4 border-slate-50 shadow-inner bg-slate-100 flex items-center justify-center">
-            {image ? (
-              <Image
-                src={image}
-                alt={ngo.organizationName}
-                fill
-                className="object-cover"
-                unoptimized
-              />
-            ) : (
-              <HeartHandshake size={48} className="text-emerald-400" />
-            )}
-          </div>
-
-          <h1 className="text-xl font-bold text-slate-900">
-            {ngo.organizationName}
-          </h1>
-          <p className="text-emerald-600 font-medium text-sm mb-4">
-            {ngo.email}
-          </p>
-
-          <span
-            className={`inline-flex items-center gap-1.5 px-3 py-1 mb-6 text-[11px] font-bold uppercase rounded-full border ${
-              ngo.isVerified
-                ? "text-emerald-700 bg-emerald-50 border-emerald-100"
-                : "text-amber-700 bg-amber-50 border-amber-100"
-            }`}
+      <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm ">
+        <div className="mb-8">
+          <button
+            onClick={() => router.push("/admin/ngos")}
+            className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors mb-4"
           >
-            {ngo.isVerified ? (
-              <>
-                <BadgeCheck size={14} /> Verified
-              </>
-            ) : (
-              <>
-                <Clock size={14} /> Pending
-              </>
-            )}
-          </span>
-
-          <div className="w-full flex flex-col gap-2 mt-auto">
-            <button
-              onClick={handleToggleVerify}
-              className="w-full px-5 py-3 rounded-xl text-sm font-semibold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 transition-colors border border-emerald-100"
-            >
-              {verifying
-                ? "Updating..."
-                : ngo.isVerified
-                  ? "Unverify Organization"
-                  : "Verify Organization"}
-            </button>
-            <button
-              onClick={() => setConfirmDelete(true)}
-              className="w-full px-5 py-3 rounded-xl text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 transition-colors border border-red-100"
-            >
-              Delete NGO
-            </button>
-          </div>
+            <ArrowLeft className="w-4 h-4" /> Back to NGOs
+          </button>
+          <h1 className="text-2xl font-bold text-slate-800">
+            Organization Profile
+          </h1>
         </div>
 
-        {/* RIGHT: Detailed Info */}
-        <div className="flex-1 bg-white rounded-3xl border border-slate-200/60 shadow-lg p-8">
-          <h2 className="text-lg font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">
-            Organization Details
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            <DetailRowLarge
-              icon={UserIcon}
-              label="Contact Person"
-              value={ngo.contactPerson}
-            />
-            <DetailRowLarge
-              icon={Mail}
-              label="Email Address"
-              value={ngo.email}
-            />
-            <DetailRowLarge
-              icon={Hash}
-              label="Registration No."
-              value={ngo.registrationNumber}
-            />
-            <DetailRowLarge
-              icon={Calendar}
-              label="Established"
-              value={ngo.yearEstablished}
-            />
-            <DetailRowLarge
-              icon={MapPin}
-              label="Office Address"
-              value={ngo.address || "—"}
-            />
-            <DetailRowLarge
-              icon={Calendar}
-              label="Joined Date"
-              value={
-                ngo.createdAt
-                  ? new Date(ngo.createdAt).toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                  : "—"
-              }
-            />
-          </div>
+        <div className="bg-white rounded-4xl border border-slate-200 shadow-lg overflow-hidden">
+          <div className="h-24 bg-linear-to-r from-emerald-500 to-teal-600" />
 
-          <div className="mt-8 pt-8 border-t border-slate-100">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2">
-              Impact Description
-            </p>
-            <p className="text-slate-600 leading-relaxed text-sm bg-slate-50 p-4 rounded-xl">
-              {ngo.impactDescription || "No description provided."}
-            </p>
+          <div className="px-8 pb-8">
+            <div className="flex flex-col md:flex-row gap-8">
+              {/* Profile Card */}
+              <div className="relative md:w-1/3 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm mt-16">
+                <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-32 rounded-3xl overflow-hidden border-[6px] border-white shadow-lg bg-slate-100 flex items-center justify-center">
+                  {image ? (
+                    <Image
+                      src={image}
+                      alt={ngo.organizationName}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <HeartHandshake className="w-16 h-16 text-emerald-400" />
+                  )}
+                </div>
+
+                <div className="text-center mt-16">
+                  <h2 className="text-xl font-bold text-slate-900">
+                    {ngo.organizationName}
+                  </h2>
+                  <p className="text-emerald-600 font-medium mb-4">
+                    {ngo.email}
+                  </p>
+
+                  <span
+                    className={`inline-flex items-center gap-1.5 px-3 py-1 mb-6 text-[10px] font-bold uppercase rounded-full border ${ngo.isVerified ? "text-emerald-700 bg-emerald-50 border-emerald-100" : "text-amber-700 bg-amber-50 border-amber-100"}`}
+                  >
+                    {ngo.isVerified ? (
+                      <>
+                        <BadgeCheck size={14} /> Verified
+                      </>
+                    ) : (
+                      <>
+                        <Clock size={14} /> Pending
+                      </>
+                    )}
+                  </span>
+
+                  <div className="space-y-3">
+                    <button
+                      onClick={handleToggleVerify}
+                      className="w-full py-3 rounded-2xl text-sm font-bold text-emerald-600 bg-emerald-50 hover:bg-emerald-100 border border-emerald-100 transition-all"
+                    >
+                      {verifying
+                        ? "Updating..."
+                        : ngo.isVerified
+                          ? "Unverify Organization"
+                          : "Verify Organization"}
+                    </button>
+                    <button
+                      onClick={() => setConfirmDelete(true)}
+                      className="w-full py-3 rounded-2xl text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-100 transition-all"
+                    >
+                      <Trash2 className="w-4 h-4 inline mr-2" /> Delete NGO
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Details Card */}
+              <div className="flex-1 bg-slate-50/50 rounded-3xl p-8 border border-slate-100 mt-8">
+                <h2 className="text-lg font-bold text-slate-900 mb-8 flex items-center gap-2">
+                  <Building2 className="text-emerald-500" /> Organization
+                  Details
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
+                  <DetailRow
+                    icon={UserIcon}
+                    label="Contact Person"
+                    value={ngo.contactPerson}
+                  />
+                  <DetailRow
+                    icon={Mail}
+                    label="Email Address"
+                    value={ngo.email}
+                  />
+                  <DetailRow
+                    icon={Hash}
+                    label="Registration No."
+                    value={ngo.registrationNumber}
+                  />
+                  <DetailRow
+                    icon={Calendar}
+                    label="Established"
+                    value={ngo.yearEstablished}
+                  />
+                  <DetailRow
+                    icon={MapPin}
+                    label="Office Address"
+                    value={ngo.address || "—"}
+                  />
+                  <DetailRow
+                    icon={Calendar}
+                    label="Joined Date"
+                    value={
+                      ngo.createdAt
+                        ? new Date(ngo.createdAt).toLocaleDateString()
+                        : "—"
+                    }
+                  />
+                </div>
+                <div className="mt-8 pt-8 border-t border-slate-200">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">
+                    Impact Description
+                  </p>
+                  <p className="text-slate-600 leading-relaxed text-sm bg-white p-4 rounded-xl border border-slate-100">
+                    {ngo.impactDescription || "No description provided."}
+                  </p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -248,11 +254,11 @@ export default function AdminNGODetailPage() {
         title="Delete NGO?"
         message={
           <>
-            This will permanently remove{" "}
+            Permanently remove{" "}
             <span className="font-bold text-red-600">
               {ngo.organizationName}
             </span>{" "}
-            and all associated data.
+            and its data?
           </>
         }
         deleting={deleting}
@@ -263,7 +269,7 @@ export default function AdminNGODetailPage() {
   );
 }
 
-function DetailRowLarge({
+function DetailRow({
   icon: Icon,
   label,
   value,
@@ -274,11 +280,11 @@ function DetailRowLarge({
 }) {
   return (
     <div className="flex items-start gap-4">
-      <div className="p-3 rounded-2xl bg-emerald-50 text-emerald-600">
+      <div className="p-3 rounded-xl bg-white border border-slate-100 text-emerald-600 shadow-sm">
         <Icon size={20} />
       </div>
       <div>
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-0.5">
+        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">
           {label}
         </p>
         <p className="text-sm font-semibold text-slate-800">{value}</p>

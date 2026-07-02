@@ -65,12 +65,12 @@ export default function AdminDonorDetailPage() {
   };
 
   const image = donor?.profileImage
-    ? `${getImageUrl("donor", donor.profileImage)}?t=${Date.now()}`
+    ? `${getImageUrl("profile", donor.profileImage)}?t=${Date.now()}`
     : null;
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-100">
+      <div className="flex items-center justify-center min-h-[50vh]">
         <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
       </div>
     );
@@ -91,85 +91,114 @@ export default function AdminDonorDetailPage() {
   }
 
   return (
-    <div className="w-full max-w-5xl mx-10 py-20 px-2">
+    <div className="p-6">
       <ToastContainer position="top-right" autoClose={3000} />
 
-      <button
-        onClick={() => router.push("/admin/donors")}
-        className="group inline-flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors mb-6"
-      >
-        <ArrowLeft className="w-4 h-4" />
-        Back to donors
-      </button>
-
-      {/* Main Wrapper: Flex Row */}
-      <div className="flex flex-col lg:flex-row gap-6">
-        {/* LEFT SIDE: Profile Picture & Basic Info */}
-        <div className="lg:w-80 bg-white rounded-3xl border border-slate-200/60 shadow-lg p-8 flex flex-col items-center text-center">
-          <div className="relative w-32 h-32 rounded-full overflow-hidden mb-6 border-4 border-slate-50 shadow-inner bg-slate-100">
-            {image ? (
-              <Image
-                src={image}
-                alt={donor.fullName}
-                fill
-                className="object-cover"
-                unoptimized
-              />
-            ) : (
-              <UserIcon className="w-16 h-16 text-slate-400 m-auto mt-8" />
-            )}
-          </div>
-          <h1 className="text-xl font-bold text-slate-900">{donor.fullName}</h1>
-          <p className="text-emerald-600 font-medium text-sm mb-4">
-            @{donor.username}
-          </p>
-
-          {donor.role === "admin" && (
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 mb-6 text-[11px] font-bold uppercase text-emerald-700 bg-emerald-50 rounded-full border border-emerald-100">
-              <ShieldCheck className="w-3.5 h-3.5" /> System Admin
-            </span>
-          )}
-
+      {/* LARGE MAIN CONTAINER */}
+      <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm min-h-[80vh]">
+        {/* TOP NAVIGATION & HEADER */}
+        <div className="mb-8">
           <button
-            onClick={() => setConfirmDelete(true)}
-            className="w-full mt-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold text-red-600 bg-red-50 hover:bg-red-100 transition-colors border border-red-100"
+            onClick={() => router.push("/admin/donors")}
+            className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors mb-4"
           >
-            <Trash2 className="w-4 h-4" />
-            Delete Account
+            <ArrowLeft className="w-4 h-4" />
+            Back to donors
           </button>
+          <h1 className="text-2xl font-bold text-slate-800">Donor Profile</h1>
+          <p className="text-slate-500 text-sm">
+            View and manage donor information.
+          </p>
         </div>
 
-        {/* RIGHT SIDE: Personal Information */}
-        <div className="flex-1 bg-white rounded-3xl border border-slate-200/60 shadow-lg p-8">
-          <h2 className="text-lg font-bold text-slate-900 mb-6 border-b border-slate-100 pb-4">
-            Personal Information
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <DetailRow icon={Mail} label="Email" value={donor.email} />
-            <DetailRow icon={Phone} label="Phone" value={donor.phoneNumber} />
-            <DetailRow
-              icon={UserIcon}
-              label="Gender"
-              value={donor.gender || "—"}
-            />
-            <DetailRow
-              icon={MapPin}
-              label="Location"
-              value={donor.address || "—"}
-            />
-            <DetailRow
-              icon={Calendar}
-              label="Joined"
-              value={
-                donor.createdAt
-                  ? new Date(donor.createdAt).toLocaleDateString(undefined, {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })
-                  : "—"
-              }
-            />
+        {/* CONTENT SECTION */}
+        <div className="bg-white rounded-[2rem] border border-slate-200 shadow-lg overflow-hidden">
+          <div className="h-24 bg-gradient-to-r from-emerald-500 to-teal-600" />
+
+          <div className="px-8 pb-8">
+            <div className="flex flex-col md:flex-row gap-8">
+              {/* SUB-CARD 1: Profile Summary (Left) */}
+              <div className="relative md:w-1/3 bg-white rounded-3xl p-6 border border-slate-100 shadow-sm mt-16">
+                <div className="absolute -top-16 left-1/2 -translate-x-1/2 w-32 h-32 rounded-full overflow-hidden border-[6px] border-white shadow-lg bg-slate-100">
+                  {image ? (
+                    <Image
+                      src={image}
+                      alt={donor.fullName}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                  ) : (
+                    <UserIcon className="w-16 h-16 text-slate-400 m-auto mt-8" />
+                  )}
+                </div>
+
+                <div className="text-center mt-16">
+                  <h2 className="text-xl font-bold text-slate-900">
+                    {donor.fullName}
+                  </h2>
+                  <p className="text-emerald-600 font-medium mb-6">
+                    @{donor.username}
+                  </p>
+
+                  <button
+                    onClick={() => setConfirmDelete(true)}
+                    className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100 transition-all border border-red-100"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    Remove Account
+                  </button>
+                </div>
+              </div>
+
+              {/* SUB-CARD 2: Detailed Info (Right) */}
+              <div className="flex-1 bg-slate-50/50 rounded-3xl p-8 border border-slate-100 mt-0 md:mt-8">
+                <h2 className="text-lg font-bold text-slate-900 mb-8 flex items-center gap-2">
+                  <span className="w-1.5 h-6 bg-emerald-500 rounded-full"></span>
+                  Personal Details
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-10">
+                  <DetailRow
+                    icon={Mail}
+                    label="Email Address"
+                    value={donor.email}
+                  />
+                  <DetailRow
+                    icon={Phone}
+                    label="Phone Number"
+                    value={donor.phoneNumber}
+                  />
+                  <DetailRow
+                    icon={UserIcon}
+                    label="Gender"
+                    value={donor.gender || "—"}
+                  />
+                  <DetailRow
+                    icon={MapPin}
+                    label="Location"
+                    value={donor.address || "—"}
+                  />
+                  <div className="md:col-span-2">
+                    <DetailRow
+                      icon={Calendar}
+                      label="Member Since"
+                      value={
+                        donor.createdAt
+                          ? new Date(donor.createdAt).toLocaleDateString(
+                              undefined,
+                              {
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              },
+                            )
+                          : "—"
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -202,12 +231,12 @@ function DetailRow({
   value: string;
 }) {
   return (
-    <div className="space-y-1">
+    <div className="space-y-2">
       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
         {label}
       </p>
       <div className="flex items-center gap-3">
-        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100">
+        <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center border border-slate-100 shadow-sm">
           <Icon className="w-5 h-5 text-emerald-600" />
         </div>
         <p className="text-sm font-semibold text-slate-800">{value}</p>
