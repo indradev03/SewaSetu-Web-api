@@ -1,6 +1,9 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import PublicNavbar from "./components/layout/PublicNavbar";
+import { ToastContainer } from "react-toastify";
+import PublicFooter from "./components/layout/PublicFooter";
+import { AuthProvider } from "./lib/context/AuthContext";
 
 export const metadata: Metadata = {
   title: "SewaSetu",
@@ -15,8 +18,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="min-h-screen bg-fixed">
-        <PublicNavbar />
-        <main>{children}</main>
+        <AuthProvider>
+          <PublicNavbar />
+          <main>{children}</main>
+          <ToastContainer position="top-right" autoClose={3000} />
+          {/* Bottom Floating Footer */}
+          <PublicFooter />
+        </AuthProvider>
       </body>
     </html>
   );

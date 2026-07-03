@@ -68,7 +68,6 @@ const Navbar = () => {
       }`}
     >
       <div className="flex items-center justify-between">
-
         {/* Logo */}
         <Link href="/" className="flex items-center">
           <Image
@@ -83,11 +82,7 @@ const Navbar = () => {
         {/* Desktop Nav */}
         <nav className="hidden md:flex items-center gap-6 text-sm">
           {navLinks.map((link) => (
-            <TextLink
-              key={link.path}
-              href={link.path}
-        variant="hover-green"
-            >
+            <TextLink key={link.path} href={link.path} variant="hover-green">
               {link.name}
             </TextLink>
           ))}
@@ -100,11 +95,11 @@ const Navbar = () => {
             className={`px-4 py-2 rounded-full font-medium transition
             ${
               pathname === "/login"
-                ? "bg-orange-500 text-white"
-                : "text-black hover:text-blue-500"
+                ? "bg-linear-to-r from-amber-500 to-orange-500 text-white"
+                : "text-black hover:text-emerald-500"
             }`}
           >
-            SignIn
+            Signin
           </Link>
 
           <Link
@@ -112,11 +107,11 @@ const Navbar = () => {
             className={`px-4 py-2 rounded-full font-medium transition
             ${
               pathname.startsWith("/register")
-                ? "bg-orange-500 text-white"
-                : "text-black hover:text-blue-500"
+                ? "bg-linear-to-r from-emerald-500 to-green-600 text-white"
+                : "text-black hover:text-orange-400"
             }`}
           >
-            SignUp
+            Signup
           </Link>
         </div>
 
@@ -141,23 +136,17 @@ const Navbar = () => {
               key={link.path}
               href={link.path}
               onClick={() => setMobileOpen(false)}
-            > 
+            >
               {link.name}
             </TextLink>
           ))}
 
           <div className="flex gap-3 pt-2">
-            <ButtonLink
-              href="/login"
-              variant = "orange"
-                          >
+            <ButtonLink href="/login" variant="orange">
               Signin
             </ButtonLink>
 
-            <ButtonLink
-              href="/register/role_selection"
-                  variant = "orange"
-                              >
+            <ButtonLink href="/register/role_selection" variant="orange">
               Signup
             </ButtonLink>
           </div>

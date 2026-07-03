@@ -1,11 +1,23 @@
 "use client";
 
+import "../../../globals.css";
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { User, Mail, Lock, MapPin, Phone, Eye, EyeOff } from "lucide-react";
+import { toast } from "react-toastify";
+import {
+  User,
+  Mail,
+  Lock,
+  MapPin,
+  Phone,
+  Eye,
+  EyeOff,
+  CheckCircle2,
+} from "lucide-react";
 import { registerDonorAction } from "@/app/lib/actions/donor.actions";
 import { DonorRegisterInput } from "@/app/lib/schemas/donor-auth.schema";
+import Button from "@/app/components/ui/button";
 
 type FormState = Omit<DonorRegisterInput, "terms"> & { terms: boolean };
 
@@ -34,8 +46,12 @@ export default function DonorRegister() {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
-    // Clear error on change
     if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
+  };
+
+  const handleGenderChange = (gender: "male" | "female" | "other") => {
+    setForm((prev) => ({ ...prev, gender }));
+    if (errors.gender) setErrors((prev) => ({ ...prev, gender: "" }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -43,251 +59,349 @@ export default function DonorRegister() {
     setLoading(true);
     setErrors({});
 
-    // Component → Action → API
     const result = await registerDonorAction(form as DonorRegisterInput);
-
     setLoading(false);
 
     if (!result.success) {
       setErrors(result.errors);
+      toast.error(
+        result.errors.root || "Registration failed. Please check the fields.",
+      );
       return;
     }
 
-    // On success → redirect to login
+    toast.success("Account created successfully");
     router.push("/login");
   };
 
-  const inputClass = (field: string) =>
-    `w-full pl-10 p-3 rounded-xl border bg-gray-50 text-sm text-gray-900 placeholder:text-gray-400
-     focus:bg-white focus:ring-2 focus:ring-emerald-400 outline-none transition ${
-       errors[field] ? "border-red-400" : "border-gray-200"
-     }`;
+  const inputWrapperClass = (field: string) =>
+    `flex items-center gap-3 w-full px-4 py-3.5 rounded-xl border bg-slate-50/50 transition-all duration-200
+     focus-within:bg-white focus-within:ring-2 focus-within:ring-emerald-500/20 focus-within:border-emerald-500
+     ${errors[field] ? "border-red-400 bg-red-50/30 focus-within:ring-red-500/10 focus-within:border-red-400" : "border-slate-200"}`;
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-10 pt-28">
-      <div className="w-full max-w-md">
-        <div className="bg-white/80 backdrop-blur-md shadow-xl border border-gray-100 p-8 rounded-3xl">
-          <h1 className="text-3xl font-bold text-gray-900 text-center">
-            Create Account
-          </h1>
-          <p className="text-sm text-gray-500 text-center mt-2 mb-6">
-            Join us as a Donor and start making impact
-          </p>
+    <div className="min-h-screen w-full flex flex-col items-center justify-center px-4 py-12 md:py-20 text-slate-800 antialiased">
+      {/* Header */}
+      <div className="text-center max-w-2xl pt-10 mx-auto mb-8 w-full space-y-2">
+        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight sm:text-4xl">
+          Donor Registration{" "}
+          <span className="text-emerald-600 bg-linear-to-r from-emerald-600 to-green-600 bg-clip-text text-transparent-600">
+            SewaSetu
+          </span>
+        </h1>
+        <p className="text-sm text-slate-500 max-w-md mx-auto leading-relaxed">
+          Join us as a Donor and start making a meaningful impact today.
+        </p>
+      </div>
 
-          {/* Root API error */}
-          {errors.root && (
-            <div className="mb-4 p-3 rounded-xl bg-red-50 border border-red-200 text-sm text-red-600">
-              {errors.root}
-            </div>
-          )}
+      {/* Main Card Wrapper */}
+      <div className="w-full max-w-2xl bg-white shadow-xl shadow-slate-200/40 border border-slate-100 rounded-3xl p-6 sm:p-10 md:p-12">
+        {errors.root && (
+          <div className="mb-6 p-4 rounded-xl bg-red-50 border border-red-200 text-sm text-red-600 font-medium animate-in fade-in duration-200">
+            {errors.root}
+          </div>
+        )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
-            {/* Username */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Section: Profile Info */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <div className="relative">
-                <User className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
-                <input
-                  name="username"
-                  placeholder="Username"
-                  onChange={handleChange}
-                  required
-                  className={inputClass("username")}
-                />
-              </div>
-              {errors.username && (
-                <p className="text-xs text-red-500 mt-1">{errors.username}</p>
-              )}
-            </div>
-
-            {/* Full Name */}
-            <div>
-              <div className="relative">
-                <User className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 pl-0.5">
+                Full Name
+              </label>
+              <div className={inputWrapperClass("fullName")}>
+                <User className="text-emerald-600 w-5 h-5 shrink-0" />
                 <input
                   name="fullName"
-                  placeholder="Full Name"
+                  placeholder="Enter your full name"
                   onChange={handleChange}
                   required
-                  className={inputClass("fullName")}
+                  className="w-full bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 font-medium"
                 />
               </div>
               {errors.fullName && (
-                <p className="text-xs text-red-500 mt-1">{errors.fullName}</p>
+                <p className="text-xs text-red-500 mt-1.5 font-medium pl-1">
+                  {errors.fullName}
+                </p>
               )}
             </div>
 
-            {/* Email */}
             <div>
-              <div className="relative">
-                <Mail className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 pl-0.5">
+                Username
+              </label>
+              <div className={inputWrapperClass("username")}>
+                <span className="text-emerald-600 text-sm select-none font-bold">
+                  @
+                </span>
+                <input
+                  name="username"
+                  placeholder="Enter your username"
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 font-medium"
+                />
+              </div>
+              {errors.username && (
+                <p className="text-xs text-red-500 mt-1.5 font-medium pl-1">
+                  {errors.username}
+                </p>
+              )}
+            </div>
+          </div>
+
+          {/* Section: Contact Info */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 pl-0.5">
+                Email Address
+              </label>
+              <div className={inputWrapperClass("email")}>
+                <Mail className="text-emerald-600 w-5 h-5 shrink-0" />
                 <input
                   name="email"
                   type="email"
-                  placeholder="Email Address"
+                  placeholder="Enter your email address"
                   onChange={handleChange}
                   required
-                  className={inputClass("email")}
+                  className="w-full bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 font-medium"
                 />
               </div>
               {errors.email && (
-                <p className="text-xs text-red-500 mt-1">{errors.email}</p>
+                <p className="text-xs text-red-500 mt-1.5 font-medium pl-1">
+                  {errors.email}
+                </p>
               )}
             </div>
 
-            {/* Phone */}
             <div>
-              <div className="relative">
-                <Phone className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 pl-0.5">
+                Phone Number
+              </label>
+              <div className={inputWrapperClass("phoneNumber")}>
+                <Phone className="text-emerald-600 w-5 h-5 shrink-0" />
                 <input
                   name="phoneNumber"
-                  placeholder="Phone Number"
+                  placeholder="Enter your phone number"
                   onChange={handleChange}
                   required
-                  className={inputClass("phoneNumber")}
+                  className="w-full bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 font-medium"
                 />
               </div>
               {errors.phoneNumber && (
-                <p className="text-xs text-red-500 mt-1">
+                <p className="text-xs text-red-500 mt-1.5 font-medium pl-1">
                   {errors.phoneNumber}
                 </p>
               )}
             </div>
+          </div>
 
-            {/* Password */}
+          {/* Section: Passwords */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 pl-0.5">
+                Password
+              </label>
+              <div className={inputWrapperClass("password")}>
+                <Lock className="text-emerald-600 w-5 h-5 shrink-0" />
                 <input
                   name="password"
                   type={showPassword ? "text" : "password"}
-                  placeholder="Password"
+                  placeholder="Enter your password"
                   onChange={handleChange}
                   required
-                  className={`w-full pl-10 pr-10 p-3 rounded-xl border bg-gray-50 text-sm text-gray-900
-                    placeholder:text-gray-400 focus:bg-white focus:ring-2 focus:ring-emerald-400 outline-none transition ${
-                      errors.password ? "border-red-400" : "border-gray-200"
-                    }`}
+                  className="w-full bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 font-medium"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3.5 text-gray-400"
+                  className="text-slate-400 hover:text-emerald-600 transition p-1"
                 >
                   {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
+                    <EyeOff className="w-4 h-4" />
                   ) : (
-                    <Eye className="w-5 h-5" />
+                    <Eye className="w-4 h-4" />
                   )}
                 </button>
               </div>
               {errors.password && (
-                <p className="text-xs text-red-500 mt-1">{errors.password}</p>
-              )}
-            </div>
-
-            {/* Confirm Password */}
-            <div>
-              <div className="relative">
-                <Lock className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
-                <input
-                  name="confirmPassword"
-                  type={showPassword ? "text" : "password"}
-                  placeholder="Confirm Password"
-                  onChange={handleChange}
-                  required
-                  className={inputClass("confirmPassword")}
-                />
-              </div>
-              {errors.confirmPassword && (
-                <p className="text-xs text-red-500 mt-1">
-                  {errors.confirmPassword}
+                <p className="text-xs text-red-500 mt-1.5 font-medium pl-1">
+                  {errors.password}
                 </p>
               )}
             </div>
 
-            {/* Gender */}
             <div>
-              <p className="text-sm font-medium text-gray-700 mb-2">
-                Gender <span className="text-gray-400">(optional)</span>
-              </p>
-              <div className="flex gap-4">
-                {(["male", "female", "other"] as const).map((g) => (
+              <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 pl-0.5">
+                Confirm Password
+              </label>
+              <div className={inputWrapperClass("confirmPassword")}>
+                <Lock className="text-emerald-600 w-5 h-5 shrink-0" />
+                <input
+                  name="confirmPassword"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Confirm your password"
+                  onChange={handleChange}
+                  required
+                  className="w-full bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 font-medium"
+                />
+              </div>
+              {errors.confirmPassword && (
+                <p className="text-xs text-red-500 mt-1.5 font-medium pl-1">
+                  {errors.confirmPassword}
+                </p>
+              )}
+            </div>
+          </div>
+
+          <hr className="border-slate-100 my-2" />
+
+          {/* Section: Gender */}
+          <div>
+            <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 pl-0.5">
+              Gender
+            </label>
+            <div className="grid grid-cols-3 gap-3">
+              {(["male", "female", "other"] as const).map((g) => {
+                const isSelected = form.gender === g;
+                return (
                   <label
                     key={g}
-                    className="flex items-center gap-2 cursor-pointer"
+                    className={`flex items-center gap-3 py-2.5 px-4 rounded-xl text-sm font-semibold border capitalize cursor-pointer transition-all duration-200 select-none
+                      ${
+                        isSelected
+                          ? "border-emerald-600 bg-emerald-50/30 text-emerald-700 ring-2 ring-emerald-600/10"
+                          : "border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-800"
+                      }`}
                   >
                     <input
                       type="radio"
                       name="gender"
                       value={g}
-                      onChange={handleChange}
-                      className="accent-emerald-600 w-4 h-4"
+                      checked={isSelected}
+                      onChange={() => handleGenderChange(g)}
+                      className="sr-only"
                     />
-                    <span className="text-sm capitalize text-gray-700">
-                      {g}
-                    </span>
+                    <div
+                      className={`w-4 h-4 rounded-full border flex items-center justify-center transition-all duration-200
+                        ${
+                          isSelected
+                            ? "border-emerald-600 bg-white"
+                            : "border-slate-300 bg-white"
+                        }`}
+                    >
+                      {isSelected && (
+                        <div className="w-2 h-2 rounded-full bg-emerald-600" />
+                      )}
+                    </div>
+                    <span>{g}</span>
                   </label>
-                ))}
-              </div>
+                );
+              })}
             </div>
+            {errors.gender && (
+              <p className="text-xs text-red-500 mt-1.5 font-medium pl-1">
+                {errors.gender}
+              </p>
+            )}
+          </div>
 
-            {/* Address */}
-            <div className="relative">
-              <MapPin className="absolute left-3 top-3.5 text-gray-400 w-5 h-5" />
+          {/* Section: Address */}
+          <div>
+            <label className="block text-xs font-bold text-slate-600 uppercase tracking-wider mb-2 pl-0.5">
+              Address
+            </label>
+            <div className={inputWrapperClass("address")}>
+              <MapPin className="text-emerald-600 w-5 h-5 shrink-0" />
               <input
                 name="address"
-                placeholder="Address (optional)"
+                placeholder="Enter your address"
                 onChange={handleChange}
-                className={inputClass("address")}
+                className="w-full bg-transparent text-sm text-slate-800 outline-none placeholder:text-slate-400 font-medium"
               />
             </div>
+            {errors.address && (
+              <p className="text-xs text-red-500 mt-1.5 font-medium pl-1">
+                {errors.address}
+              </p>
+            )}
+          </div>
 
-            {/* Terms */}
-            <div>
-              <label className="flex items-start gap-2 text-xs text-gray-600">
-                <input
-                  type="checkbox"
-                  name="terms"
-                  onChange={handleChange}
-                  className="mt-1 accent-emerald-600"
-                />
-                <span>
-                  I agree to the{" "}
-                  <span className="text-emerald-700 font-medium">
-                    Terms of Service
-                  </span>{" "}
-                  and{" "}
-                  <span className="text-emerald-700 font-medium">
-                    Privacy Policy
-                  </span>
-                </span>
-              </label>
-              {errors.terms && (
-                <p className="text-xs text-red-500 mt-1">{errors.terms}</p>
-              )}
-            </div>
+          {/* Section: Terms Agreement */}
+          <div
+            className={`p-4 rounded-xl border transition-all duration-200 ${
+              form.terms
+                ? "bg-emerald-50/30 border-emerald-500/40"
+                : "bg-slate-50/50 border-slate-200"
+            }`}
+          >
+            <label className="flex items-start gap-3 cursor-pointer group select-none">
+              <input
+                type="checkbox"
+                name="terms"
+                checked={form.terms}
+                onChange={handleChange}
+                className="sr-only"
+              />
+              <div
+                className={`mt-0.5 w-5 h-5 rounded-md border flex items-center justify-center transition-all shrink-0
+                ${
+                  form.terms
+                    ? "border-emerald-600 bg-emerald-600 text-white"
+                    : "border-slate-300 bg-white group-hover:border-emerald-500"
+                }`}
+              >
+                {form.terms && (
+                  <CheckCircle2 className="w-4 h-4 stroke-[2.5]" />
+                )}
+              </div>
+              <span className="text-xs text-slate-500 leading-normal font-medium">
+                I agree to the{" "}
+                <Link
+                  href="#"
+                  className="text-emerald-600 font-bold hover:underline"
+                >
+                  Terms of Service
+                </Link>{" "}
+                and{" "}
+                <Link
+                  href="#"
+                  className="text-emerald-600 font-bold hover:underline"
+                >
+                  Privacy Policy
+                </Link>
+              </span>
+            </label>
+            {errors.terms && (
+              <p className="text-xs text-red-500 mt-1.5 font-medium pl-1">
+                {errors.terms}
+              </p>
+            )}
+          </div>
 
-            {/* Submit */}
-            <button
+          {/* Submit Button */}
+          <div className="pt-2">
+            <Button
               type="submit"
-              disabled={loading}
-              className="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-green-600 text-white font-semibold
-                shadow-md hover:shadow-lg hover:scale-[1.02] active:scale-[0.98] transition disabled:opacity-60"
+              disabled={loading || !form.terms}
+              variant="green"
+              className="w-full font-bold py-3.5 rounded-xl shadow-md transition-all duration-200 active:scale-[0.99]"
             >
-              {loading ? "Creating account…" : "Create Account"}
-            </button>
-          </form>
+              {loading ? "Creating account…" : "Create Donor Account"}
+            </Button>
+          </div>
+        </form>
 
-          <p className="text-sm text-center mt-5 text-gray-600">
-            Already have an account?{" "}
-            <Link
-              href="/login"
-              className="text-emerald-700 font-semibold hover:underline"
-            >
-              Login
-            </Link>
-          </p>
-        </div>
+        {/* Footer Link */}
+        <p className="text-sm text-center mt-8 text-slate-500 font-medium">
+          Already have an account?{" "}
+          <Link
+            href="/login"
+            className="text-emerald-600 font-extrabold hover:underline ml-1"
+          >
+            Login
+          </Link>
+        </p>
       </div>
     </div>
   );

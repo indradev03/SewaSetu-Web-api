@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 import {
   Home,
@@ -15,8 +15,8 @@ import {
   Info,
   Menu,
 } from "lucide-react";
-import { deleteCookie } from "@/app/lib/cookies";
 import { getDonorProfileApi } from "@/app/lib/api/donor.api";
+import { useAuth } from "@/app/lib/context/AuthContext";
 
 type User = {
   fullName?: string;
@@ -26,7 +26,7 @@ type User = {
 
 const DonorSidebar = () => {
   const pathname = usePathname();
-  const router = useRouter();
+  const { logout } = useAuth();
   const [open, setOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
@@ -69,10 +69,7 @@ const DonorSidebar = () => {
   const isActive = (path: string) => pathname === path;
 
   const handleLogout = () => {
-    deleteCookie("token");
-    deleteCookie("role");
-    deleteCookie("userId");
-    router.push("/login");
+    logout();
   };
 
   // Added a timestamp cache buster (?t=...) so the browser doesn't load an old cached version of the image

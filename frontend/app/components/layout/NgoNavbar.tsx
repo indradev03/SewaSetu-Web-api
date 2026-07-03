@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import {
   Menu,
@@ -14,11 +14,11 @@ import {
   User,
   LogOut,
 } from "lucide-react";
-import { deleteCookie } from "@/app/lib/cookies";
+import { useAuth } from "@/app/lib/context/AuthContext";
 
 const NgoNavbar = () => {
   const pathname = usePathname();
-  const router = useRouter();
+  const { logout } = useAuth();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navLinks = [
@@ -30,10 +30,7 @@ const NgoNavbar = () => {
   ];
 
   const handleLogout = () => {
-    deleteCookie("token");
-    deleteCookie("role");
-    deleteCookie("userId");
-    router.push("/login");
+    logout();
   };
 
   const isActive = (path: string) => pathname === path;

@@ -1,25 +1,29 @@
 "use client";
 
-import { useRouter } from "next/navigation";
-import { deleteCookie } from "@/app/lib/cookies";
+import { useAuth } from "@/app/lib/context/AuthContext";
 
 export default function NGODashboard() {
-  const router = useRouter();
+  const { logout } = useAuth();
 
   const handleLogout = () => {
-    deleteCookie("token");
-    deleteCookie("role");
-    deleteCookie("userId");
-    router.push("/login");
+    logout();
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex flex-col items-center justify-center px-6">
       <div className="bg-white rounded-3xl shadow-lg p-10 max-w-lg w-full text-center space-y-6">
-
         {/* Icon */}
         <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto">
-          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#3B5BDB" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="30"
+            height="30"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="#3B5BDB"
+            strokeWidth="1.8"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <rect x="2" y="7" width="20" height="14" rx="2" />
             <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
             <line x1="12" y1="12" x2="12" y2="16" />
@@ -36,7 +40,9 @@ export default function NGODashboard() {
 
         {/* Status badge */}
         <div className="bg-yellow-50 border border-yellow-200 rounded-2xl p-4">
-          <p className="text-sm font-semibold text-yellow-700">⏳ Verification Pending</p>
+          <p className="text-sm font-semibold text-yellow-700">
+            ⏳ Verification Pending
+          </p>
           <p className="text-xs text-gray-500 mt-1">
             An admin will review your documents and approve your NGO.
           </p>

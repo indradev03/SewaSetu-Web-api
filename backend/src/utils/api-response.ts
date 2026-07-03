@@ -4,18 +4,20 @@ export interface PaginationMeta {
   page: number;
   limit: number;
   total: number;
+  totalPages?: number;
+  hasNextPage?: boolean;
+  hasPrevPage?: boolean;
 }
 
 export interface ApiResponse<T> {
-  success: boolean;
   status: number;
+  success: boolean;
   message: string;
-  data?: T;
+  data: T;
   meta?: PaginationMeta;
 }
 
 export class ApiResponseHelper {
-
   // SUCCESS RESPONSE
 
   static success<T>(
@@ -23,11 +25,11 @@ export class ApiResponseHelper {
     data: T,
     status: number = 200,
     message: string = "Success",
-    meta?: PaginationMeta
+    meta?: PaginationMeta,
   ) {
     const response: ApiResponse<T> = {
-      success: true,
       status,
+      success: true,
       message,
       data,
       meta,
@@ -35,43 +37,30 @@ export class ApiResponseHelper {
 
     return res.status(status).json(response);
   }
-
 
   // ERROR RESPONSE
 
   static error(
     res: Response,
     message: string = "Internal Server Error",
-    status: number = 500
+    status: number = 500,
   ) {
-    const response: ApiResponse<null> = {
-      success: false,
+    return res.status(status).json({
       status,
+      success: false,
       message,
-      data: null,
-    };
-
-    return res.status(status).json(response);
+    });
   }
 
-
-  // PAGINATION RESPONSE (optional but useful)
+  // PAGINATED RESPONSE (OPTIONAL)
 
   static paginated<T>(
     res: Response,
     data: T,
     meta: PaginationMeta,
     status: number = 200,
-    message: string = "Success"
+    message: string = "Success",
   ) {
-    const response: ApiResponse<T> = {
-      success: true,
-      status,
-      message,
-      data,
-      meta,
-    };
-
-    return res.status(status).json(response);
+    return this.success(res, data, status, message, meta);
   }
 }

@@ -2,7 +2,7 @@ import { z } from "zod";
 import { ngoRegisterApi, ngoLoginApi } from "../api/auth";
 import { setCookie } from "../cookies";
 
-//  Zod Schemas 
+//  Zod Schemas
 
 export const ngoRegisterSchema = z
   .object({
@@ -13,7 +13,9 @@ export const ngoRegisterSchema = z
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirmPassword: z.string().min(1, "Please confirm your password"),
-    impactDescription: z.string().min(10, "Please describe your mission (min 10 chars)"),
+    impactDescription: z
+      .string()
+      .min(10, "Please describe your mission (min 10 chars)"),
     address: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -26,21 +28,21 @@ export const ngoLoginSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
-//  Types 
+//  Types
 
 export type NGORegisterInput = z.infer<typeof ngoRegisterSchema>;
 export type NGOLoginInput = z.infer<typeof ngoLoginSchema>;
 
-//  Action result type 
+//  Action result type
 
 type ActionResult<T = void> =
   | { success: true; data: T }
   | { success: false; errors: Record<string, string> };
 
-//  registerNGOAction 
+//  registerNGOAction
 
 export const registerNGOAction = async (
-  formData: NGORegisterInput
+  formData: NGORegisterInput,
 ): Promise<ActionResult> => {
   // 1. Validate with Zod
   const parsed = ngoRegisterSchema.safeParse(formData);
@@ -68,10 +70,10 @@ export const registerNGOAction = async (
   }
 };
 
-//  loginNGOAction 
+//  loginNGOAction
 
 export const loginNGOAction = async (
-  formData: NGOLoginInput
+  formData: NGOLoginInput,
 ): Promise<ActionResult<{ role: string }>> => {
   const parsed = ngoLoginSchema.safeParse(formData);
 
