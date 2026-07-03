@@ -20,7 +20,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import Button from "@/app/components/ui/button";
-import DeleteConfirmationModal from "@/app/components/DeleteConfirmationModal";
+import DeleteConfirmationModal from "@/app/(_dashboard)/admin/components/donation/DeleteConfirmationModal";
 import { useRouter } from "next/navigation";
 
 export default function DonationHistory() {

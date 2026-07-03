@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { getAllDonorsApi, AdminDonorRow } from "@/app/lib/api/admin.api";
 import { deleteDonorAction } from "@/app/lib/actions/admin.actions";
-import DeleteConfirmationModal from "@/app/components/DeleteConfirmationModal";
+import DeleteConfirmationModal from "@/app/(_dashboard)/admin/components/donation/DeleteConfirmationModal";
 
 const PAGE_SIZE = 7;
 

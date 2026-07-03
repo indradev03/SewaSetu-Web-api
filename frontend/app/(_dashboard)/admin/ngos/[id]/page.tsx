@@ -27,7 +27,7 @@ import {
   verifyNGOAction,
 } from "@/app/lib/actions/admin.actions";
 import { getImageUrl } from "@/app/lib/utils/getImageUrl";
-import DeleteConfirmationModal from "@/app/components/DeleteConfirmationModal";
+import DeleteConfirmationModal from "@/app/(_dashboard)/admin/components/donation/DeleteConfirmationModal";
 
 export default function AdminNGODetailPage() {
   const router = useRouter();
