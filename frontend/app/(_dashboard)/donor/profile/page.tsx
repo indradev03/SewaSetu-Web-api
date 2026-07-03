@@ -176,7 +176,7 @@ export default function ProfilePage() {
         hideProgressBar={false}
       />
 
-      <div className="max-w-6xl mx-auto">
+      <div className="max-w-8xl mx-auto">
         {/* HEADER */}
         <div className="mb-10">
           <h1 className="text-4xl font-semibold tracking-tight text-emerald-600 font-serif">

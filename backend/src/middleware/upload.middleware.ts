@@ -62,11 +62,14 @@ export const createUpload = (mainFolder: string, subFolder: string) => {
  * Pre-configured uploads (READY TO USE)
  */
 
-// 👤 Donor profile image
+//  Donor profile image
 export const uploadDonorProfile = createUpload("profile", "donor");
 
-// 🏢 NGO profile image
+//  NGO profile image
 export const uploadNgoProfile = createUpload("profile", "ngo");
 
-// 🎁 Reward image
+// Reward image
 export const uploadRewardImage = createUpload("rewards", "images");
+
+// Donation photos
+export const uploadDonationPhotos = createUpload("donations", "photos");

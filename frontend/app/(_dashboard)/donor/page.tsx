@@ -77,7 +77,7 @@ export default function DonorDashboardHome() {
   return (
     <div className="w-full space-y-8 py-8 px-2 md:px-6 animate-in fade-in duration-500 max-w-7xl mx-auto">
       {/* 1. Dynamic Premium Hero Banner */}
-      <div className="bg-gradient-to-r from-emerald-950 to-emerald-900 rounded-[2rem] p-6 sm:p-8 text-white shadow-xl shadow-emerald-950/5 relative overflow-hidden">
+      <div className="bg-linear-to-r from-emerald-950 to-emerald-900 rounded-4xl p-6 sm:p-8 text-white shadow-xl shadow-emerald-950/5 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(16,185,129,0.12),transparent_45%)]" />
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 relative z-10">
@@ -95,7 +95,7 @@ export default function DonorDashboardHome() {
             </p>
           </div>
 
-          <div className="flex-shrink-0">
+          <div className="shrink-0">
             <Button
               variant="green"
               onClick={() => router.push("/donor/create-donation")}
@@ -118,7 +118,7 @@ export default function DonorDashboardHome() {
               className="bg-white rounded-2.5xl border border-slate-100 p-6 shadow-sm shadow-slate-100/50 hover:shadow-md hover:border-slate-200/60 transition-all duration-300 group flex items-center gap-5"
             >
               <div
-                className={`w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 border-2 ${item.color} transition-transform duration-300 group-hover:scale-105`}
+                className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 border-2 ${item.color} transition-transform duration-300 group-hover:scale-105`}
               >
                 <IconComponent className="w-6 h-6" />
               </div>
@@ -138,7 +138,7 @@ export default function DonorDashboardHome() {
       {/* 3. Operational Real-Estate Layout Panels */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Left Side: Pipeline Intake Monitoring Board */}
-        <div className="lg:col-span-8 bg-white rounded-[2rem] border border-slate-100 shadow-sm shadow-slate-100/40 overflow-hidden">
+        <div className="lg:col-span-8 bg-white rounded-4xl border border-slate-100 shadow-sm shadow-slate-100/40 overflow-hidden">
           <div className="p-6 md:p-8 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="space-y-1">
               <h3 className="text-lg font-bold text-slate-900 tracking-tight">
@@ -167,7 +167,7 @@ export default function DonorDashboardHome() {
                   className="p-6 flex flex-col sm:flex-row sm:items-start justify-between gap-5 hover:bg-slate-50/40 transition-all duration-200"
                 >
                   <div className="flex items-start gap-4">
-                    <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0 text-slate-500 mt-0.5 shadow-inner">
+                    <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0 text-slate-500 mt-0.5 shadow-inner">
                       <StateIcon className="w-5 h-5 text-slate-600" />
                     </div>
                     <div className="space-y-1.5">
@@ -201,7 +201,7 @@ export default function DonorDashboardHome() {
                     </div>
                   </div>
 
-                  <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-100 flex-shrink-0">
+                  <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-2 border-t sm:border-t-0 pt-3 sm:pt-0 border-slate-100 shrink-0">
                     <span
                       className={`text-[10px] px-3 py-1 font-extrabold rounded-full border tracking-wider uppercase ${req.statusStyle}`}
                     >
@@ -217,14 +217,14 @@ export default function DonorDashboardHome() {
         {/* Right Side: Structural System Guidelines and Incentives */}
         <div className="lg:col-span-4 space-y-6">
           {/* Quick Informational System Guide Context */}
-          <div className="bg-white rounded-[2rem] border border-slate-100 p-6 shadow-sm shadow-slate-100/40 space-y-4">
+          <div className="bg-white rounded-4xl border border-slate-100 p-6 shadow-sm shadow-slate-100/40 space-y-4">
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
               <AlertCircle className="w-4 h-4 text-emerald-600" /> System Guide
             </h3>
 
             <div className="space-y-4 pt-1">
               <div className="flex gap-3.5 items-start">
-                <div className="text-xs font-black text-emerald-600 bg-emerald-50 border border-emerald-100 w-6 h-6 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">
+                <div className="text-xs font-black text-emerald-600 bg-emerald-50 border border-emerald-100 w-6 h-6 rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                   1
                 </div>
                 <p className="text-xs md:text-sm text-slate-500 font-medium leading-relaxed">
@@ -233,7 +233,7 @@ export default function DonorDashboardHome() {
                 </p>
               </div>
               <div className="flex gap-3.5 items-start">
-                <div className="text-xs font-black text-emerald-600 bg-emerald-50 border border-emerald-100 w-6 h-6 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">
+                <div className="text-xs font-black text-emerald-600 bg-emerald-50 border border-emerald-100 w-6 h-6 rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                   2
                 </div>
                 <p className="text-xs md:text-sm text-slate-500 font-medium leading-relaxed">
@@ -242,7 +242,7 @@ export default function DonorDashboardHome() {
                 </p>
               </div>
               <div className="flex gap-3.5 items-start">
-                <div className="text-xs font-black text-emerald-600 bg-emerald-50 border border-emerald-100 w-6 h-6 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5 shadow-sm">
+                <div className="text-xs font-black text-emerald-600 bg-emerald-50 border border-emerald-100 w-6 h-6 rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                   3
                 </div>
                 <p className="text-xs md:text-sm text-slate-500 font-medium leading-relaxed">
@@ -254,11 +254,11 @@ export default function DonorDashboardHome() {
           </div>
 
           {/* Premium Gamified Rewards Widget */}
-          <div className="bg-gradient-to-br from-amber-500/5 via-amber-500/[0.01] to-transparent rounded-[2rem] border border-amber-500/10 p-6 space-y-4 relative overflow-hidden">
+          <div className="bg-linear-to-br from-amber-500/5 via-amber-500/1 to-transparent rounded-4xl border border-amber-500/10 p-6 space-y-4 relative overflow-hidden">
             <div className="absolute top-0 right-0 -mt-10 -mr-10 w-24 h-24 bg-amber-500/5 rounded-full blur-xl pointer-events-none" />
 
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center text-white flex-shrink-0 shadow-md shadow-amber-500/10">
+              <div className="w-9 h-9 rounded-xl bg-amber-500 flex items-center justify-center text-white shrink-0 shadow-md shadow-amber-500/10">
                 <Gift className="w-4 h-4" />
               </div>
               <h4 className="text-xs font-bold text-amber-950 uppercase tracking-widest">

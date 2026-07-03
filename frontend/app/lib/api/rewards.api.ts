@@ -3,7 +3,7 @@
 import axiosInstance from "./axios-instance";
 import { API } from "./endpoints";
 
-// ── Types ──────────────────────────────────────────────
+//  Types
 
 export type DiscountType = "percentage" | "fixed" | "freebie";
 
@@ -30,21 +30,33 @@ export type RewardListParams = {
   isActive?: boolean;
 };
 
-// ── CREATE REWARD (multipart, supports image upload) ─
+//  CREATE REWARD (multipart, supports image upload) ─
 
-export const createReward = async (payload: any) => {
-  const response = await axiosInstance.post(API.ADMIN.REWARDS, payload);
+export const createReward = async (payload: FormData) => {
+  const response = await axiosInstance.post(API.ADMIN.REWARDS, payload, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return response.data;
 };
 
-// ── UPDATE REWARD (multipart, supports image upload) ─
+//  UPDATE REWARD (multipart, supports image upload) ─
 
 export const updateReward = async (id: string, payload: FormData) => {
-  const response = await axiosInstance.put(API.ADMIN.REWARD_BY_ID(id), payload);
+  const response = await axiosInstance.put(
+    API.ADMIN.REWARD_BY_ID(id),
+    payload,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    },
+  );
   return response.data;
 };
 
-// ── GET ALL REWARDS ───────────────────────────────────
+//  GET ALL REWARDS
 
 export const getAllRewards = async ({
   page,
@@ -62,7 +74,7 @@ export const getAllRewards = async ({
   }
 };
 
-// ── GET ACTIVE REWARDS ────────────────────────────────
+//  GET ACTIVE REWARDS
 
 export const getActiveRewards = async () => {
   try {
@@ -75,7 +87,7 @@ export const getActiveRewards = async () => {
   }
 };
 
-// ── GET REWARD BY ID ──────────────────────────────────
+//  GET REWARD BY ID ─
 
 export const getRewardById = async (id: string) => {
   try {
@@ -86,7 +98,7 @@ export const getRewardById = async (id: string) => {
   }
 };
 
-// ── TOGGLE STATUS ─────────────────────────────────────
+//  TOGGLE STATUS
 
 export const toggleRewardStatus = async (id: string) => {
   try {
@@ -101,7 +113,7 @@ export const toggleRewardStatus = async (id: string) => {
   }
 };
 
-// ── DELETE REWARD ─────────────────────────────────────
+//  DELETE REWARD
 
 export const deleteReward = async (id: string) => {
   try {

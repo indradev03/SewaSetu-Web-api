@@ -13,6 +13,7 @@ import {
   Menu,
   ShieldCheck,
   Gift,
+  Package,
 } from "lucide-react";
 import { getDonorByIdApi } from "@/app/lib/api/admin.api";
 import { getCookie } from "@/app/lib/cookies";
@@ -53,6 +54,7 @@ const AdminSidebar = () => {
     { name: "Dashboard", path: "/admin", icon: LayoutDashboard },
     { name: "Donors", path: "/admin/donors", icon: Users },
     { name: "NGOs", path: "/admin/ngos", icon: HeartHandshake },
+    { name: "Donations", path: "/admin/donations", icon: Package }, // 👈 New
     { name: "Rewards", path: "/admin/rewards", icon: Gift },
   ];
 

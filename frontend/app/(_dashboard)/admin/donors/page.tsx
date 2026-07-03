@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import { getAllDonorsApi, AdminDonorRow } from "@/app/lib/api/admin.api";
 import { deleteDonorAction } from "@/app/lib/actions/admin.actions";
-import DeleteConfirmationModal from "@/app/components/DeleteConfirmationModal";
+import DeleteConfirmationModal from "@/app/(_dashboard)/admin/components/donation/DeleteConfirmationModal";
 
 const PAGE_SIZE = 7;
 
@@ -78,7 +78,7 @@ export default function AdminDonorsPage() {
   };
 
   return (
-    <div className="w-full space-y-6 py-8 px-2 md:px-6 max-w-7xl mx-auto">
+    <div className="w-full space-y-6 py-8 px-2 md:px-6 max-w-8xl mx-auto">
       <ToastContainer position="top-right" autoClose={3000} />
 
       {/* Header */}

@@ -6,7 +6,9 @@ import morgan from "morgan";
 
 import donorRoutes from "./routes/donor.route";
 import ngoRoutes from "./routes/ngo.route";
+import donationRoutes from "./routes/donation.route";
 import adminRoutes from "./routes/admin/admin.route";
+import rewardClaimRoutes from "./routes/donor/rewardClaim.route";
 import path from "path";
 
 const app = express();
@@ -47,8 +49,14 @@ app.get("/", (req: Request, res: Response) => {
 // Donor routes
 app.use("/api/v1/donor", donorRoutes);
 
+// Donor reward claim routes
+app.use("/api/v1/donor/reward-claims", rewardClaimRoutes);
+
 // NGO routes
 app.use("/api/v1/ngo", ngoRoutes);
+
+// Donation routes
+app.use("/api/v1/donation", donationRoutes);
 
 // Admin
 app.use("/api/v1/admin", adminRoutes);
