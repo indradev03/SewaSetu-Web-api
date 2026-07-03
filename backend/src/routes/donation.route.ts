@@ -67,6 +67,14 @@ router.delete(
  * ADMIN ROUTES (for managing donations)
  */
 
+// Get all donations for admin
+router.get(
+  "/admin/all",
+  authorizedMiddleware,
+  authorizeRoles("admin"),
+  donationController.getAllDonations.bind(donationController),
+);
+
 // Get pending donations for approval
 router.get(
   "/admin/pending",
@@ -81,6 +89,14 @@ router.put(
   authorizedMiddleware,
   authorizeRoles("admin"),
   donationController.approveRejectDonation.bind(donationController),
+);
+
+// Admin delete donation
+router.delete(
+  "/admin/:id",
+  authorizedMiddleware,
+  authorizeRoles("admin"),
+  donationController.deleteDonation.bind(donationController),
 );
 
 /**
