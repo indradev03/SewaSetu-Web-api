@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import "react-toastify/dist/ReactToastify.css";
 import { Search, Plus, RefreshCw } from "lucide-react";
 
-import DeleteConfirmationModal from "@/app/components/DeleteConfirmationModal";
+import DeleteConfirmationModal from "@/app/(_dashboard)/admin/components/donation/DeleteConfirmationModal";
 import RewardTable from "../components/rewards/RewardTable";
 import {
   deleteReward,

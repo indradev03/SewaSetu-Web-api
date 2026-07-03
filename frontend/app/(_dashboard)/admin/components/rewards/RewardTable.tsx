@@ -75,7 +75,7 @@ export default function RewardTable({
               <th className="px-6 py-4 text-left text-xs font-bold uppercase text-slate-400">
                 Status
               </th>
-              <th className="px-6 py-4 text-right text-xs font-bold uppercase text-slate-400">
+              <th className="px-6 py-4 text-right text-xs  flex justify-center font-bold uppercase text-slate-400">
                 Actions
               </th>
             </tr>
