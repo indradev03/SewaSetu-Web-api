@@ -7,7 +7,9 @@ import {
   deleteDonationPhotoApi,
   Donation,
   getPendingDonationsApi,
+  getAllDonationsApi,
   approveRejectDonationApi,
+  adminDeleteDonationApi,
   getAvailableDonationsApi,
   claimDonationApi,
   completeDonationApi,
@@ -108,6 +110,20 @@ export const deleteDonationPhotoAction = async (
 
 // ── Admin Donation Actions
 
+export const getAllDonationsAction = async (): Promise<
+  ActionResult<{ donations: Donation[] }>
+> => {
+  try {
+    const res = await getAllDonationsApi();
+    return { success: true, data: { donations: res.data } };
+  } catch (err: any) {
+    return {
+      success: false,
+      errors: { root: "Failed to fetch donations" },
+    };
+  }
+};
+
 export const getPendingDonationsAction = async (): Promise<
   ActionResult<{ donations: Donation[] }>
 > => {
@@ -137,6 +153,20 @@ export const approveRejectDonationAction = async (
     return {
       success: false,
       errors: { root: err?.response?.data?.message || "Failed to update donation status" },
+    };
+  }
+};
+
+export const adminDeleteDonationAction = async (
+  id: string,
+): Promise<ActionResult> => {
+  try {
+    await adminDeleteDonationApi(id);
+    return { success: true, data: undefined };
+  } catch (err: any) {
+    return {
+      success: false,
+      errors: { root: "Failed to delete donation" },
     };
   }
 };

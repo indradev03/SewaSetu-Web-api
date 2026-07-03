@@ -19,7 +19,7 @@ export type Donation = {
   unit: "Pieces" | "Kgs" | "Packets" | "Liters";
   photos: string[];
   pickupAddress: string;
-  adminStatus: "Pending" | "Approved" | "Rejected";
+  adminStatus: "Pending" | "Approved" | "Rejected" | "Collected";
   adminRejectionReason?: string;
   claimedBy?: {
     _id: string;
@@ -119,6 +119,15 @@ export const deleteDonationPhotoApi = async (
 
 // ── Admin Donation APIs
 
+export const getAllDonationsApi = async (): Promise<{
+  success: boolean;
+  message: string;
+  data: Donation[];
+}> => {
+  const res = await axiosInstance.get("/donation/admin/all");
+  return res.data;
+};
+
 export const getPendingDonationsApi = async (): Promise<{
   success: boolean;
   message: string;
@@ -133,6 +142,13 @@ export const approveRejectDonationApi = async (
   payload: ApproveRejectDonationPayload,
 ): Promise<{ success: boolean; message: string; data: Donation }> => {
   const res = await axiosInstance.put(API.ADMIN.APPROVE_DONATION(id), payload);
+  return res.data;
+};
+
+export const adminDeleteDonationApi = async (
+  id: string,
+): Promise<{ success: boolean; message: string; data: Donation }> => {
+  const res = await axiosInstance.delete(`/donation/admin/${id}`);
   return res.data;
 };
 
