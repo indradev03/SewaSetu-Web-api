@@ -96,7 +96,7 @@ export default function CreateDonation() {
         hideProgressBar={false}
       />
 
-      <div className="max-w-4xl mx-auto">
+      <div className="max-w-8xl mx-auto">
         <div className="mb-8">
           <h1 className="text-4xl font-semibold tracking-tight text-emerald-600 font-serif">
             Create Donation
@@ -130,7 +130,10 @@ export default function CreateDonation() {
                       value={cat}
                       checked={formData.category === cat}
                       onChange={(e) =>
-                        setFormData({ ...formData, category: e.target.value as any })
+                        setFormData({
+                          ...formData,
+                          category: e.target.value as any,
+                        })
                       }
                       className="w-4 h-4 text-emerald-600 border-gray-300 focus:ring-emerald-500"
                     />
