@@ -10,6 +10,7 @@ interface DeleteConfirmationModalProps {
   onClose: () => void;
   onConfirm: () => void;
 }
+import Button from "../../../../components/ui/button";
 
 export default function DeleteConfirmationModal({
   open,
@@ -45,13 +46,14 @@ export default function DeleteConfirmationModal({
             Cancel
           </button>
 
-          <button
+          <Button
             onClick={onConfirm}
+            variant="red"
             disabled={deleting}
-            className="flex-1 rounded-xl bg-red-500 py-2.5 text-sm font-semibold text-white hover:bg-red-600 disabled:opacity-60"
+            className="flex-1 rounded-xl  py-2.5 text-sm font-semibold "
           >
             {deleting ? "Deleting..." : "Delete"}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

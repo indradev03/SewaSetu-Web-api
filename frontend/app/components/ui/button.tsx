@@ -1,7 +1,7 @@
 import React from "react";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  variant?: "green" | "orange" | "secondary" | "violet";
+  variant?: "green" | "orange" | "secondary" | "violet" | "red";
 };
 
 export default function Button({
@@ -18,6 +18,8 @@ export default function Button({
 
     orange:
       "bg-gradient-to-r from-orange-500 to-amber-500 text-white hover:shadow-lg hover:scale-[1.02]",
+
+    red: "bg-gradient-to-r from-red-700 to-rose-500 text-white hover:shadow-lg hover:scale-[1.02]",
 
     secondary: "bg-gray-100 text-gray-800 hover:bg-gray-200",
 
