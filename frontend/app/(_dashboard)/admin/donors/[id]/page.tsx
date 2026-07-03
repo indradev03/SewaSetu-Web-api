@@ -112,8 +112,8 @@ export default function AdminDonorDetailPage() {
         </div>
 
         {/* CONTENT SECTION */}
-        <div className="bg-white rounded-[2rem] border border-slate-200 shadow-lg overflow-hidden">
-          <div className="h-24 bg-gradient-to-r from-emerald-500 to-teal-600" />
+        <div className="bg-white rounded-4xl border border-slate-200 shadow-lg overflow-hidden">
+          <div className="h-24 bg-linear-to-r from-emerald-500 to-teal-600" />
 
           <div className="px-8 pb-8">
             <div className="flex flex-col md:flex-row gap-8">
