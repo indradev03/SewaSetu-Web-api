@@ -43,6 +43,9 @@ export default function RewardForm({ mode, reward }: RewardFormProps) {
   const [discountValue, setDiscountValue] = useState(
     reward?.discountValue !== undefined ? String(reward.discountValue) : "",
   );
+  const [requiredPoints, setRequiredPoints] = useState(
+    reward?.requiredPoints !== undefined ? String(reward.requiredPoints) : "0",
+  );
   const [terms, setTerms] = useState(reward?.terms || "");
   const [expiryDate, setExpiryDate] = useState(
     toDateInputValue(reward?.expiryDate),
@@ -69,6 +72,7 @@ export default function RewardForm({ mode, reward }: RewardFormProps) {
       "discountValue",
       discountType === "freebie" ? "0" : String(Number(discountValue)),
     );
+    formData.append("requiredPoints", String(Number(requiredPoints)));
     if (terms) formData.append("terms", terms);
     formData.append("expiryDate", new Date(expiryDate).toISOString());
     if (file) formData.append("image", file);
@@ -219,6 +223,17 @@ export default function RewardForm({ mode, reward }: RewardFormProps) {
               />
             </Field>
           </div>
+
+          <Field label="Required Points">
+            <input
+              required
+              type="number"
+              min={0}
+              value={requiredPoints}
+              onChange={(e) => setRequiredPoints(e.target.value)}
+              className="form-input"
+            />
+          </Field>
 
           <Field label="Terms (optional)">
             <textarea

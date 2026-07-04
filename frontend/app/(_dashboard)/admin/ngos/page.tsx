@@ -100,10 +100,10 @@ export default function AdminNGOsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-4xl font-semibold tracking-tight text-emerald-600 font-serif">
             NGOs
           </h1>
-          <p className="text-xs text-slate-400 font-medium mt-1">
+          <p className="text-gray-500 mt-2">
             {total} registered organization{total === 1 ? "" : "s"}
           </p>
         </div>

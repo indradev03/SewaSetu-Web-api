@@ -15,7 +15,7 @@ export default function DonorLayout({
 
       {/* MAIN CONTENT AREA */}
       {/* Changed md:ml-75 to md:ml-[18.75rem] to handle the explicit layout clearance */}
-      <main className="flex-1 md:ml-75 min-h-screen px-4 md:px-6">
+      <main className="flex-1 md:ml-80 min-h-screen px-4 md:px-6">
         {children}
       </main>
     </div>
