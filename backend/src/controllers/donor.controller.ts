@@ -11,6 +11,7 @@ import {
 import { DonorService } from "../services/donor.service";
 import { HttpException } from "../exceptions/http-exception";
 import { ApiResponseHelper } from "../utils/api-response";
+import { RewardHistoryRepository } from "../repositories/rewardHistory.repository";
 
 const donorService = new DonorService();
 
@@ -223,6 +224,26 @@ export class DonorController {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to change password",
+        error.status || 500,
+      );
+    }
+  }
+
+  // Get reward history
+  async getRewardHistory(req: Request, res: Response) {
+    try {
+      const rewardHistory = await RewardHistoryRepository.findByDonorId(req.user!.id);
+
+      return ApiResponseHelper.success(
+        res,
+        rewardHistory,
+        200,
+        "Reward history fetched successfully",
+      );
+    } catch (error: any) {
+      return ApiResponseHelper.error(
+        res,
+        error.message || "Failed to fetch reward history",
         error.status || 500,
       );
     }
