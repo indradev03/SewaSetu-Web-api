@@ -114,68 +114,104 @@ export const DonationRepository = {
   async findApprovedDonations(): Promise<IDonation[]> {
     return await Donation.find({
       adminStatus: "Approved",
-      claimStatus: "Unclaimed",
+      status: "Available",
     })
       .sort({ createdAt: -1 })
       .populate("donorId", "username fullName email profileImage");
   },
 
   // ── NGO Claim Methods
-  async claimDonation(
-    id: string,
-    ngoId: string,
-    estimatedPickupTime?: Date,
-  ): Promise<IDonation | null> {
-    const updateData: any = {
-      claimedBy: ngoId,
-      claimStatus: "Claimed",
-      claimedAt: new Date(),
-    };
-    if (estimatedPickupTime)
-      updateData.estimatedPickupTime = estimatedPickupTime;
-
-    return await Donation.findByIdAndUpdate(
-      id,
-      { $set: updateData },
-      { new: true },
-    )
-      .populate("donorId", "username fullName email profileImage")
-      .populate("claimedBy", "organizationName email");
-  },
-
-  async completeDonation(
-    id: string,
-    pointsEarned?: number,
-  ): Promise<IDonation | null> {
-    const updateData: any = {
-      claimStatus: "Completed",
-    };
-    if (pointsEarned !== undefined) updateData.pointsEarned = pointsEarned;
-
-    return await Donation.findByIdAndUpdate(
-      id,
-      { $set: updateData },
-      { new: true },
-    )
-      .populate("donorId", "username fullName email profileImage")
-      .populate("claimedBy", "organizationName email");
-  },
-
-  async findNgoClaimedDonations(ngoId: string): Promise<IDonation[]> {
-    return await Donation.find({ claimedBy: ngoId })
-      .sort({ createdAt: -1 })
-      .populate("donorId", "username fullName email profileImage");
-  },
-
-  async findNgoClaimedDonationsByStatus(
-    ngoId: string,
-    claimStatus: string,
-  ): Promise<IDonation[]> {
+  async findAvailableDonations(): Promise<IDonation[]> {
     return await Donation.find({
-      claimedBy: ngoId,
-      claimStatus,
+      adminStatus: "Approved",
+      $or: [
+        { status: "Available" },
+        { status: { $exists: false } }
+      ]
     })
       .sort({ createdAt: -1 })
       .populate("donorId", "username fullName email profileImage");
+  },
+
+  async findClaimedByNgo(ngoId: string): Promise<IDonation[]> {
+    return await Donation.find({ claimedByNgoId: ngoId })
+      .sort({ createdAt: -1 })
+      .populate("donorId", "username fullName email profileImage")
+      .populate("claimedByNgoId", "organizationName email contactPerson");
+  },
+
+  async releaseClaim(id: string, ngoId: string): Promise<IDonation | null> {
+    return await Donation.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          claimedByNgoId: null,
+          status: "Available",
+          claimedAt: null,
+        },
+      },
+      { new: true },
+    )
+      .populate("donorId", "username fullName email profileImage")
+      .populate("claimedByNgoId", "organizationName email contactPerson");
+  },
+
+  async claimDonation(
+    id: string,
+    ngoId: string,
+  ): Promise<IDonation | null> {
+    return await Donation.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          claimedByNgoId: ngoId,
+          status: "Claimed",
+          claimedAt: new Date(),
+        },
+      },
+      { new: true },
+    )
+      .populate("donorId", "username fullName email profileImage")
+      .populate("claimedByNgoId", "organizationName email contactPerson");
+  },
+
+  async markPickedUp(id: string): Promise<IDonation | null> {
+    return await Donation.findByIdAndUpdate(
+      id,
+      { $set: { status: "PickedUp" } },
+      { new: true },
+    )
+      .populate("donorId", "username fullName email profileImage")
+      .populate("claimedByNgoId", "organizationName email contactPerson");
+  },
+
+  async markCompleted(
+    id: string,
+    rewardPointsAwarded: number,
+  ): Promise<IDonation | null> {
+    return await Donation.findByIdAndUpdate(
+      id,
+      {
+        $set: {
+          status: "Completed",
+          rewardPointsAwarded,
+          rewardGranted: true,
+        },
+      },
+      { new: true },
+    )
+      .populate("donorId", "username fullName email profileImage")
+      .populate("claimedByNgoId", "organizationName email contactPerson");
+  },
+
+  async findByStatus(status: string): Promise<IDonation[]> {
+    return await Donation.find({ status })
+      .sort({ createdAt: -1 })
+      .populate("donorId", "username fullName email profileImage")
+      .populate("claimedByNgoId", "organizationName email contactPerson");
+  },
+
+  async delete(id: string): Promise<IDonation | null> {
+    return await Donation.findByIdAndDelete(id);
   },
 };

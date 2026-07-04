@@ -6,6 +6,7 @@ import {
   UpdateDonationDTO,
   AdminApproveRejectDTO,
   NgoClaimDonationDTO,
+  NgoPickupDonationDTO,
   NgoCompleteDonationDTO,
 } from "../dtos/donation.dto";
 
@@ -278,18 +279,18 @@ export class DonationController {
   // Get approved donations available for claiming
   async getApprovedDonations(req: Request, res: Response) {
     try {
-      const donations = await donationService.getApprovedDonations();
+      const donations = await donationService.getAvailableDonations();
 
       return ApiResponseHelper.success(
         res,
         donations,
         200,
-        "Approved donations fetched successfully",
+        "Available donations fetched successfully",
       );
     } catch (error: any) {
       return ApiResponseHelper.error(
         res,
-        error.message || "Failed to fetch approved donations",
+        error.message || "Failed to fetch available donations",
         error.status || 500,
       );
     }
@@ -312,7 +313,6 @@ export class DonationController {
       const donation = await donationService.claimDonation(
         id,
         req.user!.id,
-        parsed.data.estimatedPickupTime ? new Date(parsed.data.estimatedPickupTime) : undefined,
       );
 
       return ApiResponseHelper.success(
@@ -325,6 +325,90 @@ export class DonationController {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to claim donation",
+        error.status || 500,
+      );
+    }
+  }
+
+  // NGO mark donation as picked up
+  async markPickedUp(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+      const parsed = NgoPickupDonationDTO.safeParse(req.body);
+
+      if (!parsed.success) {
+        const message = parsed.error.issues
+          .map((e: any) => `${e.path.join(".")} - ${e.message}`)
+          .join(", ");
+
+        throw new HttpException(400, message);
+      }
+
+      const donation = await donationService.markPickedUp(
+        id,
+        req.user!.id,
+      );
+
+      return ApiResponseHelper.success(
+        res,
+        donation,
+        200,
+        "Donation marked as picked up successfully",
+      );
+    } catch (error: any) {
+      return ApiResponseHelper.error(
+        res,
+        error.message || "Failed to mark donation as picked up",
+        error.status || 500,
+      );
+    }
+  }
+
+  // NGO release a claimed donation
+  async releaseClaim(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const donation = await donationService.releaseClaim(
+        id,
+        req.user!.id,
+      );
+
+      return ApiResponseHelper.success(
+        res,
+        donation,
+        200,
+        "Claim released successfully",
+      );
+    } catch (error: any) {
+      return ApiResponseHelper.error(
+        res,
+        error.message || "Failed to release claim",
+        error.status || 500,
+      );
+    }
+  }
+
+  // NGO delete a completed claimed donation
+  async deleteClaimedDonation(req: Request, res: Response) {
+    try {
+      const { id } = req.params;
+
+      const donation = await donationService.deleteClaimedDonation(
+        id,
+        req.user!.id,
+      );
+
+      return ApiResponseHelper.success(
+        res,
+        donation,
+        200,
+        "Donation deleted successfully",
+      );
+    } catch (error: any) {
+      return ApiResponseHelper.error(
+        res,
+        error.message || "Failed to delete donation",
         error.status || 500,
       );
     }
@@ -344,9 +428,9 @@ export class DonationController {
         throw new HttpException(400, message);
       }
 
-      const donation = await donationService.completeDonation(
+      const donation = await donationService.markCompleted(
         id,
-        parsed.data.pointsEarned,
+        req.user!.id,
       );
 
       return ApiResponseHelper.success(
@@ -367,17 +451,7 @@ export class DonationController {
   // Get NGO's claimed donations
   async getNgoClaimedDonations(req: Request, res: Response) {
     try {
-      const { status } = req.query;
-      
-      let donations;
-      if (status) {
-        donations = await donationService.getNgoClaimedDonationsByStatus(
-          req.user!.id,
-          status as string,
-        );
-      } else {
-        donations = await donationService.getNgoClaimedDonations(req.user!.id);
-      }
+      const donations = await donationService.getNgoClaimedDonations(req.user!.id);
 
       return ApiResponseHelper.success(
         res,

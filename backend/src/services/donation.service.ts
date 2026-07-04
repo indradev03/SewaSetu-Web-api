@@ -1,6 +1,10 @@
 import { DonationRepository } from "../repositories/donation.repository";
 import { DonorRepository } from "../repositories/donor.repository";
+import { RewardHistoryRepository } from "../repositories/rewardHistory.repository";
+import { NGORepository } from "../repositories/ngo.repository";
 import { CreateDonationType, UpdateDonationType } from "../dtos/donation.dto";
+import mongoose from "mongoose";
+import Donation from "../models/donation.model";
 
 import { HttpException } from "../exceptions/http-exception";
 
@@ -132,7 +136,12 @@ export class DonationService {
   }
 
   // ── NGO CLAIM METHODS
-  async claimDonation(id: string, ngoId: string, estimatedPickupTime?: Date) {
+  async getAvailableDonations() {
+    const donations = await DonationRepository.findAvailableDonations();
+    return donations;
+  }
+
+  async claimDonation(id: string, ngoId: string) {
     const donation = await DonationRepository.findById(id);
 
     if (!donation) {
@@ -143,56 +152,179 @@ export class DonationService {
       throw new HttpException(400, "Donation is not approved for claiming");
     }
 
-    if (donation.claimStatus !== "Unclaimed") {
+    // Check if donation is available (either status is "Available" or status doesn't exist)
+    if (donation.status && donation.status !== "Available") {
       throw new HttpException(400, "Donation has already been claimed");
     }
 
-    const updated = await DonationRepository.claimDonation(
-      id,
-      ngoId,
-      estimatedPickupTime,
-    );
+    if (donation.rewardGranted) {
+      throw new HttpException(400, "Reward already granted for this donation");
+    }
 
-    return updated;
+    // Generate random reward points between 10 and 100
+    const rewardPoints = Math.floor(Math.random() * 91) + 10;
+    console.log("Generated random reward points:", rewardPoints);
+
+    // Award points to donor - try multiple approaches
+    let pointsAwarded = false;
+    try {
+      await DonorRepository.incrementRewardPoints(
+        donation.donorId.toString(),
+        rewardPoints,
+      );
+      pointsAwarded = true;
+      console.log("Successfully awarded reward points to donor");
+    } catch (error) {
+      console.error("Failed to increment reward points with repository:", error);
+      
+      // Fallback: try direct database update
+      try {
+        const Donor = require("../models/donor.model").default;
+        const donor = await Donor.findById(donation.donorId);
+        if (donor) {
+          if (!donor.rewardPoints) donor.rewardPoints = 0;
+          donor.rewardPoints += rewardPoints;
+          await donor.save();
+          pointsAwarded = true;
+          console.log("Successfully awarded points using fallback method");
+        }
+      } catch (fallbackError) {
+        console.error("Fallback method also failed:", fallbackError);
+      }
+    }
+
+    if (!pointsAwarded) {
+      console.error("All methods to award points failed, proceeding with claim without points");
+    }
+
+    // Create reward history record only if points were awarded
+    if (pointsAwarded) {
+      try {
+        await RewardHistoryRepository.create({
+          donorId: donation.donorId,
+          donationId: donation._id,
+          ngoId: new mongoose.Types.ObjectId(ngoId),
+          pointsAwarded: rewardPoints,
+          reason: "Donation Claimed by NGO",
+        });
+        console.log("Successfully created reward history");
+      } catch (error) {
+        console.error("Failed to create reward history:", error);
+      }
+    }
+
+    // Claim the donation with all updates in one operation
+    try {
+      const updated = await Donation.findByIdAndUpdate(
+        id,
+        {
+          $set: {
+            claimedByNgoId: new mongoose.Types.ObjectId(ngoId),
+            status: "Claimed",
+            claimedAt: new Date(),
+            rewardPointsAwarded: pointsAwarded ? rewardPoints : 0,
+            rewardGranted: pointsAwarded,
+          },
+        },
+        { new: true },
+      )
+        .populate("donorId", "username fullName email profileImage")
+        .populate("claimedByNgoId", "organizationName email contactPerson");
+
+      console.log("Successfully claimed donation, points awarded:", pointsAwarded);
+      return updated;
+    } catch (error) {
+      console.error("Failed to claim donation:", error);
+      throw new HttpException(500, "Failed to claim donation");
+    }
   }
 
-  async completeDonation(id: string, pointsEarned?: number) {
+  async markPickedUp(id: string, ngoId: string) {
     const donation = await DonationRepository.findById(id);
 
     if (!donation) {
       throw new HttpException(404, "Donation not found");
     }
 
-    if (donation.claimStatus !== "Claimed") {
-      throw new HttpException(
-        400,
-        "Donation must be claimed before completing",
-      );
+    if (donation.status !== "Claimed") {
+      throw new HttpException(400, "Donation must be claimed before marking as picked up");
     }
 
-    const updated = await DonationRepository.completeDonation(id, pointsEarned);
-
-    // Award points to donor if pointsEarned is provided
-    if (pointsEarned && pointsEarned > 0) {
-      await DonorRepository.incrementRewardPoints(
-        donation.donorId.toString(),
-        pointsEarned,
-      );
+    if (donation.claimedByNgoId?.toString() !== ngoId) {
+      throw new HttpException(403, "You can only mark your own claimed donations as picked up");
     }
 
+    const updated = await DonationRepository.markPickedUp(id);
+    return updated;
+  }
+
+  async releaseClaim(id: string, ngoId: string) {
+    const donation = await DonationRepository.findById(id);
+
+    if (!donation) {
+      throw new HttpException(404, "Donation not found");
+    }
+
+    if (donation.claimedByNgoId?.toString() !== ngoId) {
+      throw new HttpException(403, "You can only release your own claimed donations");
+    }
+
+    if (donation.status === "Completed") {
+      throw new HttpException(400, "Cannot release a completed donation");
+    }
+
+    const updated = await DonationRepository.releaseClaim(id, ngoId);
+    return updated;
+  }
+
+  async deleteClaimedDonation(id: string, ngoId: string) {
+    const donation = await DonationRepository.findById(id);
+
+    if (!donation) {
+      throw new HttpException(404, "Donation not found");
+    }
+
+    if (donation.claimedByNgoId?.toString() !== ngoId) {
+      throw new HttpException(403, "You can only delete your own claimed donations");
+    }
+
+    if (donation.status !== "Completed") {
+      throw new HttpException(400, "You can only delete completed donations");
+    }
+
+    const deleted = await DonationRepository.delete(id);
+    return deleted;
+  }
+
+  async markCompleted(id: string, ngoId: string) {
+    const donation = await DonationRepository.findById(id);
+
+    if (!donation) {
+      throw new HttpException(404, "Donation not found");
+    }
+
+    if (donation.status !== "PickedUp") {
+      throw new HttpException(400, "Donation must be picked up before marking as completed");
+    }
+
+    if (donation.claimedByNgoId?.toString() !== ngoId) {
+      throw new HttpException(403, "You can only mark your own claimed donations as completed");
+    }
+
+    const updated = await DonationRepository.markCompleted(
+      id,
+      donation.rewardPointsAwarded || 0,
+    );
     return updated;
   }
 
   async getNgoClaimedDonations(ngoId: string) {
-    const donations = await DonationRepository.findNgoClaimedDonations(ngoId);
+    const donations = await DonationRepository.findClaimedByNgo(ngoId);
     return donations;
   }
 
-  async getNgoClaimedDonationsByStatus(ngoId: string, claimStatus: string) {
-    const donations = await DonationRepository.findNgoClaimedDonationsByStatus(
-      ngoId,
-      claimStatus,
-    );
+  async getDonationsByStatus(status: string) {
+    const donations = await DonationRepository.findByStatus(status);
     return donations;
   }
 }

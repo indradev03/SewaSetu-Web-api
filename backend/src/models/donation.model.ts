@@ -13,11 +13,11 @@ export interface IDonation extends Document {
   adminStatus: "Pending" | "Approved" | "Rejected";
   adminRejectionReason?: string;
   // NGO claim fields
-  claimedBy?: mongoose.Types.ObjectId;
-  claimStatus: "Unclaimed" | "Claimed" | "Completed";
+  claimedByNgoId?: mongoose.Types.ObjectId;
   claimedAt?: Date;
-  estimatedPickupTime?: Date;
-  pointsEarned?: number;
+  status: "Available" | "Claimed" | "PickedUp" | "Completed";
+  rewardPointsAwarded: number;
+  rewardGranted: boolean;
 }
 
 const DonationSchema = new Schema<IDonation>(
@@ -72,24 +72,25 @@ const DonationSchema = new Schema<IDonation>(
       type: String,
     },
     // NGO claim fields
-    claimedBy: {
+    claimedByNgoId: {
       type: Schema.Types.ObjectId,
       ref: "NGO",
-    },
-    claimStatus: {
-      type: String,
-      enum: ["Unclaimed", "Claimed", "Completed"],
-      default: "Unclaimed",
     },
     claimedAt: {
       type: Date,
     },
-    estimatedPickupTime: {
-      type: Date,
+    status: {
+      type: String,
+      enum: ["Available", "Claimed", "PickedUp", "Completed"],
+      default: "Available",
     },
-    pointsEarned: {
+    rewardPointsAwarded: {
       type: Number,
       default: 0,
+    },
+    rewardGranted: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true },
