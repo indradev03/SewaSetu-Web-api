@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import {
   Package,
   Handshake,
@@ -14,9 +15,27 @@ import {
   Sparkles,
 } from "lucide-react";
 import Button from "@/app/components/ui/button";
+import { getDonorProfileApi } from "@/app/lib/api/donor.api";
 
 export default function DonorDashboardHome() {
   const router = useRouter();
+  const [rewardPoints, setRewardPoints] = useState(0);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchDonorProfile();
+  }, []);
+
+  const fetchDonorProfile = async () => {
+    try {
+      const res = await getDonorProfileApi();
+      setRewardPoints(res.data.rewardPoints || 0);
+    } catch (error) {
+      console.error("Failed to fetch donor profile", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const metrics = [
     {
@@ -33,7 +52,7 @@ export default function DonorDashboardHome() {
     },
     {
       label: "Earned Rewards",
-      value: "340 pts",
+      value: loading ? "Loading..." : `${rewardPoints} pts`,
       icon: Gift,
       color: "text-amber-600 bg-amber-50 border-amber-100",
     },

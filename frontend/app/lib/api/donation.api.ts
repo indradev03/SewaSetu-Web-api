@@ -19,17 +19,18 @@ export type Donation = {
   unit: "Pieces" | "Kgs" | "Packets" | "Liters";
   photos: string[];
   pickupAddress: string;
-  adminStatus: "Pending" | "Approved" | "Rejected" | "Collected";
+  adminStatus: "Pending" | "Approved" | "Rejected";
   adminRejectionReason?: string;
-  claimedBy?: {
+  claimedByNgoId?: {
     _id: string;
     organizationName: string;
     email: string;
+    contactPerson?: string;
   };
-  claimStatus: "Unclaimed" | "Claimed" | "Completed";
   claimedAt?: string;
-  estimatedPickupTime?: string;
-  pointsEarned?: number;
+  status: "Available" | "Claimed" | "PickedUp" | "Completed";
+  rewardPointsAwarded: number;
+  rewardGranted: boolean;
   createdAt: string;
   updatedAt: string;
 };
@@ -171,11 +172,32 @@ export const claimDonationApi = async (
   return res.data;
 };
 
+export const pickupDonationApi = async (
+  id: string,
+): Promise<{ success: boolean; message: string; data: Donation }> => {
+  const res = await axiosInstance.patch(API.NGO.PICKUP_DONATION(id));
+  return res.data;
+};
+
+export const releaseClaimApi = async (
+  id: string,
+): Promise<{ success: boolean; message: string; data: Donation }> => {
+  const res = await axiosInstance.patch(`/donation/ngo/${id}/release`);
+  return res.data;
+};
+
+export const deleteClaimedDonationApi = async (
+  id: string,
+): Promise<{ success: boolean; message: string; data: Donation }> => {
+  const res = await axiosInstance.delete(`/donation/ngo/${id}`);
+  return res.data;
+};
+
 export const completeDonationApi = async (
   id: string,
-  payload: CompleteDonationPayload,
+  payload?: CompleteDonationPayload,
 ): Promise<{ success: boolean; message: string; data: Donation }> => {
-  const res = await axiosInstance.put(API.NGO.COMPLETE_DONATION(id), payload);
+  const res = await axiosInstance.patch(API.NGO.COMPLETE_DONATION(id), payload);
   return res.data;
 };
 

@@ -60,7 +60,7 @@ export default function DonationHistory() {
     }
   };
 
-  const StatusBadge = ({ admin, claim }: { admin: string; claim: string }) => {
+  const StatusBadge = ({ admin, status }: { admin: string; status: string }) => {
     const configs: Record<
       string,
       { color: string; icon: JSX.Element; label: string }
@@ -75,19 +75,29 @@ export default function DonationHistory() {
         icon: <AlertCircle size={14} />,
         label: "Pending",
       },
-      Completed: {
+      Available: {
         color: "bg-emerald-50 text-emerald-700 border-emerald-100",
         icon: <CheckCircle size={14} />,
-        label: "Completed",
+        label: "Available",
       },
       Claimed: {
         color: "bg-blue-50 text-blue-700 border-blue-100",
         icon: <Clock size={14} />,
         label: "Claimed",
       },
+      PickedUp: {
+        color: "bg-amber-50 text-amber-700 border-amber-100",
+        icon: <Package size={14} />,
+        label: "Picked Up",
+      },
+      Completed: {
+        color: "bg-purple-50 text-purple-700 border-purple-100",
+        icon: <CheckCircle size={14} />,
+        label: "Completed",
+      },
     };
     const c = configs[admin] ||
-      configs[claim] || {
+      configs[status] || {
         color: "bg-slate-100 text-slate-700 border-slate-200",
         icon: <CheckCircle size={14} />,
         label: "Available",
@@ -145,7 +155,7 @@ export default function DonationHistory() {
                 className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col gap-4"
               >
                 <div className="flex justify-between items-start">
-                  <StatusBadge admin={d.adminStatus} claim={d.claimStatus} />
+                  <StatusBadge admin={d.adminStatus} status={d.status} />
                   <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
                     {d.category}
                   </span>
@@ -185,10 +195,33 @@ export default function DonationHistory() {
                   </div>
                 )}
 
-                {d.pointsEarned && d.pointsEarned > 0 && (
+                {/* NGO Claim Information */}
+                {d.claimedByNgoId && (
+                  <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl space-y-2">
+                    <p className="text-xs text-blue-700 font-semibold flex items-center gap-1.5">
+                      <CheckCircle size={12} />
+                      Claimed by NGO
+                    </p>
+                    <p className="text-sm text-blue-900 font-medium">
+                      {d.claimedByNgoId.organizationName}
+                    </p>
+                    <p className="text-xs text-blue-600">
+                      {d.claimedByNgoId.email}
+                    </p>
+                    {d.claimedAt && (
+                      <p className="text-[10px] text-blue-500">
+                        Claimed: {new Date(d.claimedAt).toLocaleDateString()}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+                {/* Reward Points */}
+                {d.rewardPointsAwarded && d.rewardPointsAwarded > 0 && (
                   <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl">
-                    <p className="text-sm text-emerald-700 font-medium">
-                      Points Earned: {d.pointsEarned}
+                    <p className="text-sm text-emerald-700 font-medium flex items-center gap-1.5">
+                      <span className="text-lg">🎉</span>
+                      You earned {d.rewardPointsAwarded} reward points!
                     </p>
                   </div>
                 )}
