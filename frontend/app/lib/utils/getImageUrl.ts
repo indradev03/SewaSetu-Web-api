@@ -1,5 +1,5 @@
 export function getImageUrl(
-  folder: "profile" | "rewards",
+  folder: "profile" | "rewards" | "documents",
   filename?: string | null,
 ): string | null {
   if (!filename) return null;

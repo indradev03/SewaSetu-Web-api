@@ -22,6 +22,8 @@ export type RegisterNGOPayload = {
   password: string;
   impactDescription: string;
   address?: string;
+  registrationDoc?: File;
+  panCard?: File;
 };
 
 export type LoginPayload = {
@@ -57,9 +59,33 @@ export const donorLoginApi = async (payload: LoginPayload) => {
 // ── NGO API ──
 
 export const ngoRegisterApi = async (payload: RegisterNGOPayload) => {
+  const formData = new FormData();
+  
+  // Add all text fields
+  formData.append("organizationName", payload.organizationName);
+  formData.append("registrationNumber", payload.registrationNumber);
+  formData.append("yearEstablished", payload.yearEstablished);
+  formData.append("contactPerson", payload.contactPerson);
+  formData.append("email", payload.email);
+  formData.append("password", payload.password);
+  formData.append("impactDescription", payload.impactDescription);
+  if (payload.address) formData.append("address", payload.address);
+  
+  // Add document files if present
+  if (payload.registrationDoc) {
+    formData.append("registrationDoc", payload.registrationDoc);
+  }
+  if (payload.panCard) {
+    formData.append("panCard", payload.panCard);
+  }
+
   const res = await axiosInstance.post<
     AuthResponse<{ ngo: unknown; token?: string }>
-  >(API.NGO.REGISTER, payload);
+  >(API.NGO.REGISTER, formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res.data;
 };
 

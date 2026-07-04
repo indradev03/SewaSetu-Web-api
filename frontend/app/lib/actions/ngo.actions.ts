@@ -17,6 +17,8 @@ export const ngoRegisterSchema = z
       .string()
       .min(10, "Please describe your mission (min 10 chars)"),
     address: z.string().optional(),
+    registrationDoc: z.any().optional(),
+    panCard: z.any().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",

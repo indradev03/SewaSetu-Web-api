@@ -57,8 +57,8 @@ export default function LoginForm() {
         return;
       }
 
-      setErrors({ root: "Invalid email or password parameters." });
-      toast.error("Authentication failed. Please verify credentials.");
+      setErrors(ngoResult.errors);
+      toast.error(ngoResult.errors.root || "Authentication failed. Please verify credentials.");
     } catch (error) {
       setLoading(false);
       toast.error("An unexpected error occurred. Please try again.");

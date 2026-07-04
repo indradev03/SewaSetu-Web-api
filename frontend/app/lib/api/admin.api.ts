@@ -20,6 +20,8 @@ export type NGO = {
   address?: string;
   profileImage?: string;
   isVerified: boolean;
+  registrationDocPath?: string;
+  panCardPath?: string;
   role: "ngo";
   createdAt?: string;
 };
