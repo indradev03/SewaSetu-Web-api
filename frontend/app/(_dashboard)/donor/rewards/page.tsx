@@ -154,7 +154,7 @@ export default function DonorRewardsPage() {
       {/* Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-4xl font-semibold tracking-tight text-emerald-600 font-serif">
             Rewards
           </h1>
           <p className="text-sm text-slate-500 mt-1">
