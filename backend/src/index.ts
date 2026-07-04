@@ -9,6 +9,7 @@ import ngoRoutes from "./routes/ngo.route";
 import donationRoutes from "./routes/donation.route";
 import adminRoutes from "./routes/admin/admin.route";
 import rewardClaimRoutes from "./routes/donor/rewardClaim.route";
+import donorRewardsRoutes from "./routes/donor/rewards.route";
 import path from "path";
 
 const app = express();
@@ -51,6 +52,9 @@ app.use("/api/v1/donor", donorRoutes);
 
 // Donor reward claim routes
 app.use("/api/v1/donor/reward-claims", rewardClaimRoutes);
+
+// Donor rewards routes
+app.use("/api/v1/donor/rewards", donorRewardsRoutes);
 
 // NGO routes
 app.use("/api/v1/ngo", ngoRoutes);
