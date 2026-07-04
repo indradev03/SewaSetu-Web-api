@@ -18,6 +18,7 @@ export type Reward = {
   discountValue: number;
   terms?: string;
   expiryDate: string;
+  requiredPoints: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -74,7 +75,7 @@ export const getAllRewards = async ({
   }
 };
 
-//  GET ACTIVE REWARDS
+//  GET ACTIVE REWARDS (Admin)
 
 export const getActiveRewards = async () => {
   try {
@@ -83,6 +84,21 @@ export const getActiveRewards = async () => {
   } catch (error: any) {
     throw new Error(
       error?.response?.data?.message || "Fetch active rewards failed",
+    );
+  }
+};
+
+//  GET ALL REWARDS (Donor - with filtering)
+
+export const getDonorRewards = async (params: RewardListParams) => {
+  try {
+    const response = await axiosInstance.get("/donor/rewards", {
+      params,
+    });
+    return response.data;
+  } catch (error: any) {
+    throw new Error(
+      error?.response?.data?.message || "Fetch rewards failed",
     );
   }
 };
