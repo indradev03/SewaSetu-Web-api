@@ -58,4 +58,21 @@ export const DonorRepository = {
   async findByIdWithPassword(id: string): Promise<IDonor | null> {
     return await Donor.findById(id);
   },
+
+  // ── Reward Points Management
+  async incrementRewardPoints(donorId: string, points: number): Promise<IDonor | null> {
+    return await Donor.findByIdAndUpdate(
+      donorId,
+      { $inc: { rewardPoints: points } },
+      { new: true },
+    ).select("-password");
+  },
+
+  async decrementRewardPoints(donorId: string, points: number): Promise<IDonor | null> {
+    return await Donor.findByIdAndUpdate(
+      donorId,
+      { $inc: { rewardPoints: -points } },
+      { new: true },
+    ).select("-password");
+  },
 };

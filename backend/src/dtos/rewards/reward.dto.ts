@@ -31,12 +31,17 @@ const RewardFields = {
 
   expiryDate: z.coerce.date(),
 
+  requiredPoints: z.coerce
+    .number({
+      error: "Required points is required",
+    })
+    .min(0, "Required points cannot be negative"),
+
   isActive: z.boolean().optional(),
 };
 
-// ─────────────────────────────
 // Create Reward
-// ─────────────────────────────
+
 export const CreateRewardDTO = z
   .object(RewardFields)
   .superRefine((data, ctx) => {
@@ -65,9 +70,8 @@ export const CreateRewardDTO = z
     }
   });
 
-// ─────────────────────────────
 // Update Reward
-// ─────────────────────────────
+
 export const UpdateRewardDTO = z
   .object({
     title: RewardFields.title.optional(),
@@ -79,6 +83,7 @@ export const UpdateRewardDTO = z
     discountValue: RewardFields.discountValue.optional(),
     terms: RewardFields.terms.optional(),
     expiryDate: RewardFields.expiryDate.optional(),
+    requiredPoints: RewardFields.requiredPoints.optional(),
     isActive: RewardFields.isActive,
   })
   .superRefine((data, ctx) => {
@@ -115,9 +120,8 @@ export const UpdateRewardDTO = z
     }
   });
 
-// ─────────────────────────────
 // Reward Query
-// ─────────────────────────────
+
 export const RewardQueryDTO = z.object({
   page: z.coerce.number().min(1).default(1),
   limit: z.coerce.number().min(1).max(100).default(10),
@@ -125,9 +129,8 @@ export const RewardQueryDTO = z.object({
   isActive: z.coerce.boolean().optional(),
 });
 
-// ─────────────────────────────
 // Types
-// ─────────────────────────────
+
 export type CreateRewardType = z.infer<typeof CreateRewardDTO>;
 export type UpdateRewardType = z.infer<typeof UpdateRewardDTO>;
 export type RewardQueryType = z.infer<typeof RewardQueryDTO>;

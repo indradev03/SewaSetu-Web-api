@@ -16,6 +16,7 @@ export interface IReward extends Document {
   discountValue: number;
   terms?: string;
   expiryDate: Date;
+  requiredPoints: number;
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -75,6 +76,13 @@ const rewardSchema = new Schema<IReward>(
     expiryDate: {
       type: Date,
       required: true,
+    },
+
+    requiredPoints: {
+      type: Number,
+      required: true,
+      min: 0,
+      default: 0,
     },
 
     isActive: {
