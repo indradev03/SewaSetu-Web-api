@@ -226,6 +226,53 @@ export default function DonationDetailsModal({
                   </div>
                 </div>
               </div>
+
+              {/* NGO Claim Information */}
+              {donation.claimedByNgoId && (
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                    NGO Claim Information
+                  </h4>
+                  <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl space-y-3">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                        <User className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-900">
+                          {donation.claimedByNgoId.organizationName}
+                        </p>
+                        <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5">
+                          <Mail size={14} />
+                          <span>{donation.claimedByNgoId.email}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 pt-2 border-t border-blue-200">
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Status</p>
+                        <StatusBadge status={donation.status} />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Claim Date</p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {donation.claimedAt
+                            ? new Date(donation.claimedAt).toLocaleDateString()
+                            : "N/A"}
+                        </p>
+                      </div>
+                    </div>
+                    {donation.rewardPointsAwarded && donation.rewardPointsAwarded > 0 && (
+                      <div className="pt-2 border-t border-blue-200">
+                        <div className="flex items-center gap-2 text-sm text-emerald-700 font-medium bg-emerald-50 rounded-lg p-2">
+                          <span className="text-lg">🎉</span>
+                          <span>Donor earned {donation.rewardPointsAwarded} reward points</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

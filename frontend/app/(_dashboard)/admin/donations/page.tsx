@@ -27,7 +27,7 @@ import RejectConfirmationModal from "@/app/(_dashboard)/admin/components/donatio
 import ApproveConfirmationModal from "@/app/(_dashboard)/admin/components/donation/ApproveConfirmationModal";
 import DeleteConfirmationModal from "@/app/(_dashboard)/admin/components/donation/DeleteConfirmationModal";
 
-type StatusFilter = "All" | "Pending" | "Approved" | "Rejected" | "Collected";
+type StatusFilter = "All" | "Pending" | "Approved" | "Rejected" | "Available" | "Claimed" | "PickedUp" | "Completed";
 type CategoryFilter = "All" | "Food" | "Clothes" | "Others";
 
 export default function AdminDonations() {
@@ -199,9 +199,11 @@ export default function AdminDonations() {
       donation.category.toLowerCase().includes(searchLower) ||
       donation.pickupAddress.toLowerCase().includes(searchLower);
 
-    // Status filter
+    // Status filter - check both adminStatus and status fields
     const matchesStatus =
-      statusFilter === "All" || donation.adminStatus === statusFilter;
+      statusFilter === "All" ||
+      donation.adminStatus === statusFilter ||
+      donation.status === statusFilter;
 
     // Category filter
     const matchesCategory =
@@ -293,7 +295,10 @@ export default function AdminDonations() {
                 <option value="Pending">Pending</option>
                 <option value="Approved">Approved</option>
                 <option value="Rejected">Rejected</option>
-                <option value="Collected">Collected</option>
+                <option value="Available">Available</option>
+                <option value="Claimed">Claimed</option>
+                <option value="PickedUp">Picked Up</option>
+                <option value="Completed">Completed</option>
               </select>
             </div>
 
