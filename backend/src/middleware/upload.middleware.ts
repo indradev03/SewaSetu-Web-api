@@ -15,6 +15,7 @@ const allowedTypes = [
   "image/png",
   "image/webp",
   "image/gif",
+  "application/pdf",
 ];
 
 export const createUpload = (mainFolder: string, subFolder: string) => {
@@ -38,7 +39,7 @@ export const createUpload = (mainFolder: string, subFolder: string) => {
     cb: FileFilterCallback,
   ) => {
     const ext = path.extname(file.originalname).toLowerCase();
-    const allowedExt = [".jpg", ".jpeg", ".png", ".webp", ".gif"];
+    const allowedExt = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".pdf"];
 
     const isMimeValid = allowedTypes.includes(file.mimetype);
     const isExtValid = allowedExt.includes(ext);
@@ -46,7 +47,7 @@ export const createUpload = (mainFolder: string, subFolder: string) => {
     if (isMimeValid && isExtValid) {
       cb(null, true);
     } else {
-      cb(new Error("Only valid image files are allowed"));
+      cb(new Error("Only valid image files and PDFs are allowed"));
     }
   };
 
@@ -67,6 +68,9 @@ export const uploadDonorProfile = createUpload("profile", "donor");
 
 //  NGO profile image
 export const uploadNgoProfile = createUpload("profile", "ngo");
+
+//  NGO documents (registration, PAN card)
+export const uploadNgoDocuments = createUpload("documents", "ngo");
 
 // Reward image
 export const uploadRewardImage = createUpload("rewards", "images");

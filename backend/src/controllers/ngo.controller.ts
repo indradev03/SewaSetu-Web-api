@@ -29,7 +29,28 @@ export class NGOController {
         throw new HttpException(400, message);
       }
 
-      const ngo = await ngoService.registerNGO(parsed.data);
+      // Handle document file paths
+      const files = req.files as { [fieldname: string]: Express.Multer.File[] };
+      let registrationDocPath: string | undefined;
+      let panCardPath: string | undefined;
+
+      if (files?.registrationDoc && files.registrationDoc[0]) {
+        registrationDocPath = `${req.protocol}://${req.get(
+          "host",
+        )}/uploads/documents/${files.registrationDoc[0].filename}`;
+      }
+
+      if (files?.panCard && files.panCard[0]) {
+        panCardPath = `${req.protocol}://${req.get(
+          "host",
+        )}/uploads/documents/${files.panCard[0].filename}`;
+      }
+
+      const ngo = await ngoService.registerNGO({
+        ...parsed.data,
+        registrationDocPath,
+        panCardPath,
+      });
 
       return ApiResponseHelper.success(
         res,
