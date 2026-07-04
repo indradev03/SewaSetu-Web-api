@@ -33,11 +33,7 @@ export default function AdminRewardsPage() {
   const [viewReward, setViewReward] = useState<Reward | null>(null);
 
   const fetchRewards = useCallback(
-    async (
-      pageNum: number,
-      searchTerm: string,
-      filterValue: string,
-    ) => {
+    async (pageNum: number, searchTerm: string, filterValue: string) => {
       setLoading(true);
       try {
         const params: any = {
@@ -105,7 +101,7 @@ export default function AdminRewardsPage() {
   };
 
   return (
-    <div className="w-full max-w-8xl mx-auto px-4 py-8">
+    <div className=" w-full space-y-6 py-8 px-2 md:px-6 max-w-8xl mx-auto">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -119,10 +115,10 @@ export default function AdminRewardsPage() {
 
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-4xl font-semibold tracking-tight text-emerald-600 font-serif">
             Rewards
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-gray-500 mt-2">
             Manage and configure your reward system.
           </p>
         </div>

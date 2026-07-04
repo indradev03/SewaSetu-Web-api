@@ -99,13 +99,17 @@ export default function RewardForm({ mode, reward }: RewardFormProps) {
 
   return (
     <div className="max-w-8xl space-y-6">
-      <button
-        onClick={() => router.back()}
-        className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 hover:text-emerald-500 transition-colors"
-      >
-        <ArrowLeft size={16} />
-        Back to Rewards
-      </button>
+      <div className="mb-6 mt-8">
+        <button
+          onClick={() => router.back()}
+          className="group flex items-center gap-2 text-emerald-600 hover:text-emerald-700 transition-colors font-medium text-sm"
+        >
+          <div className="p-2 bg-emerald-50 rounded-full group-hover:bg-emerald-100 transition-colors">
+            <ArrowLeft size={18} />
+          </div>
+          Back to Rewards
+        </button>
+      </div>
 
       <form
         onSubmit={handleSubmit}

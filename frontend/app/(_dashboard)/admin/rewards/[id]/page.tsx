@@ -28,7 +28,7 @@ export default function EditRewardPage() {
   }, [params.id]);
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-2 md:px-6 py-8 space-y-6">
+    <div className="w-full max-w-8xl mx-auto px-4 py-8">
       <ToastContainer />
 
       <div>
