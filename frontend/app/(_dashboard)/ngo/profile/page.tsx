@@ -99,7 +99,7 @@ export default function NGOProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-blue-700">
+      <div className="min-h-screen flex items-center justify-center text-green-700">
         <div className="animate-pulse font-medium">Loading profile...</div>
       </div>
     );
@@ -116,7 +116,7 @@ export default function NGOProfilePage() {
       <div className="max-w-8xl mx-auto">
         {/* HEADER */}
         <div className="mb-10">
-          <h1 className="text-4xl font-semibold tracking-tight text-blue-600 font-serif">
+          <h1 className="text-4xl font-semibold tracking-tight text-emerald-600 font-serif">
             Profile Settings
           </h1>
         </div>
@@ -132,7 +132,7 @@ export default function NGOProfilePage() {
 
               {/* AVATAR CONTAINER */}
               <div className="relative group mb-6">
-                <div className="w-40 h-40 rounded-full overflow-hidden ring-4 ring-blue-500 shadow-inner bg-gray-100">
+                <div className="w-40 h-40 rounded-full overflow-hidden ring-4 ring-green-500 shadow-inner bg-gray-100">
                   <img
                     src={image}
                     className="w-full h-full object-cover"
@@ -141,7 +141,7 @@ export default function NGOProfilePage() {
                 </div>
 
                 {isEditing && (
-                  <label className="absolute bottom-1 right-1 bg-white border border-gray-100 text-blue-600 p-3 rounded-full cursor-pointer shadow-xl hover:scale-105 active:scale-95 transition duration-200 flex items-center justify-center">
+                  <label className="absolute bottom-1 right-1 bg-white border border-gray-100 text-green-600 p-3 rounded-full cursor-pointer shadow-xl hover:scale-105 active:scale-95 transition duration-200 flex items-center justify-center">
                     <Camera size={18} />
                     <input
                       type="file"
@@ -164,10 +164,10 @@ export default function NGOProfilePage() {
               <p className="text-sm text-gray-500/90 mt-1.5">{user?.email}</p>
 
               {/* STATUS BADGE */}
-              <span className="mt-4 inline-flex items-center gap-1.5 text-xs bg-blue-50 border border-blue-100 text-blue-800 px-3 py-1 rounded-full font-medium">
+              <span className="mt-4 inline-flex items-center gap-1.5 text-xs bg-green-50 border border-green-100 text-green-800 px-3 py-1 rounded-full font-medium">
                 <Circle
                   size={6}
-                  className={`fill-blue-500 stroke-blue-500 ${user?.isVerified ? "" : "animate-pulse"}`}
+                  className={`fill-green-500 stroke-green-500 ${user?.isVerified ? "" : "animate-pulse"}`}
                 />
                 {user?.isVerified ? "Verified NGO" : "Pending Verification"}
               </span>
@@ -178,7 +178,9 @@ export default function NGOProfilePage() {
                   onClick={() => setIsEditing(!isEditing)}
                   disabled={isSaving}
                   variant={isEditing ? "secondary" : "green"}
-                  className="rounded-3xl! bg-blue-500 hover:bg-blue-400"
+                  className={`rounded-2xl ${
+                    !isEditing ? "bg-green-500 hover:bg-green-400" : ""
+                  }`}
                 >
                   {isEditing ? "Cancel Editing" : "Edit Profile"}
                 </Button>
@@ -190,7 +192,7 @@ export default function NGOProfilePage() {
               <span className="text-sm text-gray-600 font-medium">
                 Account Status
               </span>
-              <span className="text-xs bg-blue-500/10 text-blue-800 px-3 py-1 rounded-full font-semibold flex items-center gap-1">
+              <span className="text-xs bg-green-500/10 text-green-800 px-3 py-1 rounded-full font-semibold flex items-center gap-1">
                 Active
               </span>
             </div>
@@ -201,7 +203,7 @@ export default function NGOProfilePage() {
             <div className="bg-white border border-gray-100 rounded-[2.5rem] p-8 md:p-10 shadow-[0_8px_32px_0_rgba(0,0,0,0.03)] min-h-[28rem] flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
-                  <h3 className="text-xl font-semibold text-blue-600 font-serif">
+                  <h3 className="text-xl font-semibold text-green-600 font-serif">
                     Organization Information
                   </h3>
                 </div>
@@ -212,7 +214,7 @@ export default function NGOProfilePage() {
                     <div className="grid sm:grid-cols-2 gap-x-8 gap-y-6">
                       {/* ORGANIZATION NAME */}
                       <div className="flex items-start gap-4 p-2 rounded-xl hover:bg-gray-50/50 transition">
-                        <div className="bg-blue-50 text-blue-600 p-2.5 rounded-xl mt-0.5">
+                        <div className="bg-green-50 text-green-600 p-2.5 rounded-xl mt-0.5">
                           <Building2 size={18} />
                         </div>
                         <div>
@@ -227,7 +229,7 @@ export default function NGOProfilePage() {
 
                       {/* CONTACT PERSON */}
                       <div className="flex items-start gap-4 p-2 rounded-xl hover:bg-gray-50/50 transition">
-                        <div className="bg-blue-50 text-blue-600 p-2.5 rounded-xl mt-0.5">
+                        <div className="bg-green-50 text-green-600 p-2.5 rounded-xl mt-0.5">
                           <Building2 size={18} />
                         </div>
                         <div>
@@ -242,7 +244,7 @@ export default function NGOProfilePage() {
 
                       {/* REGISTRATION NUMBER */}
                       <div className="flex items-start gap-4 p-2 rounded-xl hover:bg-gray-50/50 transition">
-                        <div className="bg-blue-50 text-blue-600 p-2.5 rounded-xl mt-0.5">
+                        <div className="bg-green-50 text-green-600 p-2.5 rounded-xl mt-0.5">
                           <FileText size={18} />
                         </div>
                         <div>
@@ -257,7 +259,7 @@ export default function NGOProfilePage() {
 
                       {/* YEAR ESTABLISHED */}
                       <div className="flex items-start gap-4 p-2 rounded-xl hover:bg-gray-50/50 transition">
-                        <div className="bg-blue-50 text-blue-600 p-2.5 rounded-xl mt-0.5">
+                        <div className="bg-green-50 text-green-600 p-2.5 rounded-xl mt-0.5">
                           <Calendar size={18} />
                         </div>
                         <div>
@@ -272,7 +274,7 @@ export default function NGOProfilePage() {
 
                       {/* ADDRESS */}
                       <div className="flex items-start gap-4 p-2 rounded-xl hover:bg-gray-50/50 transition">
-                        <div className="bg-blue-50 text-blue-600 p-2.5 rounded-xl mt-0.5">
+                        <div className="bg-green-50 text-green-600 p-2.5 rounded-xl mt-0.5">
                           <MapPin size={18} />
                         </div>
                         <div>
@@ -340,7 +342,7 @@ export default function NGOProfilePage() {
                         </div>
                         <input
                           type="text"
-                          className="w-full bg-white border border-gray-200 text-gray-800 pl-11 pr-4 py-3.5 rounded-2xl text-sm font-medium shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition duration-200"
+                          className="w-full bg-white border border-gray-200 text-gray-800 pl-11 pr-4 py-3.5 rounded-2xl text-sm font-medium shadow-sm focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:outline-none transition duration-200"
                           value={organizationName}
                           onChange={(e) => setOrganizationName(e.target.value)}
                           placeholder="Enter organization name"
@@ -359,7 +361,7 @@ export default function NGOProfilePage() {
                         </div>
                         <input
                           type="text"
-                          className="w-full bg-white border border-gray-200 text-gray-800 pl-11 pr-4 py-3.5 rounded-2xl text-sm font-medium shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition duration-200"
+                          className="w-full bg-white border border-gray-200 text-gray-800 pl-11 pr-4 py-3.5 rounded-2xl text-sm font-medium shadow-sm focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:outline-none transition duration-200"
                           value={contactPerson}
                           onChange={(e) => setContactPerson(e.target.value)}
                           placeholder="Contact person name"
@@ -414,7 +416,7 @@ export default function NGOProfilePage() {
                         </div>
                         <input
                           type="text"
-                          className="w-full bg-white border border-gray-200 text-gray-800 pl-11 pr-4 py-3.5 rounded-2xl text-sm font-medium shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition duration-200"
+                          className="w-full bg-white border border-gray-200 text-gray-800 pl-11 pr-4 py-3.5 rounded-2xl text-sm font-medium shadow-sm focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:outline-none transition duration-200"
                           value={address}
                           onChange={(e) => setAddress(e.target.value)}
                           placeholder="City, Country"
@@ -446,7 +448,7 @@ export default function NGOProfilePage() {
                         Impact Description
                       </label>
                       <textarea
-                        className="w-full bg-white border border-gray-200 text-gray-800 px-4 py-3.5 rounded-2xl text-sm font-medium shadow-sm focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 focus:outline-none transition duration-200 min-h-32 resize-none"
+                        className="w-full bg-white border border-gray-200 text-gray-800 px-4 py-3.5 rounded-2xl text-sm font-medium shadow-sm focus:border-green-500 focus:ring-4 focus:ring-green-500/10 focus:outline-none transition duration-200 min-h-32 resize-none"
                         value={impactDescription}
                         onChange={(e) => setImpactDescription(e.target.value)}
                         placeholder="Describe your organization's impact and mission..."
@@ -458,11 +460,8 @@ export default function NGOProfilePage() {
 
               {/* ACTION LOWER BAR */}
               <div className="mt-10 border-t border-gray-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-2.5 text-xs md:text-sm text-blue-800 font-medium bg-blue-50/60 border border-blue-100/50 px-4 py-2.5 rounded-xl">
-                  <CheckCircle2
-                    size={16}
-                    className="text-blue-600 shrink-0"
-                  />
+                <div className="flex items-center gap-2.5 text-xs md:text-sm text-green-800 font-medium bg-green-50/60 border border-green-100/50 px-4 py-2.5 rounded-xl">
+                  <CheckCircle2 size={16} className="text-green-600 shrink-0" />
                   Available for donation claims
                 </div>
 
@@ -473,7 +472,7 @@ export default function NGOProfilePage() {
                       form="profileForm"
                       disabled={isSaving}
                       variant="green"
-                      className="px-8! py-3.5! rounded-full! text-sm tracking-wide shadow-md shadow-blue-600/10 bg-blue-500 hover:bg-blue-400"
+                      className="px-8! py-3.5! rounded-full! text-sm tracking-wide shadow-md shadow-green-600/10 bg-green-500 hover:bg-green-400"
                     >
                       {isSaving ? "Saving..." : "Save Changes"}
                     </Button>

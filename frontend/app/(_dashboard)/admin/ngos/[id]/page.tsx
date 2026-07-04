@@ -119,17 +119,20 @@ export default function AdminNGODetailPage() {
     <div className="p-6 max-w-8xl mx-auto">
       <ToastContainer position="top-right" autoClose={3000} />
 
-      <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm ">
+      <div className=" w-full space-y-6 py-8 px-2  max-w-8xl mx-auto ">
         <div className="mb-8">
-          <button
-            onClick={() => router.push("/admin/ngos")}
-            className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors mb-4"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back to NGOs
-          </button>
-          <h1 className="text-2xl font-bold text-slate-800">
+          <h1 className="text-4xl font-semibold tracking-tight text-emerald-600 font-serif">
             Organization Profile
           </h1>
+          <button
+            onClick={() => router.back()}
+            className="group flex mt-5 items-center gap-2 text-emerald-600 hover:text-emerald-700 transition-colors font-medium text-sm"
+          >
+            <div className="p-2 bg-emerald-50 rounded-full group-hover:bg-emerald-100 transition-colors">
+              <ArrowLeft size={18} />
+            </div>
+            Back to Ngos
+          </button>
         </div>
 
         <div className="bg-white rounded-4xl border border-slate-200 shadow-lg overflow-hidden">

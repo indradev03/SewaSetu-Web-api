@@ -27,7 +27,15 @@ import RejectConfirmationModal from "@/app/(_dashboard)/admin/components/donatio
 import ApproveConfirmationModal from "@/app/(_dashboard)/admin/components/donation/ApproveConfirmationModal";
 import DeleteConfirmationModal from "@/app/(_dashboard)/admin/components/donation/DeleteConfirmationModal";
 
-type StatusFilter = "All" | "Pending" | "Approved" | "Rejected" | "Available" | "Claimed" | "PickedUp" | "Completed";
+type StatusFilter =
+  | "All"
+  | "Pending"
+  | "Approved"
+  | "Rejected"
+  | "Available"
+  | "Claimed"
+  | "PickedUp"
+  | "Completed";
 type CategoryFilter = "All" | "Food" | "Clothes" | "Others";
 
 export default function AdminDonations() {
@@ -249,7 +257,7 @@ export default function AdminDonations() {
   }
 
   return (
-    <div className=" w-full space-y-6 py-8 px-2 md:px-6 max-w-8xl mx-auto">
+    <div className=" w-full space-y-6 py-8 px-2  max-w-8xl mx-auto">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -415,10 +423,10 @@ export default function AdminDonations() {
 
                     {/* Actions */}
                     <div className="col-span-2">
-                      <div className="flex items-center gap-4">
+                      <div className="flex justify-center gap-4">
                         <button
                           onClick={() => openDetailsModal(donation)}
-                          className="flex items-center gap-1 px-2 py-1.5
+                          className="flex items-center gap-1 px-2 py-1.5 
                             bg-emerald-50 text-emerald-700 rounded-lg text-xs font-medium hover:bg-emerald-100 transition-colors"
                           disabled={processing === donation._id}
                         >

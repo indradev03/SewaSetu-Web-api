@@ -29,7 +29,7 @@ export default function NGODashboard() {
       label: "My Claimed",
       value: "8 Active",
       icon: Handshake,
-      color: "text-blue-600 bg-blue-50 border-blue-100",
+      color: "text-green-600 bg-green-50 border-green-100",
     },
     {
       label: "Completed Pickups",
@@ -48,7 +48,7 @@ export default function NGODashboard() {
       date: "Claimed Today, 2:30 PM",
       status: "Claimed",
       statusDesc: "Ready for pickup coordination",
-      statusStyle: "text-blue-700 bg-blue-50/80 border-blue-200/60",
+      statusStyle: "text-green-700 bg-green-50/80 border-green-200/60",
       icon: CheckCircle2,
     },
     {
@@ -78,18 +78,18 @@ export default function NGODashboard() {
   return (
     <div className="w-full space-y-8 py-8 px-2 md:px-6 animate-in fade-in duration-500 max-w-7xl mx-auto">
       {/* 1. Dynamic Premium Hero Banner */}
-      <div className="bg-linear-to-r from-blue-950 to-blue-900 rounded-4xl p-6 sm:p-8 text-white shadow-xl shadow-blue-950/5 relative overflow-hidden">
+      <div className="bg-linear-to-r from-green-950 to-green-900 rounded-4xl p-6 sm:p-8 text-white shadow-xl shadow-green-950/5 relative overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(59,91,219,0.12),transparent_45%)]" />
 
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6 relative z-10">
           <div className="space-y-1.5">
-            <span className="text-[10px] font-bold uppercase tracking-widest text-blue-300 bg-blue-900/60 px-2.5 py-1 rounded-md border border-blue-800/40 inline-block">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-green-300 bg-green-900/60 px-2.5 py-1 rounded-md border border-green-800/40 inline-block">
               SewaSetu NGO Portal
             </span>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">
               Browse Available Donations
             </h1>
-            <p className="text-xs sm:text-sm text-blue-100/70 max-w-md font-medium leading-relaxed">
+            <p className="text-xs sm:text-sm text-green-100/70 max-w-md font-medium leading-relaxed">
               Claim donations from verified donors in your area. Coordinate
               pickups and track delivery status all in one place.
             </p>
@@ -98,7 +98,7 @@ export default function NGODashboard() {
           <div className="shrink-0">
             <Button
               onClick={() => router.push("/ngo/donations")}
-              className="w-full sm:w-auto font-bold px-7 py-4 rounded-2xl shadow-lg shadow-blue-500/20 bg-blue-500 hover:bg-blue-400 text-white flex items-center justify-center gap-2.5 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 text-sm"
+              className="w-full sm:w-auto font-bold px-7 py-4 rounded-2xl shadow-lg shadow-green-500/20 bg-green-500 hover:bg-green-400 text-white flex items-center justify-center gap-2.5 transition-all duration-300 hover:-translate-y-0.5 active:translate-y-0 text-sm"
             >
               View Available Donations
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
@@ -149,7 +149,7 @@ export default function NGODashboard() {
             </div>
             <button
               onClick={() => router.push("/ngo/my-claims")}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100/80 px-3.5 py-2 rounded-xl transition-all duration-200"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-green-600 hover:text-green-700 bg-green-50 hover:bg-green-100/80 px-3.5 py-2 rounded-xl transition-all duration-200"
             >
               All Claims
               <ChevronRight className="w-3.5 h-3.5" />
@@ -179,9 +179,9 @@ export default function NGODashboard() {
                       </div>
 
                       <p className="text-xs font-medium text-slate-500 flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-500 inline-block" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
                         Donor:{" "}
-                        <span className="text-blue-600 font-bold">
+                        <span className="text-green-600 font-bold">
                           {claim.donor}
                         </span>
                       </p>
@@ -215,12 +215,12 @@ export default function NGODashboard() {
           {/* Quick Informational System Guide Context */}
           <div className="bg-white rounded-4xl border border-slate-100 p-6 shadow-sm shadow-slate-100/40 space-y-4">
             <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 text-blue-600" /> How It Works
+              <AlertCircle className="w-4 h-4 text-green-600" /> How It Works
             </h3>
 
             <div className="space-y-4 pt-1">
               <div className="flex gap-3.5 items-start">
-                <div className="text-xs font-black text-blue-600 bg-blue-50 border border-blue-100 w-6 h-6 rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                <div className="text-xs font-black text-green-600 bg-green-50 border border-green-100 w-6 h-6 rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                   1
                 </div>
                 <p className="text-xs md:text-sm text-slate-500 font-medium leading-relaxed">
@@ -228,7 +228,7 @@ export default function NGODashboard() {
                 </p>
               </div>
               <div className="flex gap-3.5 items-start">
-                <div className="text-xs font-black text-blue-600 bg-blue-50 border border-blue-100 w-6 h-6 rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                <div className="text-xs font-black text-green-600 bg-green-50 border border-green-100 w-6 h-6 rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                   2
                 </div>
                 <p className="text-xs md:text-sm text-slate-500 font-medium leading-relaxed">
@@ -236,7 +236,7 @@ export default function NGODashboard() {
                 </p>
               </div>
               <div className="flex gap-3.5 items-start">
-                <div className="text-xs font-black text-blue-600 bg-blue-50 border border-blue-100 w-6 h-6 rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
+                <div className="text-xs font-black text-green-600 bg-green-50 border border-green-100 w-6 h-6 rounded-xl flex items-center justify-center shrink-0 mt-0.5 shadow-sm">
                   3
                 </div>
                 <p className="text-xs md:text-sm text-slate-500 font-medium leading-relaxed">
@@ -248,24 +248,24 @@ export default function NGODashboard() {
           </div>
 
           {/* Impact Widget */}
-          <div className="bg-linear-to-br from-blue-500/5 via-blue-500/1 to-transparent rounded-4xl border border-blue-500/10 p-6 space-y-4 relative overflow-hidden">
-            <div className="absolute top-0 right-0 -mt-10 -mr-10 w-24 h-24 bg-blue-500/5 rounded-full blur-xl pointer-events-none" />
+          <div className="bg-linear-to-br from-green-500/5 via-green-500/1 to-transparent rounded-4xl border border-green-500/10 p-6 space-y-4 relative overflow-hidden">
+            <div className="absolute top-0 right-0 -mt-10 -mr-10 w-24 h-24 bg-green-500/5 rounded-full blur-xl pointer-events-none" />
 
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-blue-500 flex items-center justify-center text-white shrink-0 shadow-md shadow-blue-500/10">
+              <div className="w-9 h-9 rounded-xl bg-green-500 flex items-center justify-center text-white shrink-0 shadow-md shadow-green-500/10">
                 <Sparkles className="w-4 h-4" />
               </div>
-              <h4 className="text-xs font-bold text-blue-950 uppercase tracking-widest">
+              <h4 className="text-xs font-bold text-green-950 uppercase tracking-widest">
                 Your Impact
               </h4>
             </div>
-            <p className="text-xs md:text-sm text-blue-900/80 font-medium leading-relaxed">
+            <p className="text-xs md:text-sm text-green-900/80 font-medium leading-relaxed">
               Every donation you claim helps communities in need. Track your
               impact through your claims history.
             </p>
             <button
               onClick={() => router.push("/ngo/my-claims")}
-              className="inline-flex items-center gap-1 text-xs font-extrabold text-blue-700 hover:text-blue-800 transition group pt-1"
+              className="inline-flex items-center gap-1 text-xs font-extrabold text-green-700 hover:text-green-800 transition group pt-1"
             >
               View All Claims
               <ChevronRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />

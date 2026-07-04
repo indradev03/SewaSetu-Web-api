@@ -79,7 +79,7 @@ export default function NGODonationsPage() {
       case "Available":
         return "text-emerald-700 bg-emerald-50/80 border-emerald-200/60";
       case "Claimed":
-        return "text-blue-700 bg-blue-50/80 border-blue-200/60";
+        return "text-green-700 bg-green-50/80 border-green-200/60";
       case "PickedUp":
         return "text-amber-700 bg-amber-50/80 border-amber-200/60";
       case "Completed":
@@ -97,7 +97,7 @@ export default function NGODonationsPage() {
     return (
       <div className="w-full py-12 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin mx-auto" />
+          <div className="w-12 h-12 border-4 border-green-200 border-t-green-500 rounded-full animate-spin mx-auto" />
           <p className="text-sm text-gray-500">
             Loading available donations...
           </p>
@@ -121,14 +121,14 @@ export default function NGODonationsPage() {
   }
 
   return (
-    <div className="w-full space-y-6 py-8 px-2 md:px-6 max-w-7xl mx-auto">
+    <div className="w-full space-y-6 py-8 px-2 md:px-6 max-w-8xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-4xl font-semibold tracking-tight text-emerald-600 font-serif">
             Available Donations
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-gray-500 mt-2">
             Browse and claim donations from verified donors
           </p>
         </div>
@@ -138,7 +138,7 @@ export default function NGODonationsPage() {
             <input
               type="text"
               placeholder="Search donations..."
-              className="pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 w-64"
+              className="pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 w-64"
             />
           </div>
           <button className="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 transition">
@@ -164,8 +164,8 @@ export default function NGODonationsPage() {
         </div>
         <div className="bg-white rounded-2xl border border-slate-100 p-5 shadow-sm">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center">
-              <CheckCircle2 className="w-5 h-5 text-blue-600" />
+            <div className="w-10 h-10 rounded-xl bg-green-50 border border-green-100 flex items-center justify-center">
+              <CheckCircle2 className="w-5 h-5 text-green-600" />
             </div>
             <div>
               <p className="text-2xl font-bold text-slate-900">0</p>
@@ -216,7 +216,7 @@ export default function NGODonationsPage() {
                     <Button
                       onClick={() => handleClaimClick(donation)}
                       disabled={claimingId === donation._id}
-                      className="bg-white/90 backdrop-blur-sm hover:bg-blue-500 hover:text-white text-blue-600 border-2  shadow-lg px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300"
+                      className="bg-white/90 backdrop-blur-sm hover:bg-green-500 hover:text-white text-green-600 border-2  shadow-lg px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300"
                     >
                       {claimingId === donation._id ? "Claiming..." : "Claim"}
                     </Button>
@@ -229,7 +229,7 @@ export default function NGODonationsPage() {
                     <Button
                       onClick={() => handleClaimClick(donation)}
                       disabled={claimingId === donation._id}
-                      className="bg-white/90 backdrop-blur-sm hover:bg-blue-500 hover:text-white text-blue-600 border-2 shadow-lg px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300"
+                      className="bg-white/90 backdrop-blur-sm hover:bg-green-500 hover:text-white text-green-600 border-2 shadow-lg px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300"
                     >
                       {claimingId === donation._id ? "Claiming..." : "Claim"}
                     </Button>
@@ -282,7 +282,7 @@ export default function NGODonationsPage() {
       {showConfirmDialog && selectedDonation && (
         <div className="fixed inset-0 bg-slate-900/50 flex items-center justify-center z-50 p-4">
           <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
-            <div className="flex items-center gap-3 text-blue-600">
+            <div className="flex items-center gap-3 text-green-600">
               <CheckCircle2 className="w-8 h-8" />
               <h3 className="text-lg font-bold">Claim Donation</h3>
             </div>
@@ -307,7 +307,7 @@ export default function NGODonationsPage() {
               <Button
                 onClick={handleConfirmClaim}
                 disabled={claimingId === selectedDonation._id}
-                className="flex-1 bg-blue-500 hover:bg-blue-400 text-white"
+                className="flex-1 bg-green-500 hover:bg-green-400 text-white"
               >
                 {claimingId === selectedDonation._id
                   ? "Claiming..."

@@ -108,7 +108,7 @@ export default function NGOMyClaimsPage() {
       case "Available":
         return "text-emerald-700 bg-emerald-50/80 border-emerald-200/60";
       case "Claimed":
-        return "text-blue-700 bg-blue-50/80 border-blue-200/60";
+        return "text-green-700 bg-green-50/80 border-green-200/60";
       case "PickedUp":
         return "text-amber-700 bg-amber-50/80 border-amber-200/60";
       case "Completed":
@@ -147,7 +147,7 @@ export default function NGOMyClaimsPage() {
     return (
       <div className="w-full py-12 flex items-center justify-center">
         <div className="text-center space-y-4">
-          <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-500 rounded-full animate-spin mx-auto" />
+          <div className="w-12 h-12 border-4 border-green-200 border-t-green-500 rounded-full animate-spin mx-auto" />
           <p className="text-sm text-gray-500">
             Loading your claimed donations...
           </p>
@@ -171,14 +171,14 @@ export default function NGOMyClaimsPage() {
   }
 
   return (
-    <div className="w-full space-y-6 py-8 px-2 md:px-6 max-w-7xl mx-auto">
+    <div className="w-full space-y-6 py-8 px-2 md:px-6 max-w-8xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
-          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
+          <h1 className="text-4xl font-semibold tracking-tight text-emerald-600 font-serif">
             My Claimed Donations
           </h1>
-          <p className="text-sm text-slate-500">
+          <p className="text-gray-500 mt-2">
             Track and manage your claimed donations
           </p>
         </div>
@@ -192,7 +192,7 @@ export default function NGOMyClaimsPage() {
             onClick={() => setStatusFilter(status)}
             className={`px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition ${
               statusFilter === status
-                ? "bg-blue-500 text-white"
+                ? "bg-green-500 text-white"
                 : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
             }`}
           >

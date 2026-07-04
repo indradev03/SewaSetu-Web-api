@@ -94,7 +94,7 @@ export default function AdminNGOsPage() {
   };
 
   return (
-    <div className="w-full space-y-6 py-8 px-2 md:px-6 max-w-8xl mx-auto">
+    <div className="w-full space-y-6 py-8 px-2  max-w-8xl mx-auto">
       <ToastContainer position="top-right" autoClose={3000} />
 
       {/* Header */}
@@ -120,7 +120,7 @@ export default function AdminNGOsPage() {
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-4xl border border-slate-100 shadow-sm shadow-slate-100/40 overflow-hidden">
+      <div className="bg-white rounded-2xl border border-slate-100 shadow-sm shadow-slate-100/40 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -137,7 +137,7 @@ export default function AdminNGOsPage() {
                 <th className="px-6 py-4 font-bold text-slate-400 text-xs uppercase tracking-widest">
                   Status
                 </th>
-                <th className="px-6 py-4 font-bold text-slate-400 text-xs uppercase tracking-widest text-right">
+                <th className="px-6 py-4 font-bold text-slate-400 text-xs uppercase flex justify-center tracking-widest text-right">
                   Actions
                 </th>
               </tr>
@@ -191,7 +191,7 @@ export default function AdminNGOsPage() {
                         </span>
                       )}
                     </td>
-                    <td className="px-6 py-4 text-right whitespace-nowrap space-x-2">
+                    <td className="px-6 py-4 text-right whitespace-nowrap flex justify-center space-x-2">
                       <button
                         onClick={(e) => {
                           e.stopPropagation();
