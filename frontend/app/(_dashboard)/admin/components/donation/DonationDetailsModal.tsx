@@ -67,7 +67,9 @@ export default function DonationDetailsModal({
       <div className="w-full max-w-4xl rounded-4xl bg-white shadow-xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h3 className="text-xl font-bold text-slate-900">Donation Details</h3>
+          <h2 className="text-3xl font-semibold tracking-tight text-emerald-600 font-serif">
+            Donation Details
+          </h2>
           <button
             onClick={onClose}
             className="rounded-lg p-1 hover:bg-slate-100 transition"
@@ -147,7 +149,7 @@ export default function DonationDetailsModal({
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">
+                      <h2 className="text-3xl font-semibold tracking-tight text-emerald-600 font-serif">
                         {donation.title}
                       </h2>
                       <div className="flex items-center gap-2 mt-2">
@@ -235,9 +237,17 @@ export default function DonationDetailsModal({
                   </h4>
                   <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl space-y-3">
                     <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
-                        <User className="w-6 h-6 text-blue-600" />
-                      </div>
+                      {donation.claimedByNgoId.profileImage ? (
+                        <img
+                          src={`/uploads/profile/${donation.claimedByNgoId.profileImage}`}
+                          alt={donation.claimedByNgoId.organizationName}
+                          className="w-12 h-12 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                          <User className="w-6 h-6 text-blue-600" />
+                        </div>
+                      )}
                       <div className="flex-1">
                         <p className="font-semibold text-gray-900">
                           {donation.claimedByNgoId.organizationName}
@@ -262,14 +272,6 @@ export default function DonationDetailsModal({
                         </p>
                       </div>
                     </div>
-                    {donation.rewardPointsAwarded && donation.rewardPointsAwarded > 0 && (
-                      <div className="pt-2 border-t border-blue-200">
-                        <div className="flex items-center gap-2 text-sm text-emerald-700 font-medium bg-emerald-50 rounded-lg p-2">
-                          <span className="text-lg">🎉</span>
-                          <span>Donor earned {donation.rewardPointsAwarded} reward points</span>
-                        </div>
-                      </div>
-                    )}
                   </div>
                 </div>
               )}
@@ -277,7 +279,7 @@ export default function DonationDetailsModal({
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-center gap-3 mt-8 pt-6 border-t border-gray-100">
+          <div className="flex items-center justify-center gap-3  pt-6 border-t border-gray-100">
             {/* Wrap buttons in a container that controls width if needed, or keep flex-1 for equal width */}
             {canApprove && (
               <Button
