@@ -68,7 +68,7 @@ const NgoSidebar = () => {
   };
 
   const image = user?.profileImage
-    ? `/uploads/profile/ngo/${user.profileImage}?t=${Date.now()}`
+    ? `/uploads/profile/${user.profileImage}?t=${Date.now()}`
     : "/default.png";
 
   return (
@@ -112,7 +112,7 @@ const NgoSidebar = () => {
 
           {/* CURVED USER CARD */}
           <div className="flex items-center gap-3 bg-slate-50/80 p-3 rounded-2xl border border-slate-100/50">
-            <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 ring-2 ring-blue-500/10">
+            <div className="relative w-12 h-12 rounded-full overflow-hidden shrink-0 ring-2 ring-green-500/10">
               <Image
                 src={image}
                 alt="profile"
@@ -148,13 +148,13 @@ const NgoSidebar = () => {
                 outline-none focus:outline-none focus-visible:outline-none
                 ${
                   active
-                    ? "bg-blue-500/10 text-blue-800 font-semibold"
+                    ? "bg-green-500/10 text-green-800 font-semibold"
                     : "text-gray-500 hover:bg-gray-50/80 hover:text-slate-700"
                 }`}
               >
                 <Icon
                   size={18}
-                  className={active ? "text-blue-600" : "text-gray-400"}
+                  className={active ? "text-green-600" : "text-gray-400"}
                 />
                 {name}
               </Link>

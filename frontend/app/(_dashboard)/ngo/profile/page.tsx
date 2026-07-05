@@ -60,7 +60,7 @@ export default function NGOProfilePage() {
   const image =
     preview ||
     (user?.profileImage
-      ? `/uploads/profile/ngo/${user.profileImage}?t=${Date.now()}`
+      ? `/uploads/profile/${user.profileImage}?t=${Date.now()}`
       : "/default.png");
 
   const handleUpdate = async (e: React.FormEvent) => {

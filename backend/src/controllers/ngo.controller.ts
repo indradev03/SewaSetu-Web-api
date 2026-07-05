@@ -145,10 +145,8 @@ export class NGOController {
           deleteFile(existingNGO.profileImage);
         }
 
-        // 3. set new image path
-        profileImage = `${req.protocol}://${req.get(
-          "host",
-        )}/uploads/profile/ngo/${req.file.filename}`;
+        // 3. set new image path (store only filename, like donor)
+        profileImage = req.file.filename;
       }
 
       // 4. update DB
