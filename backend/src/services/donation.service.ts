@@ -229,7 +229,7 @@ export class DonationService {
         { new: true },
       )
         .populate("donorId", "username fullName email profileImage")
-        .populate("claimedByNgoId", "organizationName email contactPerson");
+        .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
 
       console.log("Successfully claimed donation, points awarded:", pointsAwarded);
       return updated;

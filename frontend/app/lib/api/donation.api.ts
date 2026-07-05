@@ -26,6 +26,8 @@ export type Donation = {
     organizationName: string;
     email: string;
     contactPerson?: string;
+    profileImage?: string;
+    address?: string;
   };
   claimedAt?: string;
   status: "Available" | "Claimed" | "PickedUp" | "Completed";

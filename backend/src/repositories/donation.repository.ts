@@ -20,7 +20,8 @@ export const DonationRepository = {
   async findByDonorId(donorId: string): Promise<IDonation[]> {
     return await Donation.find({ donorId })
       .sort({ createdAt: -1 })
-      .populate("donorId", "username fullName email profileImage");
+      .populate("donorId", "username fullName email profileImage")
+      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
   },
 
   async findAll(filters?: {
@@ -35,7 +36,8 @@ export const DonationRepository = {
 
     return await Donation.find(query)
       .sort({ createdAt: -1 })
-      .populate("donorId", "username fullName email profileImage");
+      .populate("donorId", "username fullName email profileImage")
+      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
   },
 
   // ── Update
@@ -47,7 +49,8 @@ export const DonationRepository = {
       id,
       { $set: data },
       { new: true },
-    ).populate("donorId", "username fullName email profileImage");
+    ).populate("donorId", "username fullName email profileImage")
+      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
   },
 
   async updateStatus(
@@ -65,7 +68,8 @@ export const DonationRepository = {
       id,
       { $set: updateData },
       { new: true },
-    ).populate("donorId", "username fullName email profileImage");
+    ).populate("donorId", "username fullName email profileImage")
+      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
   },
 
   // ── Delete
@@ -102,7 +106,8 @@ export const DonationRepository = {
       id,
       { $set: updateData },
       { new: true },
-    ).populate("donorId", "username fullName email profileImage");
+    ).populate("donorId", "username fullName email profileImage")
+      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
   },
 
   async findPendingApprovals(): Promise<IDonation[]> {
@@ -137,7 +142,7 @@ export const DonationRepository = {
     return await Donation.find({ claimedByNgoId: ngoId })
       .sort({ createdAt: -1 })
       .populate("donorId", "username fullName email profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson");
+      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
   },
 
   async releaseClaim(id: string, ngoId: string): Promise<IDonation | null> {
@@ -153,7 +158,7 @@ export const DonationRepository = {
       { new: true },
     )
       .populate("donorId", "username fullName email profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson");
+      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
   },
 
   async claimDonation(
@@ -172,7 +177,7 @@ export const DonationRepository = {
       { new: true },
     )
       .populate("donorId", "username fullName email profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson");
+      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
   },
 
   async markPickedUp(id: string): Promise<IDonation | null> {
@@ -182,7 +187,7 @@ export const DonationRepository = {
       { new: true },
     )
       .populate("donorId", "username fullName email profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson");
+      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
   },
 
   async markCompleted(
@@ -201,14 +206,14 @@ export const DonationRepository = {
       { new: true },
     )
       .populate("donorId", "username fullName email profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson");
+      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
   },
 
   async findByStatus(status: string): Promise<IDonation[]> {
     return await Donation.find({ status })
       .sort({ createdAt: -1 })
       .populate("donorId", "username fullName email profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson");
+      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
   },
 
   async delete(id: string): Promise<IDonation | null> {

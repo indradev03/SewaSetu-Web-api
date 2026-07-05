@@ -15,9 +15,12 @@ import {
   AlertCircle,
   CheckCircle,
   Clock,
+  Mail,
+  User,
 } from "lucide-react";
 import Button from "@/app/components/ui/button";
 import DeleteConfirmationModal from "@/app/(_dashboard)/admin/components/donation/DeleteConfirmationModal";
+import DonationDetailsModal from "@/app/(_dashboard)/donor/components/DonationDetailsModal";
 import { useRouter } from "next/navigation";
 
 export default function DonationHistory() {
@@ -26,6 +29,8 @@ export default function DonationHistory() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [donationToDelete, setDonationToDelete] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [selectedDonation, setSelectedDonation] = useState<Donation | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -60,7 +65,23 @@ export default function DonationHistory() {
     }
   };
 
-  const StatusBadge = ({ admin, status }: { admin: string; status: string }) => {
+  const handleViewDetails = (donation: Donation) => {
+    setSelectedDonation(donation);
+    setDetailsModalOpen(true);
+  };
+
+  const closeDetailsModal = () => {
+    setDetailsModalOpen(false);
+    setSelectedDonation(null);
+  };
+
+  const StatusBadge = ({
+    admin,
+    status,
+  }: {
+    admin: string;
+    status: string;
+  }) => {
     const configs: Record<
       string,
       { color: string; icon: JSX.Element; label: string }
@@ -152,7 +173,8 @@ export default function DonationHistory() {
             {donations.map((d) => (
               <div
                 key={d._id}
-                className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col gap-4"
+                onClick={() => handleViewDetails(d)}
+                className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col gap-4 cursor-pointer hover:shadow-md transition-shadow"
               >
                 <div className="flex justify-between items-start">
                   <StatusBadge admin={d.adminStatus} status={d.status} />
@@ -172,7 +194,7 @@ export default function DonationHistory() {
 
                 {d.photos && d.photos.length > 0 && (
                   <div className="grid grid-cols-3 gap-2">
-                    {d.photos.map((photo, idx) => (
+                    {d.photos.slice(0, 3).map((photo, idx) => (
                       <img
                         key={idx}
                         src={`/uploads/donations/${photo}`}
@@ -180,6 +202,11 @@ export default function DonationHistory() {
                         className="w-full h-20 object-cover rounded-xl border border-slate-100"
                       />
                     ))}
+                    {d.photos.length > 3 && (
+                      <div className="w-full h-20 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-center text-xs text-slate-500">
+                        +{d.photos.length - 3} more
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -197,22 +224,26 @@ export default function DonationHistory() {
 
                 {/* NGO Claim Information */}
                 {d.claimedByNgoId && (
-                  <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl space-y-2">
-                    <p className="text-xs text-blue-700 font-semibold flex items-center gap-1.5">
-                      <CheckCircle size={12} />
-                      Claimed by NGO
-                    </p>
-                    <p className="text-sm text-blue-900 font-medium">
-                      {d.claimedByNgoId.organizationName}
-                    </p>
-                    <p className="text-xs text-blue-600">
-                      {d.claimedByNgoId.email}
-                    </p>
-                    {d.claimedAt && (
-                      <p className="text-[10px] text-blue-500">
-                        Claimed: {new Date(d.claimedAt).toLocaleDateString()}
-                      </p>
-                    )}
+                  <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl">
+                    <div className="flex items-center gap-2">
+                      {d.claimedByNgoId.profileImage ? (
+                        <img
+                          src={`/uploads/profile/${d.claimedByNgoId.profileImage}`}
+                          alt={d.claimedByNgoId.organizationName}
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                          <User className="w-4 h-4 text-blue-600" />
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <p className="text-xs text-blue-700 font-semibold flex items-center gap-1.5">
+                          <CheckCircle size={12} />
+                          Claimed by {d.claimedByNgoId.organizationName}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 )}
 
@@ -238,7 +269,10 @@ export default function DonationHistory() {
                 <div className="flex gap-2 border-t pt-4">
                   {d.adminStatus === "Pending" && (
                     <Button
-                      onClick={() => router.push(`/donor/history/${d._id}`)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/donor/history/${d._id}`);
+                      }}
                       variant="green"
                       className="flex-1"
                     >
@@ -246,7 +280,8 @@ export default function DonationHistory() {
                     </Button>
                   )}
                   <Button
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setDonationToDelete(d._id);
                       setDeleteModalOpen(true);
                     }}
@@ -272,6 +307,12 @@ export default function DonationHistory() {
         deleting={deleting}
         title="Delete Donation"
         message="Are you sure you want to delete this donation? This action cannot be undone."
+      />
+
+      <DonationDetailsModal
+        open={detailsModalOpen}
+        donation={selectedDonation}
+        onClose={closeDetailsModal}
       />
     </div>
   );
