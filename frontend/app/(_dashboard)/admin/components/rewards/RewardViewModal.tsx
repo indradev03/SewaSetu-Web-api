@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { X } from "lucide-react";
+import { X, Calendar, Ticket, Award, Store, Info, Clock } from "lucide-react";
 import { Reward } from "@/app/lib/api/rewards.api";
 import { getImageUrl } from "@/app/lib/utils/getImageUrl";
 
@@ -10,12 +10,12 @@ interface RewardViewModalProps {
   onClose: () => void;
 }
 
+// --- Helper Functions ---
+
 const formatDate = (date?: string) => {
   if (!date) return "-";
-
   const d = new Date(date);
   if (isNaN(d.getTime())) return "-";
-
   return new Intl.DateTimeFormat("en-US", {
     year: "numeric",
     month: "short",
@@ -26,119 +26,150 @@ const formatDate = (date?: string) => {
 const formatDiscount = (reward: Reward) => {
   switch (reward.discountType) {
     case "percentage":
-      return `${reward.discountValue}%`;
+      return `${reward.discountValue}% OFF`;
     case "fixed":
       return `Rs. ${reward.discountValue}`;
     case "freebie":
-      return "Freebie";
+      return "Free Gift";
     default:
       return "-";
   }
 };
 
-export default function RewardViewModal({ reward, onClose }: RewardViewModalProps) {
+// --- Sub-component ---
+
+function InfoBox({
+  icon,
+  label,
+  value,
+  isMono = false,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  isMono?: boolean;
+}) {
+  return (
+    <div className="bg-emerald-50/50 p-3.5 rounded-xl border border-emerald-100">
+      <div className="flex items-center text-emerald-600 mb-1.5 gap-1.5">
+        {icon}
+        <p className="text-[10px] font-bold uppercase tracking-wider">
+          {label}
+        </p>
+      </div>
+      <p
+        className={`font-semibold text-slate-900 ${isMono ? "font-mono text-sm" : ""}`}
+      >
+        {value}
+      </p>
+    </div>
+  );
+}
+
+// --- Main Component ---
+
+export default function RewardViewModal({
+  reward,
+  onClose,
+}: RewardViewModalProps) {
   if (!reward) return null;
 
   const imageUrl = getImageUrl("rewards", reward.image);
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="sticky top-0 bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-slate-900">Reward Details</h2>
+    <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-hidden flex flex-col">
+        {/* Header / Hero Image Section */}
+        <div className="relative h-48 w-full bg-slate-100 shrink-0">
+          {imageUrl && (
+            <Image
+              src={imageUrl}
+              alt={reward.title}
+              fill
+              className="object-cover"
+              unoptimized
+            />
+          )}
           <button
             onClick={onClose}
-            className="p-2 hover:bg-slate-100 rounded-lg transition-colors"
+            className="absolute top-4 right-4 p-2 bg-white/90 hover:bg-emerald-50 shadow-lg rounded-full transition-all text-slate-700 hover:text-emerald-600"
           >
-            <X size={20} className="text-slate-500" />
+            <X size={20} />
           </button>
+
+          <div className="absolute bottom-4 left-6">
+            <span
+              className={`px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-sm ${
+                reward.isActive
+                  ? "bg-emerald-600 text-white"
+                  : "bg-slate-400 text-white"
+              }`}
+            >
+              {reward.isActive ? "Active Reward" : "Inactive"}
+            </span>
+          </div>
         </div>
 
-        {/* Content */}
-        <div className="p-6 space-y-6">
-          {/* Image */}
-          {imageUrl && (
-            <div className="relative h-64 w-full overflow-hidden rounded-xl bg-slate-100">
-              <Image
-                src={imageUrl}
-                alt={reward.title}
-                fill
-                className="object-cover"
-                unoptimized
-              />
-            </div>
-          )}
+        {/* Content Section */}
+        <div className="p-6 overflow-y-auto">
+          <div className="mb-6">
+            <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+              {reward.title}
+            </h2>
+            <p className="text-slate-500 mt-2 leading-relaxed text-sm">
+              {reward.description}
+            </p>
+          </div>
 
-          {/* Basic Info */}
+          <div className="grid grid-cols-2 gap-3 mb-6">
+            <InfoBox
+              icon={<Store size={14} />}
+              label="Partner"
+              value={reward.partnerName}
+            />
+            <InfoBox
+              icon={<Ticket size={14} />}
+              label="Promo Code"
+              value={reward.promoCode}
+              isMono
+            />
+            <InfoBox
+              icon={<Award size={14} />}
+              label="Cost"
+              value={`${reward.requiredPoints} Pts`}
+            />
+            <InfoBox
+              icon={<Info size={14} />}
+              label="Discount"
+              value={formatDiscount(reward)}
+            />
+          </div>
+
           <div className="space-y-4">
-            <div>
-              <h3 className="text-2xl font-bold text-slate-900">{reward.title}</h3>
-              <p className="text-slate-600 mt-1">{reward.description}</p>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-slate-50 p-4 rounded-xl">
-                <p className="text-xs font-semibold text-slate-400 uppercase mb-1">
-                  Partner
-                </p>
-                <p className="font-semibold text-slate-800">{reward.partnerName}</p>
+            <div className="flex flex-col gap-3">
+              <div className="flex items-center text-sm text-slate-500">
+                <Calendar size={16} className="mr-2 text-emerald-500" />
+                <span>
+                  Valid until:{" "}
+                  <span className="font-semibold text-slate-900">
+                    {formatDate(reward.expiryDate)}
+                  </span>
+                </span>
               </div>
-              <div className="bg-slate-50 p-4 rounded-xl">
-                <p className="text-xs font-semibold text-slate-400 uppercase mb-1">
-                  Promo Code
-                </p>
-                <p className="font-mono font-semibold text-slate-800">{reward.promoCode}</p>
-              </div>
-              <div className="bg-slate-50 p-4 rounded-xl">
-                <p className="text-xs font-semibold text-slate-400 uppercase mb-1">
-                  Required Points
-                </p>
-                <p className="font-semibold text-slate-800">{reward.requiredPoints}</p>
-              </div>
-              <div className="bg-slate-50 p-4 rounded-xl">
-                <p className="text-xs font-semibold text-slate-400 uppercase mb-1">
-                  Discount
-                </p>
-                <p className="font-semibold text-slate-800">{formatDiscount(reward)}</p>
-              </div>
-              <div className="bg-slate-50 p-4 rounded-xl">
-                <p className="text-xs font-semibold text-slate-400 uppercase mb-1">
-                  Expiry Date
-                </p>
-                <p className="font-semibold text-slate-800">{formatDate(reward.expiryDate)}</p>
-              </div>
-              <div className="bg-slate-50 p-4 rounded-xl">
-                <p className="text-xs font-semibold text-slate-400 uppercase mb-1">
-                  Created Date
-                </p>
-                <p className="font-semibold text-slate-800">{formatDate(reward.createdAt)}</p>
+              <div className="flex items-center text-sm text-slate-500">
+                <Clock size={16} className="mr-2 text-emerald-500" />
+                <span>Created: {formatDate(reward.createdAt)}</span>
               </div>
             </div>
 
-            {/* Active Status */}
-            <div className="bg-slate-50 p-4 rounded-xl">
-              <p className="text-xs font-semibold text-slate-400 uppercase mb-1">
-                Active
-              </p>
-              <span
-                className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${
-                  reward.isActive
-                    ? "bg-green-100 text-green-700"
-                    : "bg-slate-200 text-slate-600"
-                }`}
-              >
-                {reward.isActive ? "Active" : "Inactive"}
-              </span>
-            </div>
-
-            {/* Terms */}
             {reward.terms && (
-              <div className="bg-slate-50 p-4 rounded-xl">
-                <p className="text-xs font-semibold text-slate-400 uppercase mb-1">
+              <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 mt-4">
+                <p className="text-xs font-bold text-emerald-600 uppercase mb-2 tracking-wider">
                   Terms & Conditions
                 </p>
-                <p className="text-sm text-slate-700">{reward.terms}</p>
+                <p className="text-sm text-slate-600 leading-relaxed">
+                  {reward.terms}
+                </p>
               </div>
             )}
           </div>

@@ -43,9 +43,9 @@ export default function AdminRewardsPage() {
         };
 
         if (filterValue === "active") {
-          params.isActive = true;
+          params.isActive = "true";
         } else if (filterValue === "inactive") {
-          params.isActive = false;
+          params.isActive = "false";
         }
 
         const res = await getAllRewards(params);

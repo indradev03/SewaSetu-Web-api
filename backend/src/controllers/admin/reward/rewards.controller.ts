@@ -26,7 +26,9 @@ class RewardController {
 
   async getRewards(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("Raw query params:", req.query);
       const query = RewardQueryDTO.parse(req.query);
+      console.log("Parsed query:", query);
 
       const result = await rewardService.getRewards(query);
 
