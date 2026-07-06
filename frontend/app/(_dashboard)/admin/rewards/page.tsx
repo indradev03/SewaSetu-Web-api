@@ -101,7 +101,10 @@ export default function AdminRewardsPage() {
   };
 
   return (
-    <div className=" w-full space-y-6 py-8 px-2  max-w-8xl mx-auto">
+    <div
+      className=" w-full space-y-6 py-8 px-1
+      max-w-8xl mx-auto"
+    >
       <ToastContainer
         position="top-right"
         autoClose={3000}

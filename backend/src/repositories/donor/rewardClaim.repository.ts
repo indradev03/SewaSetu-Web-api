@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import RewardClaim, { IRewardClaim } from "../../models/rewards/rewardClaim.model";
+import "../../models/rewards/reward.model";
 
 export const RewardClaimRepository = {
   // ── Create

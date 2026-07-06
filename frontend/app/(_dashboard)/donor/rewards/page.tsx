@@ -80,13 +80,17 @@ export default function DonorRewardsPage() {
     try {
       const res = await axiosInstance.get("/donor/reward-claims");
       const claims = res.data.data || [];
+      console.log("Fetched claims:", claims);
       const claimedIds = new Set<string>(
-        claims.map((claim: any) => claim.rewardId._id || claim.rewardId),
+        claims
+          .filter((claim: any) => claim.rewardId)
+          .map((claim: any) => claim.rewardId._id || claim.rewardId),
       );
+      console.log("Claimed IDs:", claimedIds);
       setClaimedRewardIds(claimedIds);
       setUserClaims(claims);
-    } catch {
-      console.error("Failed to fetch user claims");
+    } catch (error: any) {
+      console.error("Failed to fetch user claims:", error?.response?.data || error?.message);
     }
   }, []);
 
