@@ -20,6 +20,8 @@ import {
   type Donation,
 } from "@/app/lib/api/donation.api";
 import Button from "@/app/components/ui/button";
+import StatusBadge from "@/app/components/ui/StatusBadge";
+import DonationDetailsModal from "../components/DonationDetailsModal";
 
 export default function NGODonationsPage() {
   const [donations, setDonations] = useState<Donation[]>([]);
@@ -27,6 +29,7 @@ export default function NGODonationsPage() {
   const [error, setError] = useState<string | null>(null);
   const [claimingId, setClaimingId] = useState<string | null>(null);
   const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [showDetailsModal, setShowDetailsModal] = useState(false);
   const [selectedDonation, setSelectedDonation] = useState<Donation | null>(
     null,
   );
@@ -95,6 +98,11 @@ export default function NGODonationsPage() {
   const handleClaimClick = (donation: Donation) => {
     setSelectedDonation(donation);
     setShowConfirmDialog(true);
+  };
+
+  const handleViewDetails = (donation: Donation) => {
+    setSelectedDonation(donation);
+    setShowDetailsModal(true);
   };
 
   const handleConfirmClaim = async () => {
@@ -385,7 +393,8 @@ export default function NGODonationsPage() {
           {donations.map((donation) => (
             <div
               key={donation._id}
-              className="bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group"
+              onClick={() => handleViewDetails(donation)}
+              className="bg-white rounded-3xl border border-slate-100 shadow-sm hover:shadow-md transition-all duration-300 overflow-hidden group cursor-pointer"
             >
               {/* Image */}
               {donation.photos && donation.photos.length > 0 ? (
@@ -397,7 +406,10 @@ export default function NGODonationsPage() {
                   />
                   <div className="absolute top-3 right-3">
                     <Button
-                      onClick={() => handleClaimClick(donation)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleClaimClick(donation);
+                      }}
                       disabled={claimingId === donation._id}
                       className="bg-white/90 backdrop-blur-sm hover:bg-green-500 hover:text-white text-green-600 border-2  shadow-lg px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300"
                     >
@@ -410,7 +422,10 @@ export default function NGODonationsPage() {
                   <Package className="w-16 h-16 text-slate-300" />
                   <div className="absolute top-3 right-3">
                     <Button
-                      onClick={() => handleClaimClick(donation)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleClaimClick(donation);
+                      }}
                       disabled={claimingId === donation._id}
                       className="bg-white/90 backdrop-blur-sm hover:bg-green-500 hover:text-white text-green-600 border-2 shadow-lg px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300"
                     >
@@ -500,6 +515,18 @@ export default function NGODonationsPage() {
           </div>
         </div>
       )}
+
+      {/* Details Modal */}
+      <DonationDetailsModal
+        open={showDetailsModal}
+        donation={selectedDonation}
+        onClose={() => {
+          setShowDetailsModal(false);
+          setSelectedDonation(null);
+        }}
+        onClaim={handleClaimClick}
+        claimingId={claimingId}
+      />
     </div>
   );
 }

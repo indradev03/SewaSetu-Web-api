@@ -236,11 +236,11 @@ export default function ProfilePage() {
                   size={6}
                   className="fill-emerald-500 stroke-emerald-500 animate-pulse"
                 />
-                Verified {user?.role || "Donor"}
+                {user?.role || "Donor"}
               </span>
 
               {/* REWARD POINTS */}
-              <div className="mt-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 w-full">
+              <div className="mt-4 bg-linear-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 w-full">
                 <div className="flex items-center justify-center gap-2">
                   <Gift className="w-5 h-5 text-amber-600" />
                   <span className="text-sm font-semibold text-amber-800">

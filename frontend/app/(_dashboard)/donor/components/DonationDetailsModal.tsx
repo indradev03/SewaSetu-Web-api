@@ -53,12 +53,14 @@ export default function DonationDetailsModal({
       <div className="w-full max-w-4xl rounded-4xl bg-white shadow-xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h3 className="text-xl font-bold text-slate-900">Donation Details</h3>
+          <h2 className="text-3xl font-semibold tracking-tight text-emerald-600 font-serif">
+            Donation Details
+          </h2>
           <button
             onClick={onClose}
-            className="rounded-lg p-1 hover:bg-slate-100 transition"
+            className="group flex h-9 w-9 items-center justify-center rounded-full bg-red-100 transition-colors hover:bg-red-600"
           >
-            <X className="w-5 h-5 text-slate-500" />
+            <X className="h-5 w-5 text-red-600 transition-colors group-hover:text-white" />
           </button>
         </div>
 

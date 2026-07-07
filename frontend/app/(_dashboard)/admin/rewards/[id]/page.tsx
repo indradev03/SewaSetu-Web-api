@@ -32,10 +32,10 @@ export default function EditRewardPage() {
       <ToastContainer />
 
       <div>
-        <h1 className="text-2xl font-bold text-slate-900">Edit Reward</h1>
-        <p className="text-xs text-slate-400 mt-1">
-          Update the details of this reward.
-        </p>
+        <h1 className="text-4xl font-semibold tracking-tight text-emerald-600 font-serif">
+          Edit Reward
+        </h1>
+        <p className="text-gray-500 mt-2">Update the details of this reward.</p>
       </div>
 
       {loading ? (

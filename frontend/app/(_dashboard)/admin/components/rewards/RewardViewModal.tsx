@@ -92,7 +92,7 @@ export default function RewardViewModal({
           )}
           <button
             onClick={onClose}
-            className="absolute top-4 right-4 p-2 bg-white/90 hover:bg-emerald-50 shadow-lg rounded-full transition-all text-slate-700 hover:text-emerald-600"
+            className="absolute top-4 right-4 p-2 bg-red/90 hover:bg-red-50 shadow-lg rounded-full transition-all text-white-700 hover:text-red-600"
           >
             <X size={20} />
           </button>
