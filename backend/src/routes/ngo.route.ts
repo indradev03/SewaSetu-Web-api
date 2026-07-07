@@ -54,6 +54,14 @@ router.put(
   ngoController.updateProfile.bind(ngoController),
 );
 
+// Change password
+router.put(
+  "/profile/change-password",
+  authorizedMiddleware,
+  authorizeRoles("ngo"),
+  ngoController.changePassword.bind(ngoController),
+);
+
 /**
  * ADMIN ONLY ROUTES
  */

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { ngoRegisterApi, ngoLoginApi } from "../api/auth";
-import { updateNgoProfileApi, type NGO } from "../api/ngo.api";
+import { updateNgoProfileApi, changePasswordApi, type NGO } from "../api/ngo.api";
 import { setCookie } from "../cookies";
 
 //  Zod Schemas
@@ -31,10 +31,22 @@ export const ngoLoginSchema = z.object({
   password: z.string().min(1, "Password is required"),
 });
 
+export const changePasswordSchema = z
+  .object({
+    currentPassword: z.string().min(1, "Current password is required"),
+    newPassword: z.string().min(6, "New password must be at least 6 characters"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
 //  Types
 
 export type NGORegisterInput = z.infer<typeof ngoRegisterSchema>;
 export type NGOLoginInput = z.infer<typeof ngoLoginSchema>;
+export type ChangePasswordInput = z.infer<typeof changePasswordSchema>;
 
 //  Action result type
 
@@ -119,5 +131,42 @@ export const updateNgoProfileAction = async (
       (err as { response?: { data?: { message?: string } } })?.response?.data
         ?.message ?? "Profile update failed. Please try again.";
     return { success: false, errors: { root: message } };
+  }
+};
+
+// Change Password Action
+export const changePasswordAction = async (
+  formData: ChangePasswordInput,
+): Promise<ActionResult> => {
+  const parsed = changePasswordSchema.safeParse(formData);
+
+  if (!parsed.success) {
+    const errors: Record<string, string> = {};
+
+    parsed.error.issues.forEach((issue) => {
+      const key = issue.path[0] as string;
+      errors[key] = issue.message;
+    });
+
+    return {
+      success: false,
+      errors,
+    };
+  }
+
+  try {
+    await changePasswordApi(parsed.data);
+
+    return {
+      success: true,
+      data: undefined,
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      errors: {
+        root: err?.response?.data?.message || "Failed to change password",
+      },
+    };
   }
 };

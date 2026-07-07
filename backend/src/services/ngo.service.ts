@@ -7,6 +7,7 @@ import {
   LoginNGOType,
   UpdateNGOType,
   VerifyNGOType,
+  ChangePasswordType,
 } from "../dtos/ngo.dto";
 
 import { HttpException } from "../exceptions/http-exception";
@@ -135,7 +136,7 @@ export class NGOService {
     return ngo;
   }
 
-  // ── DELETE NGO 
+  // ── DELETE NGO
   async deleteNGO(id: string) {
     const ngo = await NGORepository.deleteById(id);
 
@@ -144,5 +145,39 @@ export class NGOService {
     }
 
     return ngo;
+  }
+
+  // ── CHANGE PASSWORD
+  async changePassword(id: string, data: ChangePasswordType) {
+    const ngo = await NGORepository.findByIdWithPassword(id);
+
+    if (!ngo) {
+      throw new HttpException(404, "NGO not found");
+    }
+
+    const isMatch = await bcrypt.compare(data.currentPassword, ngo.password);
+
+    if (!isMatch) {
+      throw new HttpException(400, "Current password is incorrect");
+    }
+
+    const samePassword = await bcrypt.compare(data.newPassword, ngo.password);
+
+    if (samePassword) {
+      throw new HttpException(
+        400,
+        "New password must be different from current password",
+      );
+    }
+
+    const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+
+    ngo.password = hashedPassword;
+
+    await ngo.save();
+
+    return {
+      message: "Password changed successfully",
+    };
   }
 }

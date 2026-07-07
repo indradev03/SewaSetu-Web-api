@@ -19,6 +19,7 @@ export const API = {
 
     PROFILE: "/ngo/profile",
     VERIFIED: "/ngo/verified",
+    CHANGE_PASSWORD: "/ngo/profile/change-password",
 
     VERIFY: (id: string) => `/ngo/verify/${id}`,
 

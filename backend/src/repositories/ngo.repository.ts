@@ -18,6 +18,10 @@ export const NGORepository = {
     return await NGO.findById(id).select("-password");
   },
 
+  async findByIdWithPassword(id: string): Promise<INGO | null> {
+    return await NGO.findById(id);
+  },
+
   async findByEmail(email: string): Promise<INGO | null> {
     return await NGO.findOne({ email });
   },

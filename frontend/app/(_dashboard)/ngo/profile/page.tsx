@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from "react";
 import { NGO, getNgoProfileApi } from "@/app/lib/api/ngo.api";
-import { updateNgoProfileAction } from "@/app/lib/actions/ngo.actions";
+import {
+  updateNgoProfileAction,
+  changePasswordAction,
+} from "@/app/lib/actions/ngo.actions";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -37,6 +40,19 @@ export default function NGOProfilePage() {
 
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+
+  // ── Change Password state
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [showCurrentPw, setShowCurrentPw] = useState(false);
+  const [showNewPw, setShowNewPw] = useState(false);
+  const [showConfirmPw, setShowConfirmPw] = useState(false);
+  const [passwordErrors, setPasswordErrors] = useState<Record<string, string>>(
+    {},
+  );
 
   useEffect(() => {
     (async () => {
@@ -94,6 +110,52 @@ export default function NGOProfilePage() {
       toast.error("An unexpected error occurred.");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const resetPasswordForm = () => {
+    setCurrentPassword("");
+    setNewPassword("");
+    setConfirmNewPassword("");
+    setShowCurrentPw(false);
+    setShowNewPw(false);
+    setShowConfirmPw(false);
+    setPasswordErrors({});
+  };
+
+  const closePasswordModal = () => {
+    if (isChangingPassword) return;
+    setShowPasswordModal(false);
+    resetPasswordForm();
+  };
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setPasswordErrors({});
+    setIsChangingPassword(true);
+
+    try {
+      const res = await changePasswordAction({
+        currentPassword,
+        newPassword,
+        confirmPassword: confirmNewPassword,
+      });
+
+      if (res.success) {
+        toast.success("Password changed successfully!");
+        setShowPasswordModal(false);
+        resetPasswordForm();
+      } else {
+        setPasswordErrors(res.errors || {});
+        const errorMsg = res.errors
+          ? Object.values(res.errors)[0]
+          : "Failed to change password.";
+        toast.error(errorMsg);
+      }
+    } catch (error) {
+      toast.error("An unexpected error occurred.");
+    } finally {
+      setIsChangingPassword(false);
     }
   };
 
@@ -185,6 +247,19 @@ export default function NGOProfilePage() {
                   {isEditing ? "Cancel Editing" : "Edit Profile"}
                 </Button>
               </div>
+
+              {/* CHANGE PASSWORD TRIGGER BUTTON */}
+              <div className="mt-3 w-full">
+                <Button
+                  onClick={() => setShowPasswordModal(true)}
+                  disabled={isSaving}
+                  variant="orange"
+                  className="rounded-2xl! flex items-center justify-center gap-2"
+                >
+                  <Lock size={16} />
+                  Change Password
+                </Button>
+              </div>
             </div>
 
             {/* LOWER STATS BADGE */}
@@ -200,7 +275,7 @@ export default function NGOProfilePage() {
 
           {/* RIGHT CONTENT CARD */}
           <div className="md:col-span-2">
-            <div className="bg-white border border-gray-100 rounded-[2.5rem] p-8 md:p-10 shadow-[0_8px_32px_0_rgba(0,0,0,0.03)] min-h-[28rem] flex flex-col justify-between">
+            <div className="bg-white border border-gray-100 rounded-[2.5rem] p-8 md:p-10 shadow-[0_8px_32px_0_rgba(0,0,0,0.03)] min-h-112 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between mb-8 pb-4 border-b border-gray-100">
                   <h3 className="text-xl font-semibold text-green-600 font-serif">
@@ -320,6 +395,105 @@ export default function NGOProfilePage() {
                               {user?.email || "—"}
                             </span>
                           </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* DOCUMENTS SECTION */}
+                    <div className="mt-4 pt-4 border-t border-gray-100/70">
+                      <div className="flex items-center gap-4 mb-4">
+                        <div className="bg-white border border-gray-200/60 text-gray-500 p-3 rounded-xl shadow-sm">
+                          <FileText size={18} />
+                        </div>
+                        <span className="text-xs font-semibold uppercase tracking-wider text-gray-400">
+                          Documents
+                        </span>
+                      </div>
+                      <div className="pl-14 grid sm:grid-cols-2 gap-4">
+                        {/* Registration Document Card */}
+                        <div className="bg-white border border-gray-200 rounded-2xl p-5 hover:border-green-300 hover:shadow-md transition-all duration-300 group">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="bg-linear-to-br from-green-50 to-emerald-50 text-green-600 p-3 rounded-xl">
+                              <FileText size={20} />
+                            </div>
+                            {user?.registrationDocPath ? (
+                              <span className="text-xs bg-green-100 text-green-700 px-2.5 py-1 rounded-full font-medium">
+                                Uploaded
+                              </span>
+                            ) : (
+                              <span className="text-xs bg-gray-100 text-gray-500 px-2.5 py-1 rounded-full font-medium">
+                                Pending
+                              </span>
+                            )}
+                          </div>
+                          <h4 className="text-sm font-semibold text-gray-900 mb-1">
+                            Registration Document
+                          </h4>
+                          <p className="text-xs text-gray-500 mb-4">
+                            Official registration certificate
+                          </p>
+                          {user?.registrationDocPath ? (
+                            <div className="flex gap-2">
+                              <a
+                                href={`/uploads/documents/${user.registrationDocPath.split("/").pop()}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 text-center text-sm bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
+                              >
+                                <Eye size={14} />
+                                View
+                              </a>
+                            </div>
+                          ) : (
+                            <div className="text-center py-2.5 bg-gray-50 rounded-xl">
+                              <span className="text-xs text-gray-400">
+                                Document not uploaded
+                              </span>
+                            </div>
+                          )}
+                        </div>
+
+                        {/* PAN Card Document Card */}
+                        <div className="bg-white border border-gray-200 rounded-2xl p-5 hover:border-green-300 hover:shadow-md transition-all duration-300 group">
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="bg-linear-to-br from-blue-50 to-indigo-50 text-blue-600 p-3 rounded-xl">
+                              <FileText size={20} />
+                            </div>
+                            {user?.panCardPath ? (
+                              <span className="text-xs bg-green-100 text-green-700 px-2.5 py-1 rounded-full font-medium">
+                                Uploaded
+                              </span>
+                            ) : (
+                              <span className="text-xs bg-gray-100 text-gray-500 px-2.5 py-1 rounded-full font-medium">
+                                Pending
+                              </span>
+                            )}
+                          </div>
+                          <h4 className="text-sm font-semibold text-gray-900 mb-1">
+                            PAN Card
+                          </h4>
+                          <p className="text-xs text-gray-500 mb-4">
+                            Permanent Account Number card
+                          </p>
+                          {user?.panCardPath ? (
+                            <div className="flex gap-2">
+                              <a
+                                href={`/uploads/documents/${user.panCardPath.split("/").pop()}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 text-center text-sm bg-green-500 hover:bg-green-600 text-white py-2.5 rounded-xl font-medium transition-colors flex items-center justify-center gap-2"
+                              >
+                                <Eye size={14} />
+                                View
+                              </a>
+                            </div>
+                          ) : (
+                            <div className="text-center py-2.5 bg-gray-50 rounded-xl">
+                              <span className="text-xs text-gray-400">
+                                Document not uploaded
+                              </span>
+                            </div>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -483,6 +657,139 @@ export default function NGOProfilePage() {
           </div>
         </div>
       </div>
+
+      {/* CHANGE PASSWORD MODAL */}
+      {showPasswordModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm p-4">
+          <div className="bg-white w-full max-w-md rounded-4xl shadow-[0_8px_32px_0_rgba(0,0,0,0.12)] p-8 relative">
+            {/* CLOSE BUTTON */}
+            <button
+              onClick={closePasswordModal}
+              disabled={isChangingPassword}
+              className="absolute top-6 right-6 text-gray-400 hover:text-gray-600 transition disabled:opacity-50"
+            >
+              <X size={20} />
+            </button>
+
+            <div className="flex items-center gap-3 mb-6">
+              <div className="bg-amber-50 border border-amber-100 text-orange-600 p-3 rounded-2xl">
+                <Lock size={20} />
+              </div>
+              <h3 className="text-xl font-medium text-gray-900 font-serif">
+                Change Password
+              </h3>
+            </div>
+
+            <form
+              onSubmit={handleChangePassword}
+              className="flex flex-col gap-4"
+            >
+              <PasswordField
+                label="Current Password"
+                value={currentPassword}
+                setValue={setCurrentPassword}
+                show={showCurrentPw}
+                setShow={setShowCurrentPw}
+                error={passwordErrors.currentPassword}
+              />
+              <PasswordField
+                label="New Password"
+                value={newPassword}
+                setValue={setNewPassword}
+                show={showNewPw}
+                setShow={setShowNewPw}
+                error={passwordErrors.newPassword}
+              />
+              <PasswordField
+                label="Confirm New Password"
+                value={confirmNewPassword}
+                setValue={setConfirmNewPassword}
+                show={showConfirmPw}
+                setShow={setShowConfirmPw}
+                error={passwordErrors.confirmPassword}
+              />
+
+              {passwordErrors.root && (
+                <p className="text-xs text-red-500 font-medium -mt-1">
+                  {passwordErrors.root}
+                </p>
+              )}
+
+              <div className="flex gap-3 mt-2">
+                <Button
+                  type="button"
+                  onClick={closePasswordModal}
+                  disabled={isChangingPassword}
+                  variant="secondary"
+                  className="rounded-3xl!"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  type="submit"
+                  disabled={isChangingPassword}
+                  variant="orange"
+                  className="rounded-3xl!"
+                >
+                  {isChangingPassword ? "Updating..." : "Update Password"}
+                </Button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+/* ---------- PASSWORDS INPUT INTERNAL FIELD ---------- */
+
+function PasswordField({
+  label,
+  value,
+  setValue,
+  show,
+  setShow,
+  error,
+}: {
+  label: string;
+  value: string;
+  setValue: (v: string) => void;
+  show: boolean;
+  setShow: (v: boolean) => void;
+  error?: string;
+}) {
+  return (
+    <div className="flex flex-col">
+      <label className="text-xs uppercase tracking-wider text-gray-400 font-semibold mb-2">
+        {label}
+      </label>
+      <div className="relative flex items-center">
+        <div className="absolute left-4 text-orange-500 flex items-center justify-center">
+          <Lock size={18} />
+        </div>
+        <input
+          type={show ? "text" : "password"}
+          className={`w-full bg-gray-50 border text-gray-700 pl-12 pr-12 py-3.5 rounded-2xl text-sm focus:ring-2 focus:bg-white focus:outline-none transition duration-200 ${
+            error
+              ? "border-red-300 focus:ring-red-200"
+              : "border-gray-200/60 focus:ring-orange-200"
+          }`}
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          placeholder={`Enter ${label.toLowerCase()}`}
+        />
+        <button
+          type="button"
+          onClick={() => setShow(!show)}
+          className="absolute right-4 text-gray-400 hover:text-gray-600 transition"
+        >
+          {show ? <EyeOff size={18} /> : <Eye size={18} />}
+        </button>
+      </div>
+      {error && (
+        <span className="text-xs text-red-500 font-medium mt-1.5">{error}</span>
+      )}
     </div>
   );
 }

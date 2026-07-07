@@ -5,6 +5,7 @@ import {
   LoginNGODTO,
   UpdateNGODTO,
   VerifyNGODTO,
+  ChangePasswordDTO,
 } from "../dtos/ngo.dto";
 
 import { NGOService } from "../services/ngo.service";
@@ -35,15 +36,11 @@ export class NGOController {
       let panCardPath: string | undefined;
 
       if (files?.registrationDoc && files.registrationDoc[0]) {
-        registrationDocPath = `${req.protocol}://${req.get(
-          "host",
-        )}/uploads/documents/${files.registrationDoc[0].filename}`;
+        registrationDocPath = files.registrationDoc[0].filename;
       }
 
       if (files?.panCard && files.panCard[0]) {
-        panCardPath = `${req.protocol}://${req.get(
-          "host",
-        )}/uploads/documents/${files.panCard[0].filename}`;
+        panCardPath = files.panCard[0].filename;
       }
 
       const ngo = await ngoService.registerNGO({
@@ -238,6 +235,40 @@ export class NGOController {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to delete NGO",
+        error.status || 500,
+      );
+    }
+  }
+
+  // CHANGE PASSWORD
+
+  async changePassword(req: Request, res: Response) {
+    try {
+      const parsed = ChangePasswordDTO.safeParse(req.body);
+
+      if (!parsed.success) {
+        const message = parsed.error.issues
+          .map((e: any) => e.message)
+          .join(", ");
+
+        throw new HttpException(400, message);
+      }
+
+      const result = await ngoService.changePassword(
+        req.user!.id,
+        parsed.data,
+      );
+
+      return ApiResponseHelper.success(
+        res,
+        result,
+        200,
+        "Password changed successfully",
+      );
+    } catch (error: any) {
+      return ApiResponseHelper.error(
+        res,
+        error.message || "Failed to change password",
         error.status || 500,
       );
     }
