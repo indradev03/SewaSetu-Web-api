@@ -157,12 +157,21 @@ export const adminDeleteDonationApi = async (
 
 // ── NGO Donation APIs
 
-export const getAvailableDonationsApi = async (): Promise<{
+export const getAvailableDonationsApi = async (searchParams?: {
+  category?: string;
+  title?: string;
+  pickupAddress?: string;
+  minQuantity?: number;
+  maxQuantity?: number;
+  unit?: string;
+}): Promise<{
   success: boolean;
   message: string;
   data: Donation[];
 }> => {
-  const res = await axiosInstance.get(API.NGO.AVAILABLE_DONATIONS);
+  const res = await axiosInstance.get(API.NGO.AVAILABLE_DONATIONS, {
+    params: searchParams,
+  });
   return res.data;
 };
 

@@ -126,14 +126,50 @@ export const DonationRepository = {
   },
 
   // ── NGO Claim Methods
-  async findAvailableDonations(): Promise<IDonation[]> {
-    return await Donation.find({
+  async findAvailableDonations(searchParams?: {
+    category?: string;
+    title?: string;
+    pickupAddress?: string;
+    minQuantity?: number;
+    maxQuantity?: number;
+    unit?: string;
+  }): Promise<IDonation[]> {
+    const query: any = {
       adminStatus: "Approved",
       $or: [
         { status: "Available" },
         { status: { $exists: false } }
       ]
-    })
+    };
+
+    // Add search filters if provided
+    if (searchParams?.category) {
+      query.category = searchParams.category;
+    }
+
+    if (searchParams?.title) {
+      query.title = { $regex: searchParams.title, $options: "i" };
+    }
+
+    if (searchParams?.pickupAddress) {
+      query.pickupAddress = { $regex: searchParams.pickupAddress, $options: "i" };
+    }
+
+    if (searchParams?.minQuantity || searchParams?.maxQuantity) {
+      query.quantity = {};
+      if (searchParams.minQuantity) {
+        query.quantity.$gte = searchParams.minQuantity;
+      }
+      if (searchParams.maxQuantity) {
+        query.quantity.$lte = searchParams.maxQuantity;
+      }
+    }
+
+    if (searchParams?.unit) {
+      query.unit = searchParams.unit;
+    }
+
+    return await Donation.find(query)
       .sort({ createdAt: -1 })
       .populate("donorId", "username fullName email profileImage");
   },

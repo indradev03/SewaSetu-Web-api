@@ -279,7 +279,19 @@ export class DonationController {
   // Get approved donations available for claiming
   async getApprovedDonations(req: Request, res: Response) {
     try {
-      const donations = await donationService.getAvailableDonations();
+      const { category, title, pickupAddress, minQuantity, maxQuantity, unit } = req.query;
+
+      const searchParams: any = {};
+      if (category) searchParams.category = category;
+      if (title) searchParams.title = title as string;
+      if (pickupAddress) searchParams.pickupAddress = pickupAddress as string;
+      if (minQuantity) searchParams.minQuantity = parseInt(minQuantity as string);
+      if (maxQuantity) searchParams.maxQuantity = parseInt(maxQuantity as string);
+      if (unit) searchParams.unit = unit;
+
+      const donations = await donationService.getAvailableDonations(
+        Object.keys(searchParams).length > 0 ? searchParams : undefined
+      );
 
       return ApiResponseHelper.success(
         res,

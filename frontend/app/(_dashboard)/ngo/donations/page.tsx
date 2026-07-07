@@ -12,6 +12,7 @@ import {
   Search,
   Filter,
   ArrowRight,
+  X,
 } from "lucide-react";
 import {
   getAvailableDonationsApi,
@@ -30,20 +31,65 @@ export default function NGODonationsPage() {
     null,
   );
 
+  // Search and filter state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [showFilterPanel, setShowFilterPanel] = useState(false);
+  const [filters, setFilters] = useState({
+    category: "",
+    title: "",
+    pickupAddress: "",
+    minQuantity: "",
+    maxQuantity: "",
+    unit: "",
+  });
+
   useEffect(() => {
     fetchDonations();
   }, []);
 
-  const fetchDonations = async () => {
+  const fetchDonations = async (searchParams?: any) => {
     try {
       setLoading(true);
-      const res = await getAvailableDonationsApi();
+      const res = await getAvailableDonationsApi(searchParams);
       setDonations(res.data);
     } catch (err: any) {
       setError(err.message || "Failed to fetch donations");
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    const searchParams: any = {};
+    if (searchQuery.trim()) {
+      searchParams.title = searchQuery.trim();
+    }
+    if (filters.category) searchParams.category = filters.category;
+    if (filters.pickupAddress)
+      searchParams.pickupAddress = filters.pickupAddress;
+    if (filters.minQuantity)
+      searchParams.minQuantity = parseInt(filters.minQuantity);
+    if (filters.maxQuantity)
+      searchParams.maxQuantity = parseInt(filters.maxQuantity);
+    if (filters.unit) searchParams.unit = filters.unit;
+
+    fetchDonations(
+      Object.keys(searchParams).length > 0 ? searchParams : undefined,
+    );
+  };
+
+  const handleClearFilters = () => {
+    setSearchQuery("");
+    setFilters({
+      category: "",
+      title: "",
+      pickupAddress: "",
+      minQuantity: "",
+      maxQuantity: "",
+      unit: "",
+    });
+    fetchDonations();
   };
 
   const handleClaimClick = (donation: Donation) => {
@@ -121,7 +167,7 @@ export default function NGODonationsPage() {
   }
 
   return (
-    <div className="w-full space-y-6 py-8 px-2 md:px-6 max-w-8xl mx-auto">
+    <div className="w-full space-y-6 py-8 px-2  max-w-8xl mx-auto">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
@@ -132,20 +178,157 @@ export default function NGODonationsPage() {
             Browse and claim donations from verified donors
           </p>
         </div>
-        <div className="flex items-center gap-2">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search donations..."
-              className="pl-10 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500 w-64"
-            />
+        <div className="flex items-center gap-3">
+          <form onSubmit={handleSearch} className="flex-1 max-w-2xl">
+            <div className="relative group">
+              <div className="absolute inset-0 bg-linear-to-r from-emerald-500 to-green-500 rounded-2xl blur opacity-20 group-hover:opacity-30 transition-opacity duration-300" />
+              <div className="relative flex items-center bg-white border-2 border-slate-200 rounded-2xl overflow-hidden shadow-sm group-hover:shadow-md group-hover:border-emerald-300 transition-all duration-300">
+                <div className="pl-4 pr-3 py-3 bg-linear-to-r from-emerald-50 to-green-50 border-r border-slate-200">
+                  <Search className="w-5 h-5 text-emerald-600" />
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search donations by title..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="flex-1 px-4 py-3 text-sm text-slate-700 placeholder:text-slate-400 focus:outline-none bg-transparent"
+                />
+                <Button
+                  type="submit"
+                  className="m-1.5 bg-linear-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white px-5 py-3 rounded-xl text-sm font-medium shadow-md hover:shadow-lg transition-all duration-300"
+                >
+                  Search
+                </Button>
+              </div>
+            </div>
+          </form>
+          <div className="flex items-center gap-2">
+            <Button
+              onClick={() => setShowFilterPanel(!showFilterPanel)}
+              variant="secondary"
+              className={`relative px-5 py-3 rounded-2xl border-2 text-sm font-medium transition-all duration-300 ${
+                showFilterPanel
+                  ? "bg-linear-to-br from-emerald-500 to-green-500 border-emerald-500 text-white shadow-lg"
+                  : "bg-white border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50 shadow-sm hover:shadow-md"
+              }`}
+            >
+              <Filter className="w-4 h-4" />
+              {(filters.category ||
+                filters.pickupAddress ||
+                filters.minQuantity ||
+                filters.maxQuantity ||
+                filters.unit) && (
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-linear-to-r from-emerald-500 to-green-500 rounded-full border-2 border-white shadow-sm flex items-center justify-center">
+                  <span className="text-[10px] text-white font-bold">!</span>
+                </span>
+              )}
+            </Button>
           </div>
-          <button className="p-2 border border-slate-200 rounded-xl hover:bg-slate-50 transition">
-            <Filter className="w-4 h-4 text-gray-500" />
-          </button>
         </div>
       </div>
+
+      {/* Filter Panel */}
+      {showFilterPanel && (
+        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+          <h3 className="text-lg font-semibold text-slate-900 mb-4">
+            Filter Donations
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Category
+              </label>
+              <select
+                value={filters.category}
+                onChange={(e) =>
+                  setFilters({ ...filters, category: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="">All Categories</option>
+                <option value="Food">Food</option>
+                <option value="Clothes">Clothes</option>
+                <option value="Others">Others</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Pickup Address
+              </label>
+              <input
+                type="text"
+                placeholder="Search by address..."
+                value={filters.pickupAddress}
+                onChange={(e) =>
+                  setFilters({ ...filters, pickupAddress: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Unit
+              </label>
+              <select
+                value={filters.unit}
+                onChange={(e) =>
+                  setFilters({ ...filters, unit: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                <option value="">All Units</option>
+                <option value="Pieces">Pieces</option>
+                <option value="Kgs">Kgs</option>
+                <option value="Packets">Packets</option>
+                <option value="Liters">Liters</option>
+              </select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Min Quantity
+              </label>
+              <input
+                type="number"
+                placeholder="Minimum"
+                value={filters.minQuantity}
+                onChange={(e) =>
+                  setFilters({ ...filters, minQuantity: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-slate-700 mb-1">
+                Max Quantity
+              </label>
+              <input
+                type="number"
+                placeholder="Maximum"
+                value={filters.maxQuantity}
+                onChange={(e) =>
+                  setFilters({ ...filters, maxQuantity: e.target.value })
+                }
+                className="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-green-500"
+              />
+            </div>
+          </div>
+          <div className="flex gap-3 mt-4">
+            <Button
+              onClick={handleSearch}
+              className="bg-green-500 hover:bg-green-600 text-white"
+            >
+              Apply Filters
+            </Button>
+            <Button
+              onClick={handleClearFilters}
+              variant="secondary"
+              className="px-5 py-3 rounded-2xl text-sm font-medium border-2 border-slate-200 hover:border-red-300 hover:bg-red-50 hover:text-red-600 transition-all duration-300 shadow-sm hover:shadow-md"
+            >
+              clear
+            </Button>
+          </div>
+        </div>
+      )}
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
