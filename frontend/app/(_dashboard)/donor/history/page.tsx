@@ -30,7 +30,10 @@ export default function DonationHistory() {
   const [donationToDelete, setDonationToDelete] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
   const [detailsModalOpen, setDetailsModalOpen] = useState(false);
-  const [selectedDonation, setSelectedDonation] = useState<Donation | null>(null);
+  const [selectedDonation, setSelectedDonation] = useState<Donation | null>(
+    null,
+  );
+  const [statusFilter, setStatusFilter] = useState<string>("All");
   const router = useRouter();
 
   useEffect(() => {
@@ -74,6 +77,14 @@ export default function DonationHistory() {
     setDetailsModalOpen(false);
     setSelectedDonation(null);
   };
+
+  const filteredDonations = donations.filter((d) => {
+    if (statusFilter === "All") return true;
+    if (statusFilter === "Rejected") return d.adminStatus === "Rejected";
+    if (statusFilter === "Available")
+      return d.status === "Available" && d.adminStatus !== "Rejected";
+    return d.status === statusFilter;
+  });
 
   const StatusBadge = ({
     admin,
@@ -163,14 +174,42 @@ export default function DonationHistory() {
           </div>
         </div>
 
-        {donations.length === 0 ? (
+        {/* Status Filter */}
+        <div className="flex items-center gap-3 mb-8">
+          {[
+            "All",
+            "Available",
+            "Claimed",
+            "PickedUp",
+            "Completed",
+            "Rejected",
+          ].map((filter) => (
+            <button
+              key={filter}
+              onClick={() => setStatusFilter(filter)}
+              className={`px-6 py-2.5 rounded-full text-sm font-medium transition-all ${
+                statusFilter === filter
+                  ? "bg-linear-to-r from-emerald-500 to-green-500 text-white shadow-md"
+                  : "bg-white border border-slate-200 text-slate-600 hover:border-emerald-300 hover:bg-emerald-50"
+              }`}
+            >
+              {filter}
+            </button>
+          ))}
+        </div>
+
+        {filteredDonations.length === 0 ? (
           <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-slate-200">
             <Package size={48} className="mx-auto text-slate-300 mb-4" />
-            <h3 className="text-lg font-medium">No donations yet</h3>
+            <h3 className="text-lg font-medium">
+              {donations.length === 0
+                ? "No donations yet"
+                : "No donations with this status"}
+            </h3>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {donations.map((d) => (
+            {filteredDonations.map((d) => (
               <div
                 key={d._id}
                 onClick={() => handleViewDetails(d)}
