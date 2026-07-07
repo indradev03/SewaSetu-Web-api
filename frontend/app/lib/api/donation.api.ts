@@ -10,6 +10,7 @@ export type Donation = {
     username: string;
     fullName: string;
     email: string;
+    phoneNumber: string;
     profileImage?: string;
   };
   category: "Food" | "Clothes" | "Others";
