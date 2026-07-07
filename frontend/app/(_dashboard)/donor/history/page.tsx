@@ -15,9 +15,12 @@ import {
   AlertCircle,
   CheckCircle,
   Clock,
+  Mail,
+  User,
 } from "lucide-react";
 import Button from "@/app/components/ui/button";
 import DeleteConfirmationModal from "@/app/(_dashboard)/admin/components/donation/DeleteConfirmationModal";
+import DonationDetailsModal from "@/app/(_dashboard)/donor/components/DonationDetailsModal";
 import { useRouter } from "next/navigation";
 
 export default function DonationHistory() {
@@ -26,6 +29,8 @@ export default function DonationHistory() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [donationToDelete, setDonationToDelete] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [detailsModalOpen, setDetailsModalOpen] = useState(false);
+  const [selectedDonation, setSelectedDonation] = useState<Donation | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -60,7 +65,23 @@ export default function DonationHistory() {
     }
   };
 
-  const StatusBadge = ({ admin, claim }: { admin: string; claim: string }) => {
+  const handleViewDetails = (donation: Donation) => {
+    setSelectedDonation(donation);
+    setDetailsModalOpen(true);
+  };
+
+  const closeDetailsModal = () => {
+    setDetailsModalOpen(false);
+    setSelectedDonation(null);
+  };
+
+  const StatusBadge = ({
+    admin,
+    status,
+  }: {
+    admin: string;
+    status: string;
+  }) => {
     const configs: Record<
       string,
       { color: string; icon: JSX.Element; label: string }
@@ -75,19 +96,29 @@ export default function DonationHistory() {
         icon: <AlertCircle size={14} />,
         label: "Pending",
       },
-      Completed: {
+      Available: {
         color: "bg-emerald-50 text-emerald-700 border-emerald-100",
         icon: <CheckCircle size={14} />,
-        label: "Completed",
+        label: "Available",
       },
       Claimed: {
         color: "bg-blue-50 text-blue-700 border-blue-100",
         icon: <Clock size={14} />,
         label: "Claimed",
       },
+      PickedUp: {
+        color: "bg-amber-50 text-amber-700 border-amber-100",
+        icon: <Package size={14} />,
+        label: "Picked Up",
+      },
+      Completed: {
+        color: "bg-purple-50 text-purple-700 border-purple-100",
+        icon: <CheckCircle size={14} />,
+        label: "Completed",
+      },
     };
     const c = configs[admin] ||
-      configs[claim] || {
+      configs[status] || {
         color: "bg-slate-100 text-slate-700 border-slate-200",
         icon: <CheckCircle size={14} />,
         label: "Available",
@@ -109,9 +140,9 @@ export default function DonationHistory() {
     );
 
   return (
-    <div className="min-h-screen p-6 md:p-12">
+    <div className="w-full max-w-8xl mx-auto px-4 py-8">
       <ToastContainer position="top-right" />
-      <div className="max-w-7xl mx-auto">
+      <div className="max-w-8xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-6">
           <div>
             <h1 className="text-4xl font-semibold tracking-tight text-emerald-600 font-serif">
@@ -142,10 +173,11 @@ export default function DonationHistory() {
             {donations.map((d) => (
               <div
                 key={d._id}
-                className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col gap-4"
+                onClick={() => handleViewDetails(d)}
+                className="bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col gap-4 cursor-pointer hover:shadow-md transition-shadow"
               >
                 <div className="flex justify-between items-start">
-                  <StatusBadge admin={d.adminStatus} claim={d.claimStatus} />
+                  <StatusBadge admin={d.adminStatus} status={d.status} />
                   <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">
                     {d.category}
                   </span>
@@ -162,7 +194,7 @@ export default function DonationHistory() {
 
                 {d.photos && d.photos.length > 0 && (
                   <div className="grid grid-cols-3 gap-2">
-                    {d.photos.map((photo, idx) => (
+                    {d.photos.slice(0, 3).map((photo, idx) => (
                       <img
                         key={idx}
                         src={`/uploads/donations/${photo}`}
@@ -170,6 +202,11 @@ export default function DonationHistory() {
                         className="w-full h-20 object-cover rounded-xl border border-slate-100"
                       />
                     ))}
+                    {d.photos.length > 3 && (
+                      <div className="w-full h-20 rounded-xl border border-slate-100 bg-slate-50 flex items-center justify-center text-xs text-slate-500">
+                        +{d.photos.length - 3} more
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -185,10 +222,37 @@ export default function DonationHistory() {
                   </div>
                 )}
 
-                {d.pointsEarned && d.pointsEarned > 0 && (
+                {/* NGO Claim Information */}
+                {d.claimedByNgoId && (
+                  <div className="p-3 bg-blue-50 border border-blue-100 rounded-xl">
+                    <div className="flex items-center gap-2">
+                      {d.claimedByNgoId.profileImage ? (
+                        <img
+                          src={`/uploads/profile/${d.claimedByNgoId.profileImage}`}
+                          alt={d.claimedByNgoId.organizationName}
+                          className="w-8 h-8 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                          <User className="w-4 h-4 text-blue-600" />
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <p className="text-xs text-blue-700 font-semibold flex items-center gap-1.5">
+                          <CheckCircle size={12} />
+                          Claimed by {d.claimedByNgoId.organizationName}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Reward Points */}
+                {d.rewardPointsAwarded && d.rewardPointsAwarded > 0 && (
                   <div className="p-3 bg-emerald-50 border border-emerald-100 rounded-xl">
-                    <p className="text-sm text-emerald-700 font-medium">
-                      Points Earned: {d.pointsEarned}
+                    <p className="text-sm text-emerald-700 font-medium flex items-center gap-1.5">
+                      <span className="text-lg">🎉</span>
+                      You earned {d.rewardPointsAwarded} reward points!
                     </p>
                   </div>
                 )}
@@ -205,7 +269,10 @@ export default function DonationHistory() {
                 <div className="flex gap-2 border-t pt-4">
                   {d.adminStatus === "Pending" && (
                     <Button
-                      onClick={() => router.push(`/donor/history/${d._id}`)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        router.push(`/donor/history/${d._id}`);
+                      }}
                       variant="green"
                       className="flex-1"
                     >
@@ -213,7 +280,8 @@ export default function DonationHistory() {
                     </Button>
                   )}
                   <Button
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation();
                       setDonationToDelete(d._id);
                       setDeleteModalOpen(true);
                     }}
@@ -239,6 +307,12 @@ export default function DonationHistory() {
         deleting={deleting}
         title="Delete Donation"
         message="Are you sure you want to delete this donation? This action cannot be undone."
+      />
+
+      <DonationDetailsModal
+        open={detailsModalOpen}
+        donation={selectedDonation}
+        onClose={closeDetailsModal}
       />
     </div>
   );

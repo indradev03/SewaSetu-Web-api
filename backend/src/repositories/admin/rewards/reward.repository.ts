@@ -49,9 +49,14 @@ export class RewardRepository {
       ];
     }
 
-    if (typeof isActive === "boolean") {
-      filter.isActive = isActive;
+    if (isActive === true) {
+      filter.isActive = true;
+    } else if (isActive === false) {
+      filter.isActive = false;
     }
+
+    console.log("Repository filter:", filter);
+    console.log("isActive value:", isActive);
 
     const [rewards, total] = await Promise.all([
       RewardModel.find(filter)

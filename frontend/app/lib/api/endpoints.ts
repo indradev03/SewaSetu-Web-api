@@ -25,6 +25,7 @@ export const API = {
     // Donations
     AVAILABLE_DONATIONS: "/donation/ngo/available",
     CLAIM_DONATION: (id: string) => `/donation/ngo/${id}/claim`,
+    PICKUP_DONATION: (id: string) => `/donation/ngo/${id}/pickup`,
     COMPLETE_DONATION: (id: string) => `/donation/ngo/${id}/complete`,
     CLAIMED_DONATIONS: "/donation/ngo/claimed",
   },

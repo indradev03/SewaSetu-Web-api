@@ -10,6 +10,7 @@ export interface IDonor extends Document {
   address?: string;
   profileImage?: string;
   role: "donor" | "admin";
+  rewardPoints: number;
 }
 
 const DonorSchema = new Schema<IDonor>(
@@ -25,6 +26,8 @@ const DonorSchema = new Schema<IDonor>(
     profileImage: { type: String, default: "" },
 
     role: { type: String, enum: ["donor", "admin"], default: "donor" },
+
+    rewardPoints: { type: Number, default: 0 },
   },
   { timestamps: true },
 );

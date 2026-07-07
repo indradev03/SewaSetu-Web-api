@@ -19,6 +19,9 @@ import {
   User as UserIcon,
   Loader2,
   Building2,
+  FileText,
+  Download,
+  ExternalLink,
 } from "lucide-react";
 
 import { getNGOByIdApi, NGO } from "@/app/lib/api/admin.api";
@@ -116,17 +119,20 @@ export default function AdminNGODetailPage() {
     <div className="p-6 max-w-8xl mx-auto">
       <ToastContainer position="top-right" autoClose={3000} />
 
-      <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm ">
+      <div className=" w-full space-y-6 py-8 px-2  max-w-8xl mx-auto ">
         <div className="mb-8">
-          <button
-            onClick={() => router.push("/admin/ngos")}
-            className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors mb-4"
-          >
-            <ArrowLeft className="w-4 h-4" /> Back to NGOs
-          </button>
-          <h1 className="text-2xl font-bold text-slate-800">
+          <h1 className="text-4xl font-semibold tracking-tight text-emerald-600 font-serif">
             Organization Profile
           </h1>
+          <button
+            onClick={() => router.back()}
+            className="group flex mt-5 items-center gap-2 text-emerald-600 hover:text-emerald-700 transition-colors font-medium text-sm"
+          >
+            <div className="p-2 bg-emerald-50 rounded-full group-hover:bg-emerald-100 transition-colors">
+              <ArrowLeft size={18} />
+            </div>
+            Back to Ngos
+          </button>
         </div>
 
         <div className="bg-white rounded-4xl border border-slate-200 shadow-lg overflow-hidden">
@@ -243,6 +249,33 @@ export default function AdminNGODetailPage() {
                     {ngo.impactDescription || "No description provided."}
                   </p>
                 </div>
+
+                {/* Verification Documents */}
+                <div className="mt-8 pt-8 border-t border-slate-200">
+                  <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4">
+                    Verification Documents
+                  </p>
+                  {ngo.registrationDocPath || ngo.panCardPath ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {ngo.registrationDocPath && (
+                        <DocumentCard
+                          title="Registration Document"
+                          path={ngo.registrationDocPath}
+                        />
+                      )}
+                      {ngo.panCardPath && (
+                        <DocumentCard title="PAN Card" path={ngo.panCardPath} />
+                      )}
+                    </div>
+                  ) : (
+                    <div className="bg-slate-50 rounded-xl border border-slate-200 p-6 text-center">
+                      <FileText className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+                      <p className="text-sm text-slate-500">
+                        No verification documents uploaded
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -288,6 +321,38 @@ function DetailRow({
           {label}
         </p>
         <p className="text-sm font-semibold text-slate-800">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function DocumentCard({ title, path }: { title: string; path: string }) {
+  return (
+    <div className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:border-emerald-300 transition-all duration-200">
+      {/* Header */}
+      <div className="p-4 border-b border-slate-100 flex items-center gap-3">
+        <div className="p-2 rounded-lg bg-emerald-50 text-emerald-600">
+          <FileText size={18} />
+        </div>
+        <h3 className="text-sm font-semibold text-slate-800">{title}</h3>
+      </div>
+
+      {/* Simplified Preview Area to match your design */}
+      <div className="h-40 bg-slate-50 flex items-center justify-center">
+        <FileText className="w-16 h-16 text-slate-200" />
+      </div>
+
+      {/* Action Link */}
+      <div className="p-4 bg-white border-t border-slate-100">
+        <a
+          href={path}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="inline-flex items-center gap-2 text-xs font-bold text-emerald-700 hover:text-emerald-800 transition-colors"
+        >
+          <ExternalLink size={14} />
+          Open in New Tab
+        </a>
       </div>
     </div>
   );

@@ -95,20 +95,24 @@ export default function AdminDonorDetailPage() {
       <ToastContainer position="top-right" autoClose={3000} />
 
       {/* LARGE MAIN CONTAINER */}
-      <div className="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm min-h-[80vh]">
+      <div className=" w-full space-y-6 py-8 px-2  max-w-8xl mx-auto">
         {/* TOP NAVIGATION & HEADER */}
         <div className="mb-8">
-          <button
-            onClick={() => router.push("/admin/donors")}
-            className="flex items-center gap-2 text-sm font-medium text-slate-500 hover:text-emerald-600 transition-colors mb-4"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to donors
-          </button>
-          <h1 className="text-2xl font-bold text-slate-800">Donor Profile</h1>
-          <p className="text-slate-500 text-sm">
+          <h1 className="text-4xl font-semibold tracking-tight text-emerald-600 font-serif">
+            Donor Profile
+          </h1>
+          <p className="text-gray-500 mt-2">
             View and manage donor information.
           </p>
+          <button
+            onClick={() => router.back()}
+            className="group flex mt-5 items-center gap-2 text-emerald-600 hover:text-emerald-700 transition-colors font-medium text-sm"
+          >
+            <div className="p-2 bg-emerald-50 rounded-full group-hover:bg-emerald-100 transition-colors">
+              <ArrowLeft size={18} />
+            </div>
+            Back to History
+          </button>
         </div>
 
         {/* CONTENT SECTION */}

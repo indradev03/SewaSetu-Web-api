@@ -4,10 +4,11 @@ import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import "react-toastify/dist/ReactToastify.css";
-import { Search, Plus, RefreshCw } from "lucide-react";
+import { Search, Plus, RefreshCw, X } from "lucide-react";
 
 import DeleteConfirmationModal from "@/app/(_dashboard)/admin/components/donation/DeleteConfirmationModal";
 import RewardTable from "../components/rewards/RewardTable";
+import RewardViewModal from "../components/rewards/RewardViewModal";
 import {
   deleteReward,
   getAllRewards,
@@ -23,21 +24,31 @@ export default function AdminRewardsPage() {
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [filter, setFilter] = useState<string>("all");
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [total, setTotal] = useState(0);
   const [deleteTarget, setDeleteTarget] = useState<Reward | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [viewReward, setViewReward] = useState<Reward | null>(null);
 
   const fetchRewards = useCallback(
-    async (pageNum: number, searchTerm: string) => {
+    async (pageNum: number, searchTerm: string, filterValue: string) => {
       setLoading(true);
       try {
-        const res = await getAllRewards({
+        const params: any = {
           page: pageNum,
           limit: PAGE_SIZE,
           search: searchTerm,
-        });
+        };
+
+        if (filterValue === "active") {
+          params.isActive = "true";
+        } else if (filterValue === "inactive") {
+          params.isActive = "false";
+        }
+
+        const res = await getAllRewards(params);
         setRewards(res.data);
         setTotalPages(res.meta.totalPages || 1);
         setTotal(res.meta.total || 0);
@@ -51,13 +62,19 @@ export default function AdminRewardsPage() {
   );
 
   useEffect(() => {
-    fetchRewards(page, search);
+    fetchRewards(page, search, filter);
   }, [page, fetchRewards]);
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     setPage(1);
-    fetchRewards(1, search);
+    fetchRewards(1, search, filter);
+  };
+
+  const handleFilterChange = (filterValue: string) => {
+    setFilter(filterValue);
+    setPage(1);
+    fetchRewards(1, search, filterValue);
   };
 
   const handleDelete = async () => {
@@ -68,7 +85,7 @@ export default function AdminRewardsPage() {
     if (res.success) {
       toast.success("Reward deleted");
       setDeleteTarget(null);
-      fetchRewards(page, search);
+      fetchRewards(page, search, filter);
     } else {
       toast.error(res.errors?.root || "Failed to delete reward");
     }
@@ -77,14 +94,17 @@ export default function AdminRewardsPage() {
   const handleToggle = async (id: string) => {
     const res = await toggleRewardStatus(id);
     if (res.success) {
-      fetchRewards(page, search);
+      fetchRewards(page, search, filter);
     } else {
       toast.error("Failed to update status");
     }
   };
 
   return (
-    <div className="w-full max-w-8xl mx-auto px-4 py-8">
+    <div
+      className=" w-full space-y-6 py-8 px-1
+      max-w-8xl mx-auto"
+    >
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -98,10 +118,10 @@ export default function AdminRewardsPage() {
 
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-4xl font-semibold tracking-tight text-emerald-600 font-serif">
             Rewards
           </h1>
-          <p className="text-sm text-slate-500 mt-1">
+          <p className="text-gray-500 mt-2">
             Manage and configure your reward system.
           </p>
         </div>
@@ -115,23 +135,38 @@ export default function AdminRewardsPage() {
 
       <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
         <div className="p-4 border-b border-slate-100 bg-slate-50/50">
-          <form onSubmit={handleSearch} className="relative max-w-sm">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
-            <input
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search by name..."
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
-            />
-          </form>
+          <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+            <form onSubmit={handleSearch} className="relative max-w-sm w-full">
+              <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-400" />
+              <input
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                placeholder="Search by name..."
+                className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
+              />
+            </form>
+
+            <div className="flex gap-2">
+              <select
+                value={filter}
+                onChange={(e) => handleFilterChange(e.target.value)}
+                className="px-3 py-2 rounded-lg border border-slate-200 text-sm focus:ring-2 focus:ring-emerald-500/20 outline-none transition-all"
+              >
+                <option value="all">All Rewards</option>
+                <option value="active">Active</option>
+                <option value="inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
         </div>
 
         <RewardTable
           rewards={rewards}
           loading={loading}
-          onEdit={(id) => router.push(`/admin/rewards/${id}`)}
-          onDelete={(reward) => setDeleteTarget(reward)}
+          onEdit={(id: string) => router.push(`/admin/rewards/${id}`)}
+          onDelete={(reward: Reward) => setDeleteTarget(reward)}
           onToggle={handleToggle}
+          onView={(reward: Reward) => setViewReward(reward)}
         />
 
         {totalPages > 1 && (
@@ -171,6 +206,11 @@ export default function AdminRewardsPage() {
         deleting={deleting}
         onClose={() => setDeleteTarget(null)}
         onConfirm={handleDelete}
+      />
+
+      <RewardViewModal
+        reward={viewReward}
+        onClose={() => setViewReward(null)}
       />
     </div>
   );

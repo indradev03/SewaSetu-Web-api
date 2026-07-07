@@ -4,7 +4,7 @@ import {
   authorizedMiddleware,
   authorizeRoles,
 } from "../middleware/auth.middleware";
-import { uploadNgoProfile } from "../middleware/upload.middleware";
+import { uploadNgoProfile, uploadNgoDocuments } from "../middleware/upload.middleware";
 
 const router = Router();
 const ngoController = new NGOController();
@@ -13,8 +13,15 @@ const ngoController = new NGOController();
  * PUBLIC ROUTES
  */
 
-// Register NGO
-router.post("/register", ngoController.registerNGO.bind(ngoController));
+// Register NGO (with document uploads)
+router.post(
+  "/register",
+  uploadNgoDocuments.fields([
+    { name: "registrationDoc", maxCount: 1 },
+    { name: "panCard", maxCount: 1 },
+  ]),
+  ngoController.registerNGO.bind(ngoController),
+);
 
 // Login NGO
 router.post("/login", ngoController.loginNGO.bind(ngoController));

@@ -10,6 +10,8 @@ export const RegisterNGODTO = z.object({
   password: z.string().min(6, "Password must be at least 6 characters"),
   impactDescription: z.string().min(1, "Impact description is required"),
   address: z.string().optional(),
+  registrationDocPath: z.string().optional(),
+  panCardPath: z.string().optional(),
 });
 
 // ── Login ───

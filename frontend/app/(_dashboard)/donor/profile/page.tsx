@@ -22,6 +22,7 @@ import {
   Eye,
   EyeOff,
   AtSign,
+  Gift,
 } from "lucide-react";
 import Button from "@/app/components/ui/button";
 
@@ -169,7 +170,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen p-6 md:p-12 font-sans antialiased text-gray-800">
+    <div className="w-full max-w-8xl mx-auto px-4 py-8 font-sans antialiased text-gray-800">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -237,6 +238,16 @@ export default function ProfilePage() {
                 />
                 Verified {user?.role || "Donor"}
               </span>
+
+              {/* REWARD POINTS */}
+              <div className="mt-4 bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-4 w-full">
+                <div className="flex items-center justify-center gap-2">
+                  <Gift className="w-5 h-5 text-amber-600" />
+                  <span className="text-sm font-semibold text-amber-800">
+                    {user?.rewardPoints || 0} Reward Points
+                  </span>
+                </div>
+              </div>
 
               {/* DYNAMIC EDIT / CANCEL BUTTON */}
               <div className="mt-8 w-full">

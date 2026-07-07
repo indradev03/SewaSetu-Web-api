@@ -1,9 +1,9 @@
 "use client";
 
-import { Clock, Check, X, Package } from "lucide-react";
+import { Clock, Check, X, Package, Truck } from "lucide-react";
 
 interface StatusBadgeProps {
-  status: "Pending" | "Approved" | "Rejected" | "Collected";
+  status: "Pending" | "Approved" | "Rejected" | "Collected" | "Available" | "Claimed" | "PickedUp" | "Completed";
 }
 
 export default function StatusBadge({ status }: StatusBadgeProps) {
@@ -31,6 +31,30 @@ export default function StatusBadge({ status }: StatusBadgeProps) {
       border: "border-blue-200",
       text: "text-blue-700",
       icon: Package,
+    },
+    Available: {
+      bg: "bg-emerald-50",
+      border: "border-emerald-200",
+      text: "text-emerald-700",
+      icon: Check,
+    },
+    Claimed: {
+      bg: "bg-blue-50",
+      border: "border-blue-200",
+      text: "text-blue-700",
+      icon: Clock,
+    },
+    PickedUp: {
+      bg: "bg-amber-50",
+      border: "border-amber-200",
+      text: "text-amber-700",
+      icon: Truck,
+    },
+    Completed: {
+      bg: "bg-purple-50",
+      border: "border-purple-200",
+      text: "text-purple-700",
+      icon: Check,
     },
   };
 

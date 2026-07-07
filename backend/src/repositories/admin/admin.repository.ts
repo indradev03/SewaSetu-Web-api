@@ -113,7 +113,7 @@ export const AdminRepository = {
   },
 
   async getNGOById(id: string) {
-    return NGO.findById(id);
+    return NGO.findById(id).select("-password");
   },
 
   async deleteNGO(id: string) {

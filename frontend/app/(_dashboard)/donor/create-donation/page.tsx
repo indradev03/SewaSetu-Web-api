@@ -89,7 +89,7 @@ export default function CreateDonation() {
   };
 
   return (
-    <div className="min-h-screen p-6 md:p-12 font-sans antialiased text-gray-800">
+    <div className="w-full max-w-8xl mx-auto px-4 py-8 font-sans antialiased text-gray-800">
       <ToastContainer
         position="top-right"
         autoClose={3000}

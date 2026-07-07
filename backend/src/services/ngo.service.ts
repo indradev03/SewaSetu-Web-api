@@ -11,6 +11,7 @@ import {
 
 import { HttpException } from "../exceptions/http-exception";
 import { SECRET_KEY, JWT_EXPIRES_IN } from "../config/constant";
+import emailService from "./email.service";
 
 export class NGOService {
   // ── REGISTER ──
@@ -59,6 +60,10 @@ export class NGOService {
 
     if (!isValid) {
       throw new HttpException(400, "Invalid email or password");
+    }
+
+    if (!ngo.isVerified) {
+      throw new HttpException(403, "Your account has not been verified yet. Please wait for an administrator to review your application.");
     }
 
     const token = jwt.sign(
@@ -112,6 +117,19 @@ export class NGOService {
 
     if (!ngo) {
       throw new HttpException(404, "NGO not found");
+    }
+
+    // Send email notification when NGO is verified
+    if (data.isVerified) {
+      try {
+        await emailService.sendNGOVerificationEmail(
+          ngo.organizationName,
+          ngo.email
+        );
+      } catch (error) {
+        console.error("Failed to send verification email:", error);
+        // Don't throw error - verification should still succeed even if email fails
+      }
     }
 
     return ngo;

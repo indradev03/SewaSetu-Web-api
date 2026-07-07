@@ -27,7 +27,15 @@ import RejectConfirmationModal from "@/app/(_dashboard)/admin/components/donatio
 import ApproveConfirmationModal from "@/app/(_dashboard)/admin/components/donation/ApproveConfirmationModal";
 import DeleteConfirmationModal from "@/app/(_dashboard)/admin/components/donation/DeleteConfirmationModal";
 
-type StatusFilter = "All" | "Pending" | "Approved" | "Rejected" | "Collected";
+type StatusFilter =
+  | "All"
+  | "Pending"
+  | "Approved"
+  | "Rejected"
+  | "Available"
+  | "Claimed"
+  | "PickedUp"
+  | "Completed";
 type CategoryFilter = "All" | "Food" | "Clothes" | "Others";
 
 export default function AdminDonations() {
@@ -199,9 +207,11 @@ export default function AdminDonations() {
       donation.category.toLowerCase().includes(searchLower) ||
       donation.pickupAddress.toLowerCase().includes(searchLower);
 
-    // Status filter
+    // Status filter - check both adminStatus and status fields
     const matchesStatus =
-      statusFilter === "All" || donation.adminStatus === statusFilter;
+      statusFilter === "All" ||
+      donation.adminStatus === statusFilter ||
+      donation.status === statusFilter;
 
     // Category filter
     const matchesCategory =
@@ -247,7 +257,7 @@ export default function AdminDonations() {
   }
 
   return (
-    <div className=" w-full space-y-6 py-8 px-2 md:px-6 max-w-8xl mx-auto">
+    <div className=" w-full space-y-6 py-8 px-2  max-w-8xl mx-auto">
       <ToastContainer
         position="top-right"
         autoClose={3000}
@@ -293,7 +303,10 @@ export default function AdminDonations() {
                 <option value="Pending">Pending</option>
                 <option value="Approved">Approved</option>
                 <option value="Rejected">Rejected</option>
-                <option value="Collected">Collected</option>
+                <option value="Available">Available</option>
+                <option value="Claimed">Claimed</option>
+                <option value="PickedUp">Picked Up</option>
+                <option value="Completed">Completed</option>
               </select>
             </div>
 
@@ -410,10 +423,10 @@ export default function AdminDonations() {
 
                     {/* Actions */}
                     <div className="col-span-2">
-                      <div className="flex items-center gap-4">
+                      <div className="flex justify-center gap-4">
                         <button
                           onClick={() => openDetailsModal(donation)}
-                          className="flex items-center gap-1 px-2 py-1.5
+                          className="flex items-center gap-1 px-2 py-1.5 
                             bg-emerald-50 text-emerald-700 rounded-lg text-xs font-medium hover:bg-emerald-100 transition-colors"
                           disabled={processing === donation._id}
                         >

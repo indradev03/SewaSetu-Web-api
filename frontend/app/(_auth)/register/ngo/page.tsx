@@ -91,7 +91,11 @@ export default function NGORegister() {
     setErrors({});
     setLoading(true);
 
-    const result = await registerNGOAction(form);
+    const result = await registerNGOAction({
+      ...form,
+      registrationDoc: files.registrationDocPath,
+      panCard: files.panCardPath,
+    });
     setLoading(false);
 
     if (!result.success) {

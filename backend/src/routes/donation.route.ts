@@ -119,8 +119,32 @@ router.post(
   donationController.claimDonation.bind(donationController),
 );
 
+// NGO mark donation as picked up
+router.patch(
+  "/ngo/:id/pickup",
+  authorizedMiddleware,
+  authorizeRoles("ngo"),
+  donationController.markPickedUp.bind(donationController),
+);
+
+// NGO release a claimed donation
+router.patch(
+  "/ngo/:id/release",
+  authorizedMiddleware,
+  authorizeRoles("ngo"),
+  donationController.releaseClaim.bind(donationController),
+);
+
+// NGO delete a completed claimed donation
+router.delete(
+  "/ngo/:id",
+  authorizedMiddleware,
+  authorizeRoles("ngo"),
+  donationController.deleteClaimedDonation.bind(donationController),
+);
+
 // NGO complete a claimed donation
-router.put(
+router.patch(
   "/ngo/:id/complete",
   authorizedMiddleware,
   authorizeRoles("ngo"),

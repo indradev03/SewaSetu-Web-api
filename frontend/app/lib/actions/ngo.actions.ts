@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { ngoRegisterApi, ngoLoginApi } from "../api/auth";
+import { updateNgoProfileApi, type NGO } from "../api/ngo.api";
 import { setCookie } from "../cookies";
 
 //  Zod Schemas
@@ -17,6 +18,8 @@ export const ngoRegisterSchema = z
       .string()
       .min(10, "Please describe your mission (min 10 chars)"),
     address: z.string().optional(),
+    registrationDoc: z.any().optional(),
+    panCard: z.any().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Passwords do not match",
@@ -99,6 +102,22 @@ export const loginNGOAction = async (
     const message =
       (err as { response?: { data?: { message?: string } } })?.response?.data
         ?.message ?? "Login failed. Please check your credentials.";
+    return { success: false, errors: { root: message } };
+  }
+};
+
+//  updateNgoProfileAction
+
+export const updateNgoProfileAction = async (
+  formData: FormData,
+): Promise<ActionResult<{ ngo: NGO }>> => {
+  try {
+    const response = await updateNgoProfileApi(formData);
+    return { success: true, data: { ngo: response.data } };
+  } catch (err: unknown) {
+    const message =
+      (err as { response?: { data?: { message?: string } } })?.response?.data
+        ?.message ?? "Profile update failed. Please try again.";
     return { success: false, errors: { root: message } };
   }
 };

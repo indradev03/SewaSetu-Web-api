@@ -34,18 +34,18 @@ export const AdminApproveRejectDTO = z.object({
 });
 
 // ── NGO Claim Donation
-export const NgoClaimDonationDTO = z.object({
-  estimatedPickupTime: z.string().optional(),
-});
+export const NgoClaimDonationDTO = z.object({});
+
+// ── NGO Pickup Donation
+export const NgoPickupDonationDTO = z.object({});
 
 // ── NGO Complete Donation
-export const NgoCompleteDonationDTO = z.object({
-  pointsEarned: z.number().min(0).optional(),
-});
+export const NgoCompleteDonationDTO = z.object({});
 
 // ── Types
 export type CreateDonationType = z.infer<typeof CreateDonationDTO>;
 export type UpdateDonationType = z.infer<typeof UpdateDonationDTO>;
 export type AdminApproveRejectType = z.infer<typeof AdminApproveRejectDTO>;
 export type NgoClaimDonationType = z.infer<typeof NgoClaimDonationDTO>;
+export type NgoPickupDonationType = z.infer<typeof NgoPickupDonationDTO>;
 export type NgoCompleteDonationType = z.infer<typeof NgoCompleteDonationDTO>;

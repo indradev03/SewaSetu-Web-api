@@ -55,6 +55,14 @@ router.put(
   donorController.changePassword.bind(donorController),
 );
 
+// Get reward history
+router.get(
+  "/reward-history",
+  authorizedMiddleware,
+  authorizeRoles("donor"),
+  donorController.getRewardHistory.bind(donorController),
+);
+
 // Delete account
 router.delete(
   "/profile",

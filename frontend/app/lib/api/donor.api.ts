@@ -13,6 +13,7 @@ export type Donor = {
   address?: string;
   profileImage?: string;
   role: "donor" | "admin";
+  rewardPoints?: number;
 };
 
 export type UpdateDonorPayload = {
@@ -68,3 +69,12 @@ export async function changePasswordApi(payload: ChangePasswordPayload) {
 
   return res.data;
 }
+
+export const getRewardHistoryApi = async (): Promise<{
+  success: boolean;
+  message: string;
+  data: any[];
+}> => {
+  const res = await axiosInstance.get("/donor/reward-history");
+  return res.data;
+};

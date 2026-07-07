@@ -67,7 +67,9 @@ export default function DonationDetailsModal({
       <div className="w-full max-w-4xl rounded-4xl bg-white shadow-xl overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-100">
-          <h3 className="text-xl font-bold text-slate-900">Donation Details</h3>
+          <h2 className="text-3xl font-semibold tracking-tight text-emerald-600 font-serif">
+            Donation Details
+          </h2>
           <button
             onClick={onClose}
             className="rounded-lg p-1 hover:bg-slate-100 transition"
@@ -147,7 +149,7 @@ export default function DonationDetailsModal({
                 <div className="space-y-3">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h2 className="text-2xl font-bold text-gray-900">
+                      <h2 className="text-3xl font-semibold tracking-tight text-emerald-600 font-serif">
                         {donation.title}
                       </h2>
                       <div className="flex items-center gap-2 mt-2">
@@ -226,11 +228,58 @@ export default function DonationDetailsModal({
                   </div>
                 </div>
               </div>
+
+              {/* NGO Claim Information */}
+              {donation.claimedByNgoId && (
+                <div>
+                  <h4 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                    NGO Claim Information
+                  </h4>
+                  <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl space-y-3">
+                    <div className="flex items-center gap-4">
+                      {donation.claimedByNgoId.profileImage ? (
+                        <img
+                          src={`/uploads/profile/${donation.claimedByNgoId.profileImage}`}
+                          alt={donation.claimedByNgoId.organizationName}
+                          className="w-12 h-12 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center">
+                          <User className="w-6 h-6 text-blue-600" />
+                        </div>
+                      )}
+                      <div className="flex-1">
+                        <p className="font-semibold text-gray-900">
+                          {donation.claimedByNgoId.organizationName}
+                        </p>
+                        <div className="flex items-center gap-1 text-sm text-gray-500 mt-0.5">
+                          <Mail size={14} />
+                          <span>{donation.claimedByNgoId.email}</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3 pt-2 border-t border-blue-200">
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Status</p>
+                        <StatusBadge status={donation.status} />
+                      </div>
+                      <div>
+                        <p className="text-xs text-gray-500 mb-1">Claim Date</p>
+                        <p className="text-sm font-medium text-gray-900">
+                          {donation.claimedAt
+                            ? new Date(donation.claimedAt).toLocaleDateString()
+                            : "N/A"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
           {/* Action Buttons */}
-          <div className="flex items-center justify-center gap-3 mt-8 pt-6 border-t border-gray-100">
+          <div className="flex items-center justify-center gap-3  pt-6 border-t border-gray-100">
             {/* Wrap buttons in a container that controls width if needed, or keep flex-1 for equal width */}
             {canApprove && (
               <Button
