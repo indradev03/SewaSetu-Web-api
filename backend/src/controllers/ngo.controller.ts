@@ -36,11 +36,15 @@ export class NGOController {
       let panCardPath: string | undefined;
 
       if (files?.registrationDoc && files.registrationDoc[0]) {
-        registrationDocPath = files.registrationDoc[0].filename;
+        registrationDocPath = `${req.protocol}://${req.get(
+          "host",
+        )}/uploads/documents/${files.registrationDoc[0].filename}`;
       }
 
       if (files?.panCard && files.panCard[0]) {
-        panCardPath = files.panCard[0].filename;
+        panCardPath = `${req.protocol}://${req.get(
+          "host",
+        )}/uploads/documents/${files.panCard[0].filename}`;
       }
 
       const ngo = await ngoService.registerNGO({
@@ -240,6 +244,36 @@ export class NGOController {
     }
   }
 
+  // REMOVE PROFILE IMAGE
+
+  async removeProfileImage(req: Request, res: Response) {
+    try {
+      // 1. get existing NGO to grab the old filename
+      const existingNGO = await ngoService.getProfile(req.user!.id);
+
+      // 2. delete the physical file if it exists
+      if (existingNGO?.profileImage) {
+        deleteFile(existingNGO.profileImage);
+      }
+
+      // 3. clear profileImage in DB
+      const updated = await ngoService.removeProfileImage(req.user!.id);
+
+      return ApiResponseHelper.success(
+        res,
+        updated,
+        200,
+        "Profile image removed successfully",
+      );
+    } catch (error: any) {
+      return ApiResponseHelper.error(
+        res,
+        error.message || "Failed to remove profile image",
+        error.status || 500,
+      );
+    }
+  }
+
   // CHANGE PASSWORD
 
   async changePassword(req: Request, res: Response) {
@@ -254,10 +288,7 @@ export class NGOController {
         throw new HttpException(400, message);
       }
 
-      const result = await ngoService.changePassword(
-        req.user!.id,
-        parsed.data,
-      );
+      const result = await ngoService.changePassword(req.user!.id, parsed.data);
 
       return ApiResponseHelper.success(
         res,

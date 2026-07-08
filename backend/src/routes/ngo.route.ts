@@ -4,7 +4,10 @@ import {
   authorizedMiddleware,
   authorizeRoles,
 } from "../middleware/auth.middleware";
-import { uploadNgoProfile, uploadNgoDocuments } from "../middleware/upload.middleware";
+import {
+  uploadNgoProfile,
+  uploadNgoDocuments,
+} from "../middleware/upload.middleware";
 
 const router = Router();
 const ngoController = new NGOController();
@@ -54,7 +57,15 @@ router.put(
   ngoController.updateProfile.bind(ngoController),
 );
 
-// Change password
+// Remove NGO profile image
+router.delete(
+  "/profile/image",
+  authorizedMiddleware,
+  authorizeRoles("ngo"),
+  ngoController.removeProfileImage.bind(ngoController),
+);
+
+// Change NGO password
 router.put(
   "/profile/change-password",
   authorizedMiddleware,
