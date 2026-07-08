@@ -82,7 +82,7 @@ export default function DonationDetailsModal({
                 <div className="relative">
                   <div className="aspect-square rounded-2xl overflow-hidden bg-gray-100">
                     <img
-                      src={photos[currentImageIndex]}
+                      src={`/uploads/donations/${photos[currentImageIndex]}`}
                       alt={`Donation photo ${currentImageIndex + 1}`}
                       className="w-full h-full object-cover"
                     />
@@ -119,7 +119,7 @@ export default function DonationDetailsModal({
                           }`}
                         >
                           <img
-                            src={photo}
+                            src={`/uploads/donations/${photo}`}
                             alt={`Thumbnail ${index + 1}`}
                             className="w-full h-full object-cover"
                           />
