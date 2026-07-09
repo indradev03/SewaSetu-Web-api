@@ -18,7 +18,13 @@ const allowedTypes = [
   "application/pdf",
 ];
 
-export const createUpload = (mainFolder: string, subFolder: string) => {
+const allowedTypesAI = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
+export const createUpload = (
+  mainFolder: string,
+  subFolder: string,
+  allowedTypesList?: string[],
+) => {
   const storage = multer.diskStorage({
     destination: (req: Request, file, cb) => {
       const folder = `uploads/${mainFolder}/`;
@@ -41,7 +47,8 @@ export const createUpload = (mainFolder: string, subFolder: string) => {
     const ext = path.extname(file.originalname).toLowerCase();
     const allowedExt = [".jpg", ".jpeg", ".png", ".webp", ".gif", ".pdf"];
 
-    const isMimeValid = allowedTypes.includes(file.mimetype);
+    const typesToCheck = allowedTypesList || allowedTypes;
+    const isMimeValid = typesToCheck.includes(file.mimetype);
     const isExtValid = allowedExt.includes(ext);
 
     if (isMimeValid && isExtValid) {
@@ -77,3 +84,6 @@ export const uploadRewardImage = createUpload("rewards", "images");
 
 // Donation photos
 export const uploadDonationPhotos = createUpload("donations", "photos");
+
+// AI image upload (for donation item analysis)
+export const uploadAIImage = createUpload("ai", "temp", allowedTypesAI);
