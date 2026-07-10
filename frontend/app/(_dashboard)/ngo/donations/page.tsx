@@ -400,7 +400,7 @@ export default function NGODonationsPage() {
               {donation.photos && donation.photos.length > 0 ? (
                 <div className="relative h-48 bg-slate-100">
                   <img
-                    src={donation.photos[0]}
+                    src={`/uploads/donations/${donation.photos[0]}`}
                     alt={donation.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
