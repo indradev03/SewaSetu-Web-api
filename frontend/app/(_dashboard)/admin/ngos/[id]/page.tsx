@@ -327,6 +327,9 @@ function DetailRow({
 }
 
 function DocumentCard({ title, path }: { title: string; path: string }) {
+  const filename = path.split('/').pop();
+  const documentPath = `/uploads/documents/${filename}`;
+
   return (
     <div className="bg-white rounded-xl border border-slate-200 overflow-hidden hover:border-emerald-300 transition-all duration-200">
       {/* Header */}
@@ -345,7 +348,7 @@ function DocumentCard({ title, path }: { title: string; path: string }) {
       {/* Action Link */}
       <div className="p-4 bg-white border-t border-slate-100">
         <a
-          href={path}
+          href={documentPath}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 text-xs font-bold text-emerald-700 hover:text-emerald-800 transition-colors"

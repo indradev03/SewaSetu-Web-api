@@ -24,9 +24,9 @@ const Footer = () => {
   ];
 
   const legalLinks = [
-    { name: "Privacy Policy", path: "/privacy", icon: Shield },
-    { name: "Terms of Service", path: "/terms", icon: FileText },
-    { name: "Contact Support", path: "/contact", icon: HelpCircle },
+    { name: "Privacy Policy", path: "/privacy-policy", icon: Shield },
+    { name: "Terms of Service", path: "/terms-of-service", icon: FileText },
+    { name: "Contact Support", path: "/contact-support", icon: HelpCircle },
   ];
 
   return (

@@ -5,6 +5,7 @@ import {
   LoginNGODTO,
   UpdateNGODTO,
   VerifyNGODTO,
+  ChangePasswordDTO,
 } from "../dtos/ngo.dto";
 
 import { NGOService } from "../services/ngo.service";
@@ -238,6 +239,67 @@ export class NGOController {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to delete NGO",
+        error.status || 500,
+      );
+    }
+  }
+
+  // REMOVE PROFILE IMAGE
+
+  async removeProfileImage(req: Request, res: Response) {
+    try {
+      // 1. get existing NGO to grab the old filename
+      const existingNGO = await ngoService.getProfile(req.user!.id);
+
+      // 2. delete the physical file if it exists
+      if (existingNGO?.profileImage) {
+        deleteFile(existingNGO.profileImage);
+      }
+
+      // 3. clear profileImage in DB
+      const updated = await ngoService.removeProfileImage(req.user!.id);
+
+      return ApiResponseHelper.success(
+        res,
+        updated,
+        200,
+        "Profile image removed successfully",
+      );
+    } catch (error: any) {
+      return ApiResponseHelper.error(
+        res,
+        error.message || "Failed to remove profile image",
+        error.status || 500,
+      );
+    }
+  }
+
+  // CHANGE PASSWORD
+
+  async changePassword(req: Request, res: Response) {
+    try {
+      const parsed = ChangePasswordDTO.safeParse(req.body);
+
+      if (!parsed.success) {
+        const message = parsed.error.issues
+          .map((e: any) => e.message)
+          .join(", ");
+
+        throw new HttpException(400, message);
+      }
+
+      const result = await ngoService.changePassword(req.user!.id, parsed.data);
+
+      return ApiResponseHelper.success(
+        res,
+        result,
+        200,
+        "Password changed successfully",
+      );
+    } catch (error: any) {
+      return ApiResponseHelper.error(
+        res,
+        error.message || "Failed to change password",
         error.status || 500,
       );
     }

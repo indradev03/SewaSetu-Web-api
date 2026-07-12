@@ -54,3 +54,15 @@ export const deleteNgoAccountApi = async () => {
   const res = await axiosInstance.delete(API.NGO.PROFILE);
   return res.data;
 };
+
+export type ChangePasswordPayload = {
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+};
+
+export async function changePasswordApi(payload: ChangePasswordPayload) {
+  const res = await axiosInstance.put(API.NGO.CHANGE_PASSWORD, payload);
+
+  return res.data;
+}

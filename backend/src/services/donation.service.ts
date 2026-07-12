@@ -136,8 +136,15 @@ export class DonationService {
   }
 
   // ── NGO CLAIM METHODS
-  async getAvailableDonations() {
-    const donations = await DonationRepository.findAvailableDonations();
+  async getAvailableDonations(searchParams?: {
+    category?: string;
+    title?: string;
+    pickupAddress?: string;
+    minQuantity?: number;
+    maxQuantity?: number;
+    unit?: string;
+  }) {
+    const donations = await DonationRepository.findAvailableDonations(searchParams);
     return donations;
   }
 

@@ -173,11 +173,16 @@ export const adminDeleteDonationAction = async (
 
 // ── NGO Donation Actions
 
-export const getAvailableDonationsAction = async (): Promise<
-  ActionResult<{ donations: Donation[] }>
-> => {
+export const getAvailableDonationsAction = async (searchParams?: {
+  category?: string;
+  title?: string;
+  pickupAddress?: string;
+  minQuantity?: number;
+  maxQuantity?: number;
+  unit?: string;
+}): Promise<ActionResult<{ donations: Donation[] }>> => {
   try {
-    const res = await getAvailableDonationsApi();
+    const res = await getAvailableDonationsApi(searchParams);
     return { success: true, data: { donations: res.data } };
   } catch (err: any) {
     return {

@@ -37,8 +37,20 @@ export const VerifyNGODTO = z.object({
   isVerified: z.boolean(),
 });
 
+export const ChangePasswordDTO = z
+  .object({
+    currentPassword: z.string().min(6),
+    newPassword: z.string().min(6),
+    confirmPassword: z.string().min(6),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
 // ── Types ───
 export type RegisterNGOType = z.infer<typeof RegisterNGODTO>;
 export type LoginNGOType = z.infer<typeof LoginNGODTO>;
 export type UpdateNGOType = z.infer<typeof UpdateNGODTO>;
 export type VerifyNGOType = z.infer<typeof VerifyNGODTO>;
+export type ChangePasswordType = z.infer<typeof ChangePasswordDTO>;

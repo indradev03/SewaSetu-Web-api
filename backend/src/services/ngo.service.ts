@@ -7,6 +7,7 @@ import {
   LoginNGOType,
   UpdateNGOType,
   VerifyNGOType,
+  ChangePasswordType,
 } from "../dtos/ngo.dto";
 
 import { HttpException } from "../exceptions/http-exception";
@@ -24,16 +25,12 @@ export class NGOService {
     }
 
     // check registration number uniqueness
-    const regExists =
-      await NGORepository.registrationNumberExists(
-        data.registrationNumber
-      );
+    const regExists = await NGORepository.registrationNumberExists(
+      data.registrationNumber,
+    );
 
     if (regExists) {
-      throw new HttpException(
-        400,
-        "Registration number already exists"
-      );
+      throw new HttpException(400, "Registration number already exists");
     }
 
     const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -63,7 +60,10 @@ export class NGOService {
     }
 
     if (!ngo.isVerified) {
-      throw new HttpException(403, "Your account has not been verified yet. Please wait for an administrator to review your application.");
+      throw new HttpException(
+        403,
+        "Your account has not been verified yet. Please wait for an administrator to review your application.",
+      );
     }
 
     const token = jwt.sign(
@@ -73,7 +73,7 @@ export class NGOService {
         role: "ngo",
       },
       SECRET_KEY,
-      { expiresIn: JWT_EXPIRES_IN } as jwt.SignOptions
+      { expiresIn: JWT_EXPIRES_IN } as jwt.SignOptions,
     );
 
     const { password, ...safeNGO } = ngo.toObject();
@@ -95,7 +95,7 @@ export class NGOService {
     return ngo;
   }
 
-  // ── UPDATE PROFILE 
+  // ── UPDATE PROFILE
   async updateProfile(id: string, data: UpdateNGOType) {
     const ngo = await NGORepository.updateById(id, data);
 
@@ -124,7 +124,7 @@ export class NGOService {
       try {
         await emailService.sendNGOVerificationEmail(
           ngo.organizationName,
-          ngo.email
+          ngo.email,
         );
       } catch (error) {
         console.error("Failed to send verification email:", error);
@@ -135,7 +135,7 @@ export class NGOService {
     return ngo;
   }
 
-  // ── DELETE NGO 
+  // ── DELETE NGO
   async deleteNGO(id: string) {
     const ngo = await NGORepository.deleteById(id);
 
@@ -144,5 +144,43 @@ export class NGOService {
     }
 
     return ngo;
+  }
+
+  // ── REMOVE PROFILE IMAGE
+  async removeProfileImage(id: string) {
+    const ngo = await NGORepository.updateById(id, { profileImage: "" });
+
+    if (!ngo) {
+      throw new HttpException(404, "NGO not found");
+    }
+
+    return ngo;
+  }
+
+  // ── CHANGE PASSWORD
+  async changePassword(id: string, data: ChangePasswordType) {
+    const ngo = await NGORepository.findByIdWithPassword(id);
+
+    if (!ngo) {
+      throw new HttpException(404, "NGO not found");
+    }
+
+    const isValid = await bcrypt.compare(data.currentPassword, ngo.password);
+
+    if (!isValid) {
+      throw new HttpException(400, "Current password is incorrect");
+    }
+
+    const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+
+    const updated = await NGORepository.updateById(id, {
+      password: hashedPassword,
+    } as any);
+
+    if (!updated) {
+      throw new HttpException(404, "NGO not found");
+    }
+
+    return updated;
   }
 }
