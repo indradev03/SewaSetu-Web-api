@@ -11,6 +11,7 @@ export const API = {
 
     // Donations
     MY_DONATIONS: "/donation/my-donations",
+    STATISTICS: "/donation/statistics",
   },
 
   NGO: {
@@ -64,5 +65,10 @@ export const API = {
     DELETE: (id: string) => `/donation/${id}`,
     DELETE_PHOTO: (id: string) => `/donation/${id}/photos`,
     BY_ID: (id: string) => `/donation/${id}`,
+  },
+
+  // AI routes
+  AI: {
+    GENERATE_ITEM: "/ai/generate-item",
   },
 };
