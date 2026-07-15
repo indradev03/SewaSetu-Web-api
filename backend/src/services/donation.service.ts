@@ -27,9 +27,21 @@ export class DonationService {
   }
 
   // ── GET DONOR DONATIONS
-  async getDonorDonations(donorId: string) {
-    const donations = await DonationRepository.findByDonorId(donorId);
+  async getDonorDonations(donorId: string, limit?: number) {
+    const donations = await DonationRepository.findByDonorId(donorId, limit);
     return donations;
+  }
+
+  // ── GET DONOR STATISTICS
+  async getDonorStatistics(donorId: string) {
+    const statistics = await DonationRepository.getDonorStatistics(donorId);
+    return statistics;
+  }
+
+  // ── GET NGO STATISTICS
+  async getNgoStatistics(ngoId: string) {
+    const statistics = await DonationRepository.getNgoStatistics(ngoId);
+    return statistics;
   }
 
   // ── GET ALL DONATIONS
@@ -325,8 +337,8 @@ export class DonationService {
     return updated;
   }
 
-  async getNgoClaimedDonations(ngoId: string) {
-    const donations = await DonationRepository.findClaimedByNgo(ngoId);
+  async getNgoClaimedDonations(ngoId: string, limit?: number) {
+    const donations = await DonationRepository.findClaimedByNgo(ngoId, limit);
     return donations;
   }
 

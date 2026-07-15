@@ -1,5 +1,7 @@
 import Donor from "../../models/donor.model";
 import NGO from "../../models/ngo.model";
+import Donation from "../../models/donation.model";
+import { RewardModel } from "../../models/rewards/reward.model";
 import { FilterQuery } from "mongoose";
 
 // Escape regex special characters
@@ -28,6 +30,36 @@ export const AdminRepository = {
 
   getPendingNGOs() {
     return NGO.countDocuments({ isVerified: false });
+  },
+
+  // Donation Statistics
+  getTotalDonations() {
+    return Donation.countDocuments();
+  },
+
+  getApprovedDonations() {
+    return Donation.countDocuments({ adminStatus: "Approved" });
+  },
+
+  getRejectedDonations() {
+    return Donation.countDocuments({ adminStatus: "Rejected" });
+  },
+
+  getPendingDonations() {
+    return Donation.countDocuments({ adminStatus: "Pending" });
+  },
+
+  getCompletedDonations() {
+    return Donation.countDocuments({ status: "Completed" });
+  },
+
+  // Reward Statistics
+  getActiveRewards() {
+    return RewardModel.countDocuments({ isActive: true });
+  },
+
+  getInactiveRewards() {
+    return RewardModel.countDocuments({ isActive: false });
   },
 
   // DONORS

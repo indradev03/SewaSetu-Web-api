@@ -17,11 +17,20 @@ export const DonationRepository = {
     );
   },
 
-  async findByDonorId(donorId: string): Promise<IDonation[]> {
-    return await Donation.find({ donorId })
+  async findByDonorId(donorId: string, limit?: number): Promise<IDonation[]> {
+    const query = Donation.find({ donorId })
       .sort({ createdAt: -1 })
       .populate("donorId", "username fullName email phoneNumber profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
+      .populate(
+        "claimedByNgoId",
+        "organizationName email contactPerson profileImage address",
+      );
+
+    if (limit) {
+      query.limit(limit);
+    }
+
+    return await query;
   },
 
   async findAll(filters?: {
@@ -37,7 +46,10 @@ export const DonationRepository = {
     return await Donation.find(query)
       .sort({ createdAt: -1 })
       .populate("donorId", "username fullName email phoneNumber profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
+      .populate(
+        "claimedByNgoId",
+        "organizationName email contactPerson profileImage address",
+      );
   },
 
   // ── Update
@@ -45,12 +57,12 @@ export const DonationRepository = {
     id: string,
     data: UpdateDonationType,
   ): Promise<IDonation | null> {
-    return await Donation.findByIdAndUpdate(
-      id,
-      { $set: data },
-      { new: true },
-    ).populate("donorId", "username fullName email phoneNumber profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
+    return await Donation.findByIdAndUpdate(id, { $set: data }, { new: true })
+      .populate("donorId", "username fullName email phoneNumber profileImage")
+      .populate(
+        "claimedByNgoId",
+        "organizationName email contactPerson profileImage address",
+      );
   },
 
   async updateStatus(
@@ -68,8 +80,12 @@ export const DonationRepository = {
       id,
       { $set: updateData },
       { new: true },
-    ).populate("donorId", "username fullName email profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
+    )
+      .populate("donorId", "username fullName email profileImage")
+      .populate(
+        "claimedByNgoId",
+        "organizationName email contactPerson profileImage address",
+      );
   },
 
   // ── Delete
@@ -92,6 +108,79 @@ export const DonationRepository = {
     return await Donation.countDocuments({ status });
   },
 
+  // ── Donor Statistics
+  async getDonorStatistics(donorId: string): Promise<{
+    totalDonations: number;
+    acceptedDonations: number;
+    completedDonations: number;
+    pendingDonations: number;
+    rejectedDonations: number;
+    totalRewardPoints: number;
+  }> {
+    const totalDonations = await Donation.countDocuments({ donorId });
+    const acceptedDonations = await Donation.countDocuments({
+      donorId,
+      adminStatus: "Approved",
+    });
+    const completedDonations = await Donation.countDocuments({
+      donorId,
+      status: "Completed",
+    });
+    const pendingDonations = await Donation.countDocuments({
+      donorId,
+      adminStatus: "Pending",
+    });
+    const rejectedDonations = await Donation.countDocuments({
+      donorId,
+      adminStatus: "Rejected",
+    });
+
+    // Fetch donor's actual reward points from donor profile
+    const Donor = require("../models/donor.model").default;
+    const donor = await Donor.findById(donorId).select("rewardPoints");
+    const totalRewardPoints = donor?.rewardPoints || 0;
+
+    return {
+      totalDonations,
+      acceptedDonations,
+      completedDonations,
+      pendingDonations,
+      rejectedDonations,
+      totalRewardPoints,
+    };
+  },
+
+  // ── NGO Statistics
+  async getNgoStatistics(ngoId: string): Promise<{
+    totalClaimed: number;
+    completedPickups: number;
+    inProgress: number;
+    availableDonations: number;
+  }> {
+    const totalClaimed = await Donation.countDocuments({
+      claimedByNgoId: ngoId,
+    });
+    const completedPickups = await Donation.countDocuments({
+      claimedByNgoId: ngoId,
+      status: "Completed",
+    });
+    const inProgress = await Donation.countDocuments({
+      claimedByNgoId: ngoId,
+      status: { $in: ["Claimed", "PickedUp"] },
+    });
+    const availableDonations = await Donation.countDocuments({
+      adminStatus: "Approved",
+      $or: [{ status: "Available" }, { status: { $exists: false } }],
+    });
+
+    return {
+      totalClaimed,
+      completedPickups,
+      inProgress,
+      availableDonations,
+    };
+  },
+
   // ── Admin Approval Methods
   async updateAdminStatus(
     id: string,
@@ -106,8 +195,12 @@ export const DonationRepository = {
       id,
       { $set: updateData },
       { new: true },
-    ).populate("donorId", "username fullName email profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
+    )
+      .populate("donorId", "username fullName email profileImage")
+      .populate(
+        "claimedByNgoId",
+        "organizationName email contactPerson profileImage address",
+      );
   },
 
   async findPendingApprovals(): Promise<IDonation[]> {
@@ -136,10 +229,7 @@ export const DonationRepository = {
   }): Promise<IDonation[]> {
     const query: any = {
       adminStatus: "Approved",
-      $or: [
-        { status: "Available" },
-        { status: { $exists: false } }
-      ]
+      $or: [{ status: "Available" }, { status: { $exists: false } }],
     };
 
     // Add search filters if provided
@@ -152,7 +242,10 @@ export const DonationRepository = {
     }
 
     if (searchParams?.pickupAddress) {
-      query.pickupAddress = { $regex: searchParams.pickupAddress, $options: "i" };
+      query.pickupAddress = {
+        $regex: searchParams.pickupAddress,
+        $options: "i",
+      };
     }
 
     if (searchParams?.minQuantity || searchParams?.maxQuantity) {
@@ -174,11 +267,20 @@ export const DonationRepository = {
       .populate("donorId", "username fullName email phoneNumber profileImage");
   },
 
-  async findClaimedByNgo(ngoId: string): Promise<IDonation[]> {
-    return await Donation.find({ claimedByNgoId: ngoId })
+  async findClaimedByNgo(ngoId: string, limit?: number): Promise<IDonation[]> {
+    const query = Donation.find({ claimedByNgoId: ngoId })
       .sort({ createdAt: -1 })
       .populate("donorId", "username fullName email phoneNumber profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
+      .populate(
+        "claimedByNgoId",
+        "organizationName email contactPerson profileImage address",
+      );
+
+    if (limit) {
+      query.limit(limit);
+    }
+
+    return await query;
   },
 
   async releaseClaim(id: string, ngoId: string): Promise<IDonation | null> {
@@ -194,13 +296,13 @@ export const DonationRepository = {
       { new: true },
     )
       .populate("donorId", "username fullName email phoneNumber profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
+      .populate(
+        "claimedByNgoId",
+        "organizationName email contactPerson profileImage address",
+      );
   },
 
-  async claimDonation(
-    id: string,
-    ngoId: string,
-  ): Promise<IDonation | null> {
+  async claimDonation(id: string, ngoId: string): Promise<IDonation | null> {
     return await Donation.findByIdAndUpdate(
       id,
       {
@@ -213,7 +315,10 @@ export const DonationRepository = {
       { new: true },
     )
       .populate("donorId", "username fullName email phoneNumber profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
+      .populate(
+        "claimedByNgoId",
+        "organizationName email contactPerson profileImage address",
+      );
   },
 
   async markPickedUp(id: string): Promise<IDonation | null> {
@@ -223,7 +328,10 @@ export const DonationRepository = {
       { new: true },
     )
       .populate("donorId", "username fullName email phoneNumber profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
+      .populate(
+        "claimedByNgoId",
+        "organizationName email contactPerson profileImage address",
+      );
   },
 
   async markCompleted(
@@ -242,14 +350,20 @@ export const DonationRepository = {
       { new: true },
     )
       .populate("donorId", "username fullName email phoneNumber profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
+      .populate(
+        "claimedByNgoId",
+        "organizationName email contactPerson profileImage address",
+      );
   },
 
   async findByStatus(status: string): Promise<IDonation[]> {
     return await Donation.find({ status })
       .sort({ createdAt: -1 })
       .populate("donorId", "username fullName email phoneNumber profileImage")
-      .populate("claimedByNgoId", "organizationName email contactPerson profileImage address");
+      .populate(
+        "claimedByNgoId",
+        "organizationName email contactPerson profileImage address",
+      );
   },
 
   async delete(id: string): Promise<IDonation | null> {
