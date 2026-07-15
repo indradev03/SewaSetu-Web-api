@@ -66,3 +66,51 @@ export async function changePasswordApi(payload: ChangePasswordPayload) {
 
   return res.data;
 }
+
+export type NgoStatistics = {
+  totalClaimed: number;
+  completedPickups: number;
+  inProgress: number;
+  availableDonations: number;
+};
+
+export const getNgoStatisticsApi = async (): Promise<{
+  success: boolean;
+  message: string;
+  data: NgoStatistics;
+}> => {
+  const res = await axiosInstance.get("/donation/ngo/statistics");
+  return res.data;
+};
+
+export type NgoDonation = {
+  _id: string;
+  donorId: string;
+  category: "Food" | "Clothes" | "Others";
+  title: string;
+  description: string;
+  quantity: number;
+  unit: "Pieces" | "Kgs" | "Packets" | "Liters";
+  photos: string[];
+  pickupAddress: string;
+  adminStatus: "Pending" | "Approved" | "Rejected";
+  adminRejectionReason?: string;
+  claimedByNgoId?: string;
+  claimedAt?: string;
+  status: "Available" | "Claimed" | "PickedUp" | "Completed";
+  rewardPointsAwarded: number;
+  rewardGranted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  donor?: any;
+  claimedByNgo?: any;
+};
+
+export const getRecentNgoClaimsApi = async (limit: number = 5): Promise<{
+  success: boolean;
+  message: string;
+  data: NgoDonation[];
+}> => {
+  const res = await axiosInstance.get(`${API.NGO.CLAIMED_DONATIONS}?limit=${limit}`);
+  return res.data;
+};

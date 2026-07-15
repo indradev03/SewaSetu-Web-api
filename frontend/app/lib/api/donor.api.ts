@@ -78,3 +78,53 @@ export const getRewardHistoryApi = async (): Promise<{
   const res = await axiosInstance.get("/donor/reward-history");
   return res.data;
 };
+
+export type DonorStatistics = {
+  totalDonations: number;
+  acceptedDonations: number;
+  completedDonations: number;
+  pendingDonations: number;
+  rejectedDonations: number;
+  totalRewardPoints: number;
+};
+
+export const getDonorStatisticsApi = async (): Promise<{
+  success: boolean;
+  message: string;
+  data: DonorStatistics;
+}> => {
+  const res = await axiosInstance.get(API.DONOR.STATISTICS);
+  return res.data;
+};
+
+export type Donation = {
+  _id: string;
+  donorId: string;
+  category: "Food" | "Clothes" | "Others";
+  title: string;
+  description: string;
+  quantity: number;
+  unit: "Pieces" | "Kgs" | "Packets" | "Liters";
+  photos: string[];
+  pickupAddress: string;
+  adminStatus: "Pending" | "Approved" | "Rejected";
+  adminRejectionReason?: string;
+  claimedByNgoId?: string;
+  claimedAt?: string;
+  status: "Available" | "Claimed" | "PickedUp" | "Completed";
+  rewardPointsAwarded: number;
+  rewardGranted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  donor?: any;
+  claimedByNgo?: any;
+};
+
+export const getRecentDonationsApi = async (limit: number = 5): Promise<{
+  success: boolean;
+  message: string;
+  data: Donation[];
+}> => {
+  const res = await axiosInstance.get(`${API.DONOR.MY_DONATIONS}?limit=${limit}`);
+  return res.data;
+};
