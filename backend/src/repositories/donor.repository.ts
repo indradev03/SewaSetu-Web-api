@@ -110,4 +110,29 @@ export const DonorRepository = {
       { new: true },
     ).select("-password");
   },
+
+  // ── Forgot Password
+  async setResetCode(email: string, code: string, expires: Date): Promise<IDonor | null> {
+    return await Donor.findOneAndUpdate(
+      { email },
+      { resetCode: code, resetCodeExpires: expires },
+      { new: true },
+    );
+  },
+
+  async findByEmailAndResetCode(email: string, code: string): Promise<IDonor | null> {
+    return await Donor.findOne({
+      email,
+      resetCode: code,
+      resetCodeExpires: { $gt: new Date() },
+    });
+  },
+
+  async updatePassword(id: string, newPassword: string): Promise<IDonor | null> {
+    return await Donor.findByIdAndUpdate(
+      id,
+      { password: newPassword, resetCode: undefined, resetCodeExpires: undefined },
+      { new: true },
+    ).select("-password");
+  },
 };

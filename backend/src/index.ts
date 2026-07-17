@@ -11,6 +11,7 @@ import adminRoutes from "./routes/admin/admin.route";
 import rewardClaimRoutes from "./routes/donor/rewardClaim.route";
 import donorRewardsRoutes from "./routes/donor/rewards.route";
 import aiRoutes from "./routes/ai.route";
+import authRoutes from "./routes/auth.route";
 import path from "path";
 
 const app = express();
@@ -68,6 +69,9 @@ app.use("/api/v1/admin", adminRoutes);
 
 // AI routes
 app.use("/api/v1/ai", aiRoutes);
+
+// Auth routes (forgot password)
+app.use("/api/v1/auth", authRoutes);
 
 /**
  * ─────────────────────────────

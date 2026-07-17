@@ -11,6 +11,7 @@ export const API = {
 
     // Donations
     MY_DONATIONS: "/donation/my-donations",
+    STATISTICS: "/donation/statistics",
   },
 
   NGO: {
@@ -64,5 +65,20 @@ export const API = {
     DELETE: (id: string) => `/donation/${id}`,
     DELETE_PHOTO: (id: string) => `/donation/${id}/photos`,
     BY_ID: (id: string) => `/donation/${id}`,
+  },
+
+  // AI routes
+  AI: {
+    GENERATE_ITEM: "/ai/generate-item",
+  },
+
+  // Auth routes (forgot password)
+  AUTH: {
+    DONOR_FORGOT_PASSWORD: "/auth/donor/forgot-password",
+    DONOR_VERIFY_RESET_CODE: "/auth/donor/verify-reset-code",
+    DONOR_RESET_PASSWORD: "/auth/donor/reset-password",
+    NGO_FORGOT_PASSWORD: "/auth/ngo/forgot-password",
+    NGO_VERIFY_RESET_CODE: "/auth/ngo/verify-reset-code",
+    NGO_RESET_PASSWORD: "/auth/ngo/reset-password",
   },
 };

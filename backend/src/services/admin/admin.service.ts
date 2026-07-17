@@ -5,14 +5,33 @@ export class AdminService {
   // DASHBOARD
 
   async dashboard() {
-    const [totalDonors, totalAdmins, totalNGOs, verifiedNGOs, pendingNGOs] =
-      await Promise.all([
-        AdminRepository.getTotalDonors(),
-        AdminRepository.getTotalAdmins(),
-        AdminRepository.getTotalNGOs(),
-        AdminRepository.getVerifiedNGOs(),
-        AdminRepository.getPendingNGOs(),
-      ]);
+    const [
+      totalDonors,
+      totalAdmins,
+      totalNGOs,
+      verifiedNGOs,
+      pendingNGOs,
+      totalDonations,
+      approvedDonations,
+      rejectedDonations,
+      pendingDonations,
+      completedDonations,
+      activeRewards,
+      inactiveRewards,
+    ] = await Promise.all([
+      AdminRepository.getTotalDonors(),
+      AdminRepository.getTotalAdmins(),
+      AdminRepository.getTotalNGOs(),
+      AdminRepository.getVerifiedNGOs(),
+      AdminRepository.getPendingNGOs(),
+      AdminRepository.getTotalDonations(),
+      AdminRepository.getApprovedDonations(),
+      AdminRepository.getRejectedDonations(),
+      AdminRepository.getPendingDonations(),
+      AdminRepository.getCompletedDonations(),
+      AdminRepository.getActiveRewards(),
+      AdminRepository.getInactiveRewards(),
+    ]);
 
     return {
       totalDonors,
@@ -20,6 +39,13 @@ export class AdminService {
       totalNGOs,
       verifiedNGOs,
       pendingNGOs,
+      totalDonations,
+      approvedDonations,
+      rejectedDonations,
+      pendingDonations,
+      completedDonations,
+      activeRewards,
+      inactiveRewards,
     };
   }
 

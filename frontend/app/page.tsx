@@ -14,7 +14,7 @@ export default function LandingPage() {
 
         <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-gray-900 leading-[1.15]">
           Connecting Hearts, <br className="sm:hidden" />
-          <span className="bg-gradient-to-r from-emerald-600 to-green-500 bg-clip-text text-transparent">
+          <span className="bg-linear-to-r from-emerald-600 to-green-500 bg-clip-text text-transparent">
             Bridging Gaps
           </span>
         </h1>
@@ -47,7 +47,7 @@ export default function LandingPage() {
       <section className="max-w-6xl mx-auto px-6 mt-28 md:mt-40 grid md:grid-cols-2 gap-12 lg:gap-16 items-center">
         {/* Left Side: Image Container */}
         <div className="relative group">
-          <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500/10 to-transparent rounded-[2.5rem] blur-2xl group-hover:opacity-75 transition duration-500" />
+          <div className="absolute inset-0 bg-linear-to-tr from-emerald-500/10 to-transparent rounded-[2.5rem] blur-2xl group-hover:opacity-75 transition duration-500" />
           <div className="relative w-full h-[380px] md:h-[480px] rounded-[2.5rem] overflow-hidden shadow-2xl border-4 border-white transition-transform duration-500 group-hover:scale-[1.01]">
             <Image
               src={handshake}
@@ -122,7 +122,7 @@ export default function LandingPage() {
           {/* Column A: Donors (Clean White Premium Card) */}
           <div className="bg-white/70 backdrop-blur-md border border-gray-200/60 p-8 rounded-[2rem] shadow-xl shadow-gray-100/40 hover:shadow-2xl transition duration-300">
             <div className="flex items-center gap-4 mb-10">
-              <div className="p-3.5 bg-gradient-to-br from-emerald-600 to-green-600 text-white rounded-2xl shadow-md shadow-emerald-600/10">
+              <div className="p-3.5 bg-linear-to-br from-emerald-600 to-green-600 text-white rounded-2xl shadow-md shadow-emerald-600/10">
                 <Gift className="w-6 h-6" />
               </div>
               <div>
@@ -173,7 +173,7 @@ export default function LandingPage() {
           {/* Column B: NGOs (Subtle Inverted Visual Treatment) */}
           <div className="bg-slate-50/60 backdrop-blur-md border border-slate-200/60 p-8 rounded-[2rem] shadow-xl shadow-slate-100/40 hover:shadow-2xl transition duration-300">
             <div className="flex items-center gap-4 mb-10">
-              <div className="p-3.5 bg-gradient-to-br from-blue-600 to-indigo-600 text-white rounded-2xl shadow-md shadow-blue-600/10">
+              <div className="p-3.5 bg-linear-to-br from-blue-600 to-indigo-600 text-white rounded-2xl shadow-md shadow-blue-600/10">
                 <Building2 className="w-6 h-6" />
               </div>
               <div>
@@ -224,10 +224,10 @@ export default function LandingPage() {
       </section>
 
       {/* 4. Stats Banner Section */}
-      <section className="w-full bg-gradient-to-br from-emerald-900 via-emerald-950 to-stone-950 text-white my-32 py-16 shadow-inner">
+      <section className="w-full bg-linear-to-br from-emerald-900 via-emerald-950 to-stone-950 text-white my-32 py-16 shadow-inner">
         <div className="max-w-5xl mx-auto px-6 grid grid-cols-3 gap-6 text-center">
           <div>
-            <p className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-b from-white to-emerald-100 bg-clip-text text-transparent">
+            <p className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight bg-linear-to-b from-white to-emerald-100 bg-clip-text text-transparent">
               200K
             </p>
             <p className="text-[10px] md:text-xs tracking-widest text-emerald-400 font-bold uppercase mt-3">
@@ -235,7 +235,7 @@ export default function LandingPage() {
             </p>
           </div>
           <div className="border-x border-emerald-800/40">
-            <p className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-b from-white to-emerald-100 bg-clip-text text-transparent">
+            <p className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight bg-linear-to-b from-white to-emerald-100 bg-clip-text text-transparent">
               100
             </p>
             <p className="text-[10px] md:text-xs tracking-widest text-emerald-400 font-bold uppercase mt-3">
@@ -243,7 +243,7 @@ export default function LandingPage() {
             </p>
           </div>
           <div>
-            <p className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight bg-gradient-to-b from-white to-emerald-100 bg-clip-text text-transparent">
+            <p className="text-3xl sm:text-4xl md:text-5xl font-black tracking-tight bg-linear-to-b from-white to-emerald-100 bg-clip-text text-transparent">
               16+
             </p>
             <p className="text-[10px] md:text-xs tracking-widest text-emerald-400 font-bold uppercase mt-3">
@@ -255,9 +255,9 @@ export default function LandingPage() {
 
       {/* 5. Bottom CTA Section */}
       <section className="max-w-5xl mx-auto px-6 mb-8">
-        <div className="w-full bg-gradient-to-br from-emerald-600 via-emerald-700 to-green-500 rounded-[3rem] p-10 md:p-20 text-center text-white shadow-2xl shadow-emerald-700/10 relative overflow-hidden group">
+        <div className="w-full bg-linear-to-br from-emerald-600 via-emerald-700 to-green-500 rounded-[3rem] p-10 md:p-20 text-center text-white shadow-2xl shadow-emerald-700/10 relative overflow-hidden group">
           {/* Subtle design element lines background */}
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.12),transparent_50%)]" />
+          <div className="absolute inset-0 bg-[radial-linear(circle_at_top_right,rgba(255,255,255,0.12),transparent_50%)]" />
 
           <div className="relative z-10 max-w-2xl mx-auto flex flex-col items-center">
             <div className="p-3 bg-white/10 backdrop-blur-md rounded-2xl mb-6">
@@ -277,7 +277,7 @@ export default function LandingPage() {
               <ButtonLink
                 href="/register/role_selection"
                 variant="orange"
-                className="w-full sm:w-auto py-3.5 px-7 font-extrabold text-sm rounded-xl tracking-wide bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-600/30 border border-orange-400/20 hover:from-orange-600 hover:to-amber-600 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
+                className="w-full sm:w-auto py-3.5 px-7 font-extrabold text-sm rounded-xl tracking-wide bg-linear-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-600/30 border border-orange-400/20 hover:from-orange-600 hover:to-amber-600 transition-all duration-300 transform hover:-translate-y-0.5 active:translate-y-0 active:scale-95"
               >
                 Create Your First Donation
               </ButtonLink>

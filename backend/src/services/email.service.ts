@@ -111,6 +111,52 @@ class EmailService {
       throw error;
     }
   }
+
+  async sendPasswordResetEmail(email: string, resetCode: string, name?: string) {
+    console.log(`Attempting to send password reset email to ${email}`);
+    
+    const mailOptions = {
+      from: process.env.EMAIL_FROM || `"SewaSetu Support" <${process.env.EMAIL_USER}>`,
+      to: email,
+      subject: "Password Reset Request",
+      replyTo: "no-reply@sewasetu.com",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+          <h2 style="color: #4CAF50;">Password Reset Request</h2>
+          
+          <p>${name ? `Dear <strong>${name}</strong>,` : "Hello,"}</p>
+          
+          <p>We received a request to reset your password. Use the following verification code to proceed:</p>
+          
+          <div style="background-color: #f5f5f5; padding: 20px; text-align: center; border-radius: 8px; margin: 20px 0;">
+            <span style="font-size: 32px; font-weight: bold; color: #4CAF50; letter-spacing: 5px;">${resetCode}</span>
+          </div>
+          
+          <p>This code will expire in 15 minutes.</p>
+          
+          <p>If you did not request this password reset, please ignore this email.</p>
+          
+          <p>Best regards,<br>
+          The SewaSetu Team</p>
+          
+          <hr style="margin: 20px 0; border: none; border-top: 1px solid #eee;">
+          
+          <p style="font-size: 12px; color: #888;">
+            This is an automated email. Please do not reply to this message.
+          </p>
+        </div>
+      `,
+    };
+
+    try {
+      const info = await this.transporter.sendMail(mailOptions);
+      console.log(`Password reset email sent successfully to ${email}`);
+      console.log(`Message ID: ${info.messageId}`);
+    } catch (error) {
+      console.error("Error sending password reset email:", error);
+      throw error;
+    }
+  }
 }
 
 export default new EmailService();

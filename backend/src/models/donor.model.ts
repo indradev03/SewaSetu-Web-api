@@ -11,6 +11,8 @@ export interface IDonor extends Document {
   profileImage?: string;
   role: "donor" | "admin";
   rewardPoints: number;
+  resetCode?: string;
+  resetCodeExpires?: Date;
 }
 
 const DonorSchema = new Schema<IDonor>(
@@ -28,6 +30,9 @@ const DonorSchema = new Schema<IDonor>(
     role: { type: String, enum: ["donor", "admin"], default: "donor" },
 
     rewardPoints: { type: Number, default: 0 },
+
+    resetCode: { type: String },
+    resetCodeExpires: { type: Date },
   },
   { timestamps: true },
 );

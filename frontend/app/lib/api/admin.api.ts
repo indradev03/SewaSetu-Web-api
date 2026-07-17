@@ -32,6 +32,13 @@ export type DashboardStats = {
   totalNGOs: number;
   verifiedNGOs: number;
   pendingNGOs: number;
+  totalDonations: number;
+  approvedDonations: number;
+  rejectedDonations: number;
+  pendingDonations: number;
+  completedDonations: number;
+  activeRewards: number;
+  inactiveRewards: number;
 };
 
 export type PaginationMeta = {

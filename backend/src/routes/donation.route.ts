@@ -30,6 +30,14 @@ router.get(
   donationController.getDonorDonations.bind(donationController),
 );
 
+// Get donor statistics
+router.get(
+  "/statistics",
+  authorizedMiddleware,
+  authorizeRoles("donor"),
+  donationController.getDonorStatistics.bind(donationController),
+);
+
 // Get specific donation by ID
 router.get(
   "/:id",
@@ -157,6 +165,14 @@ router.get(
   authorizedMiddleware,
   authorizeRoles("ngo"),
   donationController.getNgoClaimedDonations.bind(donationController),
+);
+
+// Get NGO statistics
+router.get(
+  "/ngo/statistics",
+  authorizedMiddleware,
+  authorizeRoles("ngo"),
+  donationController.getNgoStatistics.bind(donationController),
 );
 
 export default router;

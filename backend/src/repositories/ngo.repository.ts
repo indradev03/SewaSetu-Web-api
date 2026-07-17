@@ -66,4 +66,29 @@ export const NGORepository = {
     const doc = await NGO.exists({ registrationNumber });
     return !!doc;
   },
+
+  // ── Forgot Password
+  async setResetCode(email: string, code: string, expires: Date): Promise<INGO | null> {
+    return await NGO.findOneAndUpdate(
+      { email },
+      { resetCode: code, resetCodeExpires: expires },
+      { new: true },
+    );
+  },
+
+  async findByEmailAndResetCode(email: string, code: string): Promise<INGO | null> {
+    return await NGO.findOne({
+      email,
+      resetCode: code,
+      resetCodeExpires: { $gt: new Date() },
+    });
+  },
+
+  async updatePassword(id: string, newPassword: string): Promise<INGO | null> {
+    return await NGO.findByIdAndUpdate(
+      id,
+      { password: newPassword, resetCode: undefined, resetCodeExpires: undefined },
+      { new: true },
+    ).select("-password");
+  },
 };

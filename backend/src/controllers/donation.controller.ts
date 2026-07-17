@@ -108,7 +108,8 @@ export class DonationController {
   // GET ALL DONATIONS FOR A DONOR
   async getDonorDonations(req: Request, res: Response) {
     try {
-      const donations = await donationService.getDonorDonations(req.user!.id);
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+      const donations = await donationService.getDonorDonations(req.user!.id, limit);
 
       return ApiResponseHelper.success(
         res,
@@ -120,6 +121,26 @@ export class DonationController {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to fetch donations",
+        error.status || 500,
+      );
+    }
+  }
+
+  // GET DONOR STATISTICS
+  async getDonorStatistics(req: Request, res: Response) {
+    try {
+      const statistics = await donationService.getDonorStatistics(req.user!.id);
+
+      return ApiResponseHelper.success(
+        res,
+        statistics,
+        200,
+        "Donor statistics fetched successfully",
+      );
+    } catch (error: any) {
+      return ApiResponseHelper.error(
+        res,
+        error.message || "Failed to fetch donor statistics",
         error.status || 500,
       );
     }
@@ -463,7 +484,8 @@ export class DonationController {
   // Get NGO's claimed donations
   async getNgoClaimedDonations(req: Request, res: Response) {
     try {
-      const donations = await donationService.getNgoClaimedDonations(req.user!.id);
+      const limit = req.query.limit ? parseInt(req.query.limit as string) : undefined;
+      const donations = await donationService.getNgoClaimedDonations(req.user!.id, limit);
 
       return ApiResponseHelper.success(
         res,
@@ -475,6 +497,26 @@ export class DonationController {
       return ApiResponseHelper.error(
         res,
         error.message || "Failed to fetch claimed donations",
+        error.status || 500,
+      );
+    }
+  }
+
+  // GET NGO STATISTICS
+  async getNgoStatistics(req: Request, res: Response) {
+    try {
+      const statistics = await donationService.getNgoStatistics(req.user!.id);
+
+      return ApiResponseHelper.success(
+        res,
+        statistics,
+        200,
+        "NGO statistics fetched successfully",
+      );
+    } catch (error: any) {
+      return ApiResponseHelper.error(
+        res,
+        error.message || "Failed to fetch NGO statistics",
         error.status || 500,
       );
     }

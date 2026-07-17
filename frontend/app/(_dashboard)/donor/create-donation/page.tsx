@@ -4,11 +4,13 @@ import { useState } from "react";
 import { createDonationAction } from "@/app/lib/actions/donation.actions";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { Package, MapPin, Plus, X, Upload } from "lucide-react";
+import { Package, MapPin, Plus, X, Upload, Sparkles, Loader2 } from "lucide-react";
 import Button from "@/app/components/ui/button";
+import { generateDonationItemApi } from "@/app/lib/api/ai.api";
 
 export default function CreateDonation() {
   const [loading, setLoading] = useState(false);
+  const [aiAnalyzing, setAiAnalyzing] = useState(false);
   const [formData, setFormData] = useState({
     category: "Food" as "Food" | "Clothes" | "Others",
     title: "",
@@ -42,6 +44,46 @@ export default function CreateDonation() {
     const newPreviews = previews.filter((_, i) => i !== index);
     setPhotos(newPhotos);
     setPreviews(newPreviews);
+  };
+
+  const handleAIAnalysis = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setAiAnalyzing(true);
+    try {
+      const res = await generateDonationItemApi(file);
+      
+      if (res.success) {
+        setFormData({
+          ...formData,
+          category: res.data.category,
+          title: res.data.title,
+          description: res.data.description,
+          quantity: res.data.quantity.toString(),
+          unit: res.data.unit,
+        });
+        
+        toast.success(`AI analyzed image with ${res.data.confidence}% confidence!`);
+        
+        // Also add the image to photos
+        const newFiles = [...photos, file];
+        const newPreviews = [
+          ...previews,
+          URL.createObjectURL(file),
+        ];
+        setPhotos(newFiles);
+        setPreviews(newPreviews);
+      } else {
+        toast.error(res.message || "Failed to analyze image");
+      }
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || "Failed to analyze image with AI");
+    } finally {
+      setAiAnalyzing(false);
+      // Reset the input
+      e.target.value = "";
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -245,6 +287,51 @@ export default function CreateDonation() {
                   required
                   minLength={5}
                 />
+              </div>
+            </div>
+
+            {/* AI Auto-fill Feature */}
+            <div className="bg-gradient-to-r from-emerald-50 to-green-50 border border-emerald-200 rounded-2xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="bg-emerald-500 text-white p-2 rounded-xl">
+                  <Sparkles size={20} />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-emerald-900">AI Auto-fill</h3>
+                  <p className="text-xs text-emerald-700">Upload an image to automatically fill donation details</p>
+                </div>
+              </div>
+              
+              <div className="relative">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAIAnalysis}
+                  disabled={aiAnalyzing}
+                  className="hidden"
+                  id="ai-upload"
+                />
+                <label
+                  htmlFor="ai-upload"
+                  className={`flex items-center justify-center gap-3 py-3 px-4 rounded-xl text-sm font-semibold cursor-pointer transition-all border-2
+                    ${
+                      aiAnalyzing
+                        ? "bg-emerald-100 border-emerald-300 text-emerald-600 cursor-not-allowed"
+                        : "bg-white border-emerald-300 text-emerald-700 hover:bg-emerald-100 hover:border-emerald-400"
+                    }`}
+                >
+                  {aiAnalyzing ? (
+                    <>
+                      <Loader2 size={18} className="animate-spin" />
+                      <span>Analyzing image...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Upload size={18} />
+                      <span>Upload image for AI analysis</span>
+                    </>
+                  )}
+                </label>
               </div>
             </div>
 

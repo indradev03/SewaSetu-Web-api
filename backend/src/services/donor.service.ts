@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 import { DonorRepository } from "../repositories/donor.repository";
 import {
@@ -7,10 +8,14 @@ import {
   LoginDonorType,
   UpdateDonorType,
   ChangePasswordType,
+  ForgotPasswordType,
+  VerifyResetCodeType,
+  ResetPasswordType,
 } from "../dtos/donor.dto";
 
 import { HttpException } from "../exceptions/http-exception";
 import { SECRET_KEY, JWT_EXPIRES_IN } from "../config/constant";
+import emailService from "./email.service";
 
 export class DonorService {
   // ── REGISTER
@@ -144,6 +149,64 @@ export class DonorService {
 
     return {
       message: "Password changed successfully",
+    };
+  }
+
+  // ── FORGOT PASSWORD
+  async forgotPassword(data: ForgotPasswordType) {
+    const donor = await DonorRepository.findByEmail(data.email);
+
+    if (!donor) {
+      throw new HttpException(404, "No account found with this email");
+    }
+
+    const resetCode = crypto.randomInt(100000, 999999).toString();
+    const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+    await DonorRepository.setResetCode(data.email, resetCode, expires);
+
+    try {
+      await emailService.sendPasswordResetEmail(data.email, resetCode, donor.fullName);
+    } catch (error) {
+      console.error("Failed to send password reset email:", error);
+    }
+
+    return {
+      message: "Reset code sent to email",
+    };
+  }
+
+  async verifyResetCode(data: VerifyResetCodeType) {
+    const donor = await DonorRepository.findByEmailAndResetCode(
+      data.email,
+      data.code,
+    );
+
+    if (!donor) {
+      throw new HttpException(400, "Invalid or expired reset code");
+    }
+
+    return {
+      message: "Code verified successfully",
+    };
+  }
+
+  async resetPassword(data: ResetPasswordType) {
+    const donor = await DonorRepository.findByEmailAndResetCode(
+      data.email,
+      data.code,
+    );
+
+    if (!donor) {
+      throw new HttpException(400, "Invalid or expired reset code");
+    }
+
+    const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+
+    await DonorRepository.updatePassword(donor._id.toString(), hashedPassword);
+
+    return {
+      message: "Password reset successfully",
     };
   }
 }
