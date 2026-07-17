@@ -14,6 +14,8 @@ export interface INGO extends Document {
   registrationDocPath?: string;
   panCardPath?: string;
   role: "ngo";
+  resetCode?: string;
+  resetCodeExpires?: Date;
 }
 
 const NGOSchema = new Schema<INGO>(
@@ -31,6 +33,9 @@ const NGOSchema = new Schema<INGO>(
     registrationDocPath: { type: String },
     panCardPath: { type: String },
     role: { type: String, default: "ngo", immutable: true },
+
+    resetCode: { type: String },
+    resetCodeExpires: { type: Date },
   },
   { timestamps: true },
 );

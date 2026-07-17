@@ -1,5 +1,6 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
 
 import { NGORepository } from "../repositories/ngo.repository";
 import {
@@ -8,6 +9,9 @@ import {
   UpdateNGOType,
   VerifyNGOType,
   ChangePasswordType,
+  ForgotPasswordType,
+  VerifyResetCodeType,
+  ResetPasswordType,
 } from "../dtos/ngo.dto";
 
 import { HttpException } from "../exceptions/http-exception";
@@ -182,5 +186,63 @@ export class NGOService {
     }
 
     return updated;
+  }
+
+  // ── FORGOT PASSWORD
+  async forgotPassword(data: ForgotPasswordType) {
+    const ngo = await NGORepository.findByEmail(data.email);
+
+    if (!ngo) {
+      throw new HttpException(404, "No account found with this email");
+    }
+
+    const resetCode = crypto.randomInt(100000, 999999).toString();
+    const expires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+    await NGORepository.setResetCode(data.email, resetCode, expires);
+
+    try {
+      await emailService.sendPasswordResetEmail(data.email, resetCode, ngo.organizationName);
+    } catch (error) {
+      console.error("Failed to send password reset email:", error);
+    }
+
+    return {
+      message: "Reset code sent to email",
+    };
+  }
+
+  async verifyResetCode(data: VerifyResetCodeType) {
+    const ngo = await NGORepository.findByEmailAndResetCode(
+      data.email,
+      data.code,
+    );
+
+    if (!ngo) {
+      throw new HttpException(400, "Invalid or expired reset code");
+    }
+
+    return {
+      message: "Code verified successfully",
+    };
+  }
+
+  async resetPassword(data: ResetPasswordType) {
+    const ngo = await NGORepository.findByEmailAndResetCode(
+      data.email,
+      data.code,
+    );
+
+    if (!ngo) {
+      throw new HttpException(400, "Invalid or expired reset code");
+    }
+
+    const hashedPassword = await bcrypt.hash(data.newPassword, 10);
+
+    await NGORepository.updatePassword(ngo._id.toString(), hashedPassword);
+
+    return {
+      message: "Password reset successfully",
+    };
   }
 }

@@ -48,9 +48,34 @@ export const ChangePasswordDTO = z
     path: ["confirmPassword"],
   });
 
+// ── Forgot Password
+export const ForgotPasswordDTO = z.object({
+  email: z.string().email("Invalid email"),
+});
+
+export const VerifyResetCodeDTO = z.object({
+  email: z.string().email("Invalid email"),
+  code: z.string().min(6, "Code must be 6 characters"),
+});
+
+export const ResetPasswordDTO = z
+  .object({
+    email: z.string().email("Invalid email"),
+    code: z.string().min(6, "Code must be 6 characters"),
+    newPassword: z.string().min(6, "Password must be at least 6 characters"),
+    confirmPassword: z.string().min(6, "Password must be at least 6 characters"),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
 // ── Types ───
 export type RegisterNGOType = z.infer<typeof RegisterNGODTO>;
 export type LoginNGOType = z.infer<typeof LoginNGODTO>;
 export type UpdateNGOType = z.infer<typeof UpdateNGODTO>;
 export type VerifyNGOType = z.infer<typeof VerifyNGODTO>;
 export type ChangePasswordType = z.infer<typeof ChangePasswordDTO>;
+export type ForgotPasswordType = z.infer<typeof ForgotPasswordDTO>;
+export type VerifyResetCodeType = z.infer<typeof VerifyResetCodeDTO>;
+export type ResetPasswordType = z.infer<typeof ResetPasswordDTO>;
