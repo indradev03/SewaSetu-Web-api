@@ -98,3 +98,69 @@ export const ngoLoginApi = async (payload: LoginPayload) => {
   >(API.NGO.LOGIN, payload);
   return res.data;
 };
+
+// ── Forgot Password API
+
+export type ForgotPasswordPayload = {
+  email: string;
+};
+
+export type VerifyResetCodePayload = {
+  email: string;
+  code: string;
+};
+
+export type ResetPasswordPayload = {
+  email: string;
+  code: string;
+  newPassword: string;
+  confirmPassword: string;
+};
+
+export const donorForgotPasswordApi = async (payload: ForgotPasswordPayload) => {
+  const res = await axiosInstance.post<AuthResponse<unknown>>(
+    API.AUTH.DONOR_FORGOT_PASSWORD,
+    payload,
+  );
+  return res.data;
+};
+
+export const donorVerifyResetCodeApi = async (payload: VerifyResetCodePayload) => {
+  const res = await axiosInstance.post<AuthResponse<unknown>>(
+    API.AUTH.DONOR_VERIFY_RESET_CODE,
+    payload,
+  );
+  return res.data;
+};
+
+export const donorResetPasswordApi = async (payload: ResetPasswordPayload) => {
+  const res = await axiosInstance.post<AuthResponse<unknown>>(
+    API.AUTH.DONOR_RESET_PASSWORD,
+    payload,
+  );
+  return res.data;
+};
+
+export const ngoForgotPasswordApi = async (payload: ForgotPasswordPayload) => {
+  const res = await axiosInstance.post<AuthResponse<unknown>>(
+    API.AUTH.NGO_FORGOT_PASSWORD,
+    payload,
+  );
+  return res.data;
+};
+
+export const ngoVerifyResetCodeApi = async (payload: VerifyResetCodePayload) => {
+  const res = await axiosInstance.post<AuthResponse<unknown>>(
+    API.AUTH.NGO_VERIFY_RESET_CODE,
+    payload,
+  );
+  return res.data;
+};
+
+export const ngoResetPasswordApi = async (payload: ResetPasswordPayload) => {
+  const res = await axiosInstance.post<AuthResponse<unknown>>(
+    API.AUTH.NGO_RESET_PASSWORD,
+    payload,
+  );
+  return res.data;
+};
