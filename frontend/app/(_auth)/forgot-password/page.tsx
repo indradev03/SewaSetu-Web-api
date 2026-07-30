@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { Mail, ArrowLeft, User } from "lucide-react";
@@ -10,7 +10,7 @@ import Button from "@/app/components/ui/button";
 import donorImage from "@/app/assets/donor-role-selection.png";
 import { forgotPasswordAction } from "@/app/lib/actions/auth.actions";
 
-export default function ForgotPasswordPage() {
+function ForgotPasswordContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const userType = (searchParams.get("type") as "donor" | "ngo") || "donor";
@@ -206,5 +206,13 @@ export default function ForgotPasswordPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ForgotPasswordPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <ForgotPasswordContent />
+    </Suspense>
   );
 }
