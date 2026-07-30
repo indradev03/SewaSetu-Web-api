@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "react-toastify";
 import { Shield, ArrowLeft } from "lucide-react";
@@ -10,7 +10,7 @@ import Button from "@/app/components/ui/button";
 import donorImage from "@/app/assets/donor-role-selection.png";
 import { verifyResetCodeAction } from "@/app/lib/actions/auth.actions";
 
-export default function VerifyCodePage() {
+function VerifyCodeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
@@ -174,5 +174,13 @@ export default function VerifyCodePage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function VerifyCodePage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center">Loading...</div>}>
+      <VerifyCodeContent />
+    </Suspense>
   );
 }
