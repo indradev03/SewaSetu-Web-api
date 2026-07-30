@@ -8,6 +8,9 @@ import { AuthProvider } from "./lib/context/AuthContext";
 export const metadata: Metadata = {
   title: "SewaSetu",
   description: "Donation Platform",
+  icons: {
+    icon: "icon.png",
+  },
 };
 
 export default function RootLayout({
